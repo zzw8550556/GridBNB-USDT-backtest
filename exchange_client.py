@@ -5,7 +5,6 @@ from config import SYMBOL, DEBUG_MODE, API_TIMEOUT, RECV_WINDOW
 from datetime import datetime
 import time
 import asyncio
-import math # 导入 math 模块
 
 class ExchangeClient:
     def __init__(self):

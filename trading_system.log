@@ -1,923 +1,162 @@
-2025-02-16 11:25:59 [root] INFO: ==================================================
-2025-02-16 11:25:59 [root] INFO: 网格交易系统启动
-2025-02-16 11:25:59 [root] INFO: ==================================================
-2025-02-16 11:25:59 [root] ERROR: 启动失败: GridTrader.__init__() missing 2 required positional arguments: 'exchange' and 'config'
-Traceback (most recent call last):
-  File "c:\Users\MI\Desktop\数字货币交易\trading_bot\main.py", line 17, in main
-    trader = GridTrader()
-             ^^^^^^^^^^^^
-TypeError: GridTrader.__init__() missing 2 required positional arguments: 'exchange' and 'config'
-
-2025-02-16 11:25:59 [root] INFO: 正在发送推送通知: 致命错误
-2025-02-16 11:26:00 [root] INFO: 消息推送成功: 启动失败: GridTrader.__init__() missing 2 required positional arguments: 'exchange' and 'config'
-Traceback (most recent call last):
-  File "c:\Users\MI\Desktop\数字货币交易\trading_bot\main.py", line 17, in main
-    trader = GridTrader()
-             ^^^^^^^^^^^^
-TypeError: GridTrader.__init__() missing 2 required positional arguments: 'exchange' and 'config'
-
-2025-02-16 11:26:00 [root] ERROR: 关闭连接时发生错误: cannot access local variable 'trader' where it is not associated with a value
-2025-02-16 11:28:07 [root] INFO: ==================================================
-2025-02-16 11:28:07 [root] INFO: 网格交易系统启动
-2025-02-16 11:28:07 [root] INFO: ==================================================
-2025-02-16 11:28:07 [root] ERROR: 启动失败: GridTrader.__init__() missing 2 required positional arguments: 'exchange' and 'config'
-Traceback (most recent call last):
-  File "c:\Users\MI\Desktop\数字货币交易\trading_bot\main.py", line 17, in main
-    trader = GridTrader()
-             ^^^^^^^^^^^^
-TypeError: GridTrader.__init__() missing 2 required positional arguments: 'exchange' and 'config'
-
-2025-02-16 11:28:07 [root] INFO: 正在发送推送通知: 致命错误
-2025-02-16 11:28:08 [root] INFO: 消息推送成功: 启动失败: GridTrader.__init__() missing 2 required positional arguments: 'exchange' and 'config'
-Traceback (most recent call last):
-  File "c:\Users\MI\Desktop\数字货币交易\trading_bot\main.py", line 17, in main
-    trader = GridTrader()
-             ^^^^^^^^^^^^
-TypeError: GridTrader.__init__() missing 2 required positional arguments: 'exchange' and 'config'
-
-2025-02-16 11:28:08 [root] ERROR: 关闭连接时发生错误: cannot access local variable 'trader' where it is not associated with a value
-2025-02-16 11:30:44 [root] INFO: ==================================================
-2025-02-16 11:30:44 [root] INFO: 网格交易系统启动
-2025-02-16 11:30:44 [root] INFO: ==================================================
-2025-02-16 11:30:44 [ExchangeClient] INFO: 交易所客户端初始化完成
-2025-02-16 11:30:44 [GridTrader] INFO: 正在加载市场数据...
-2025-02-16 11:30:45 [ExchangeClient] INFO: 时间同步完成 | 时差: -162ms
-2025-02-16 11:31:08 [ExchangeClient] INFO: 市场数据加载成功 | 交易对: BNB/USDT
-2025-02-16 11:31:10 [ExchangeClient] INFO: 理财账户余额: {'ANIME': 1e-08, 'BIO': 3e-08, 'BNB': 0.08699828, 'FDUSD': 0.51812535, 'USDT': 218.89572137}
-2025-02-16 11:31:11 [GridTrader] INFO: 总资产: 811.79 USDT
-2025-02-16 11:31:11 [GridTrader] INFO: 发现可划转USDT: 0.003069567680000773
-2025-02-16 11:31:11 [ExchangeClient] INFO: 找到USDT活期理财产品: USDT001
-2025-02-16 11:31:11 [ExchangeClient] INFO: 开始申购: 0.00 USDT 到活期理财
-2025-02-16 11:31:12 [ExchangeClient] ERROR: 申购失败: binance {"code":-9000,"msg":"bad request"}
-2025-02-16 11:31:12 [GridTrader] ERROR: 初始资金检查失败: binance {"code":-9000,"msg":"bad request"}
-2025-02-16 11:31:12 [GridTrader] INFO: 使用预设基准价: 656.38
-2025-02-16 11:31:12 [GridTrader] INFO: 初始化完成 | 交易对: BNB/USDT | 基准价: 656.38
-2025-02-16 11:31:12 [root] INFO: 正在发送推送通知: 交易信号通知
-2025-02-16 11:31:13 [root] INFO: 消息推送成功: 网格交易启动成功
+2025-04-07 00:25:34 [root] INFO: ==================================================
+2025-04-07 00:25:34 [root] INFO: 网格交易系统启动
+2025-04-07 00:25:34 [root] INFO: ==================================================
+2025-04-07 00:25:34 [ExchangeClient] INFO: 交易所客户端初始化完成
+2025-04-07 00:25:34 [OrderTracker] INFO: 加载了 100 条历史交易记录
+2025-04-07 00:25:34 [GridTrader] INFO: 正在加载市场数据...
+2025-04-07 00:25:36 [ExchangeClient] INFO: 时间同步完成 | 时差: -1808ms
+2025-04-07 00:25:42 [ExchangeClient] INFO: 市场数据加载成功 | 交易对: BNB/USDT
+2025-04-07 00:25:45 [ExchangeClient] INFO: 理财账户余额: {'BNB': 0.15273966, 'USDT': 446.91154091}
+2025-04-07 00:25:46 [GridTrader] INFO: 总资产: 787.39 USDT | 现货: 251.86 USDT (BNB: 0.2168, USDT: 126.05) | 理财: 535.53 USDT (BNB: 0.1527, USDT: 446.91)
+2025-04-07 00:25:47 [GridTrader] INFO: 发现可划转USDT: 0.0703320459999901
+2025-04-07 00:25:47 [ExchangeClient] INFO: 找到USDT活期理财产品: USDT001
+2025-04-07 00:25:47 [ExchangeClient] INFO: 开始申购: 0.07 USDT 到活期理财
+2025-04-07 00:25:50 [ExchangeClient] ERROR: 申购失败: binance {"code":-6005,"msg":"smaller than min purchase limit"}
+2025-04-07 00:25:50 [GridTrader] ERROR: 初始资金检查失败: binance {"code":-6005,"msg":"smaller than min purchase limit"}
+2025-04-07 00:25:50 [GridTrader] INFO: 使用预设基准价: 595.35
+2025-04-07 00:25:50 [GridTrader] INFO: 初始化完成 | 交易对: BNB/USDT | 基准价: 595.35
+2025-04-07 00:25:50 [root] INFO: 正在发送推送通知: 交易信号通知
+2025-04-07 00:25:50 [root] ERROR: 消息推送失败: 状态码=200, 响应={'code': 999, 'msg': '请勿频繁推送相同内容', 'data': None}
+2025-04-07 00:25:50 [GridTrader] INFO: 市场当前价: 580.3000 | 价差: -2.53%
+2025-04-07 00:25:50 [root] INFO: Web服务已启动:
+2025-04-07 00:25:50 [root] INFO: - 本地访问: http://localhost:58181
+2025-04-07 00:25:50 [root] INFO: - 局域网访问: http://0.0.0.0:58181
+2025-04-07 00:25:54 [GridTrader] INFO: 订单金额计算 | 类型: buy | 目标金额: 78.74 | 最小金额: 39.37 | 最大金额: 118.11 | USDT余额: 119.7500 | 当前价格: 580.30 | 调整后金额: 78.74
+2025-04-07 00:25:55 [GridTrader] INFO: 订单金额计算 | 类型: sell | 目标金额: 78.74 | 最小金额: 39.37 | 最大金额: 118.11 | BNB余额: 0.2060 | 当前价格: 580.30 | 调整后金额: 78.74
+2025-04-07 00:25:56 [GridTrader] INFO: 买入监测 | 当前价: 580.30 | 触发价: 583.44300 | 最低价: 580.30 | 网格下限: 583.44 | 反弹阈值: 0.40%
+2025-04-07 00:25:59 [GridTrader] INFO: 买入监测 | 当前价: 580.29 | 触发价: 583.44300 | 最低价: 580.29 | 网格下限: 583.44 | 反弹阈值: 0.40%
+2025-04-07 00:26:02 [GridTrader] INFO: 买入监测 | 当前价: 580.27 | 触发价: 583.44300 | 最低价: 580.27 | 网格下限: 583.44 | 反弹阈值: 0.40%
+2025-04-07 00:26:05 [GridTrader] INFO: 买入监测 | 当前价: 580.14 | 触发价: 583.44300 | 最低价: 580.14 | 网格下限: 583.44 | 反弹阈值: 0.40%
+2025-04-07 00:26:08 [ExchangeClient] INFO: 交易所连接已安全关闭
+2025-04-07 00:26:08 [root] INFO: 交易所连接已关闭
+2025-04-07 00:27:34 [root] INFO: ==================================================
+2025-04-07 00:27:34 [root] INFO: 网格交易系统启动
+2025-04-07 00:27:34 [root] INFO: ==================================================
+2025-04-07 00:27:34 [ExchangeClient] INFO: 交易所客户端初始化完成
+2025-04-07 00:27:34 [OrderTracker] INFO: 加载了 100 条历史交易记录
+2025-04-07 00:27:34 [GridTrader] INFO: 正在加载市场数据...
+2025-04-07 00:27:36 [ExchangeClient] INFO: 时间同步完成 | 时差: -2165ms
+2025-04-07 00:27:46 [ExchangeClient] INFO: 市场数据加载成功 | 交易对: BNB/USDT
+2025-04-07 00:27:48 [ExchangeClient] INFO: 理财账户余额: {'BNB': 0.15273966, 'USDT': 446.91156798}
+2025-04-07 00:27:49 [GridTrader] INFO: 总资产: 787.35 USDT | 现货: 251.84 USDT (BNB: 0.2168, USDT: 126.05) | 理财: 535.51 USDT (BNB: 0.1527, USDT: 446.91)
+2025-04-07 00:27:50 [GridTrader] INFO: 发现可划转USDT: 0.07624095479999937
+2025-04-07 00:27:50 [ExchangeClient] INFO: 找到USDT活期理财产品: USDT001
+2025-04-07 00:27:50 [ExchangeClient] INFO: 开始申购: 0.08 USDT 到活期理财
+2025-04-07 00:27:51 [ExchangeClient] ERROR: 申购失败: binance {"code":-6005,"msg":"smaller than min purchase limit"}
+2025-04-07 00:27:51 [GridTrader] ERROR: 初始资金检查失败: binance {"code":-6005,"msg":"smaller than min purchase limit"}
+2025-04-07 00:27:51 [GridTrader] INFO: 使用预设基准价: 595.35
+2025-04-07 00:27:51 [GridTrader] INFO: 初始化完成 | 交易对: BNB/USDT | 基准价: 595.35
+2025-04-07 00:27:51 [root] INFO: 正在发送推送通知: 交易信号通知
+2025-04-07 00:27:51 [root] ERROR: 消息推送失败: 状态码=200, 响应={'code': 999, 'msg': '请勿频繁推送相同内容', 'data': None}
+2025-04-07 00:27:52 [GridTrader] INFO: 市场当前价: 580.0800 | 价差: -2.56%
+2025-04-07 00:27:52 [root] INFO: Web服务已启动:
+2025-04-07 00:27:52 [root] INFO: - 本地访问: http://localhost:58181
+2025-04-07 00:27:52 [root] INFO: - 局域网访问: http://0.0.0.0:58181
+2025-04-07 00:27:54 [GridTrader] INFO: 订单金额计算 | 类型: buy | 目标金额: 78.74 | 最小金额: 39.37 | 最大金额: 118.10 | USDT余额: 119.7500 | 当前价格: 580.09 | 调整后金额: 78.74
+2025-04-07 00:27:55 [GridTrader] INFO: 订单金额计算 | 类型: sell | 目标金额: 78.74 | 最小金额: 39.37 | 最大金额: 118.10 | BNB余额: 0.2060 | 当前价格: 580.10 | 调整后金额: 78.74
+2025-04-07 00:27:58 [GridTrader] INFO: 买入监测 | 当前价: 580.08 | 触发价: 583.44300 | 最低价: 580.08 | 网格下限: 583.44 | 反弹阈值: 0.40%
+2025-04-07 00:28:06 [ExchangeClient] INFO: 交易所连接已安全关闭
+2025-04-07 00:28:06 [root] INFO: 交易所连接已关闭
+2025-04-07 19:30:36 [root] INFO: ==================================================
+2025-04-07 19:30:36 [root] INFO: 网格交易系统启动
+2025-04-07 19:30:36 [root] INFO: ==================================================
+2025-04-07 19:30:36 [ExchangeClient] INFO: 交易所客户端初始化完成
+2025-04-07 19:30:36 [OrderTracker] INFO: 加载了 100 条历史交易记录
+2025-04-07 19:30:36 [GridTrader] INFO: 正在加载市场数据...
+2025-04-07 19:30:38 [ExchangeClient] INFO: 时间同步完成 | 时差: -523ms
+2025-04-07 19:30:41 [ExchangeClient] INFO: 市场数据加载成功 | 交易对: BNB/USDT
+2025-04-07 19:30:43 [ExchangeClient] INFO: 理财账户余额: {'BNB': 0.15226067, 'USDT': 373.16515672}
+2025-04-07 19:30:44 [GridTrader] INFO: 总资产: 771.20 USDT | 现货: 315.51 USDT (BNB: 0.4357, USDT: 79.36) | 理财: 455.69 USDT (BNB: 0.1523, USDT: 373.17)
+2025-04-07 19:30:45 [GridTrader] INFO: 从理财赎回USDT: 44.03527579024001
+2025-04-07 19:30:45 [ExchangeClient] INFO: 找到USDT活期理财产品: USDT001
+2025-04-07 19:30:45 [ExchangeClient] INFO: 开始赎回: 44.04 USDT 到现货
+2025-04-07 19:30:47 [ExchangeClient] INFO: 划转成功: {'redeemId': '559245687', 'success': True}
+2025-04-07 19:30:47 [GridTrader] INFO: 发现可划转BNB: 0.20806162306203183
+2025-04-07 19:30:47 [ExchangeClient] INFO: 找到BNB活期理财产品: BNB001
+2025-04-07 19:30:47 [ExchangeClient] INFO: 开始申购: 0.20806162 BNB 到活期理财
+2025-04-07 19:30:48 [ExchangeClient] INFO: 划转成功: {'purchaseId': '8181029568', 'success': True, 'amount': '0.20806162'}
+2025-04-07 19:30:48 [GridTrader] INFO: 资金分配完成
+USDT: 452.52
+BNB: 0.5880
+2025-04-07 19:30:48 [GridTrader] INFO: 使用预设基准价: 546.65
+2025-04-07 19:30:48 [GridTrader] INFO: 初始化完成 | 交易对: BNB/USDT | 基准价: 546.65
+2025-04-07 19:30:48 [root] INFO: 正在发送推送通知: 交易信号通知
+2025-04-07 19:30:49 [root] INFO: 消息推送成功: 网格交易启动成功
 交易对: BNB/USDT
-基准价: 656.38 USDT
+基准价: 546.65 USDT
 网格大小: 2.0%
 触发阈值: 0.4% (网格大小的1/5)
-2025-02-16 11:31:13 [GridTrader] INFO: 市场当前价: 656.5400 | 价差: +0.02%
-2025-02-16 11:31:13 [root] INFO: Web服务已启动:
-2025-02-16 11:31:13 [root] INFO: - 本地访问: http://localhost:58181
-2025-02-16 11:31:13 [root] INFO: - 局域网访问: http://0.0.0.0:58181
-2025-02-16 11:31:13 [ExchangeClient] INFO: 交易所连接已安全关闭
-2025-02-16 11:31:13 [root] INFO: 交易所连接已关闭
-2025-02-16 11:33:37 [root] INFO: ==================================================
-2025-02-16 11:33:37 [root] INFO: 网格交易系统启动
-2025-02-16 11:33:37 [root] INFO: ==================================================
-2025-02-16 11:33:37 [ExchangeClient] INFO: 交易所客户端初始化完成
-2025-02-16 11:33:37 [GridTrader] INFO: 正在加载市场数据...
-2025-02-16 11:33:38 [ExchangeClient] INFO: 时间同步完成 | 时差: -177ms
-2025-02-16 11:34:01 [ExchangeClient] INFO: 市场数据加载成功 | 交易对: BNB/USDT
-2025-02-16 11:34:02 [ExchangeClient] INFO: 理财账户余额: {'ANIME': 1e-08, 'BIO': 3e-08, 'BNB': 0.08699828, 'FDUSD': 0.5181254, 'USDT': 218.89575034}
-2025-02-16 11:34:03 [GridTrader] INFO: 总资产: 811.82 USDT
-2025-02-16 11:34:03 [GridTrader] INFO: 从理财赎回USDT: 0.0016987969920023716
-2025-02-16 11:34:03 [ExchangeClient] INFO: 找到USDT活期理财产品: USDT001
-2025-02-16 11:34:03 [ExchangeClient] INFO: 开始赎回: 0.00 USDT 到现货
-2025-02-16 11:34:04 [ExchangeClient] ERROR: 赎回失败: binance {"code":-1102,"msg":"Mandatory parameter 'amount' was not sent, was empty/null, or malformed."}
-2025-02-16 11:34:04 [GridTrader] ERROR: 初始资金检查失败: binance {"code":-1102,"msg":"Mandatory parameter 'amount' was not sent, was empty/null, or malformed."}
-2025-02-16 11:34:04 [GridTrader] INFO: 使用预设基准价: 656.38
-2025-02-16 11:34:04 [GridTrader] INFO: 初始化完成 | 交易对: BNB/USDT | 基准价: 656.38
-2025-02-16 11:34:04 [root] INFO: 正在发送推送通知: 交易信号通知
-2025-02-16 11:34:05 [root] INFO: 消息推送成功: 网格交易启动成功
+2025-04-07 19:30:49 [GridTrader] INFO: 市场当前价: 541.9500 | 价差: -0.86%
+2025-04-07 19:30:49 [root] INFO: Web服务已启动:
+2025-04-07 19:30:49 [root] INFO: - 本地访问: http://localhost:58181
+2025-04-07 19:30:49 [root] INFO: - 局域网访问: http://0.0.0.0:58181
+2025-04-07 19:30:56 [ExchangeClient] INFO: 理财账户余额: {'BNB': 0.3603223, 'USDT': 329.12515672}
+2025-04-07 19:31:11 [GridTrader] INFO: 目标订单金额计算 | 总资产: 771.20 USDT | 计算金额 (10%): 77.12 USDT
+2025-04-07 19:38:10 [AdvancedRiskManager] INFO: 风控检查 | 当前仓位比例: 39.56% | 最大允许比例: 90.00% | 最小底仓比例: 10.00%
+2025-04-07 19:40:23 [ExchangeClient] ERROR: 获取理财账户余额失败: 'NoneType' object has no attribute 'connect'
+2025-04-07 19:40:23 [ExchangeClient] INFO: 交易所连接已安全关闭
+2025-04-07 19:40:23 [root] INFO: 交易所连接已关闭
+2025-04-07 19:40:28 [root] INFO: ==================================================
+2025-04-07 19:40:28 [root] INFO: 网格交易系统启动
+2025-04-07 19:40:28 [root] INFO: ==================================================
+2025-04-07 19:40:28 [ExchangeClient] INFO: 交易所客户端初始化完成
+2025-04-07 19:40:28 [OrderTracker] INFO: 加载了 100 条历史交易记录
+2025-04-07 19:40:28 [GridTrader] INFO: 正在加载市场数据...
+2025-04-07 19:40:30 [ExchangeClient] INFO: 时间同步完成 | 时差: -538ms
+2025-04-07 19:40:34 [ExchangeClient] INFO: 市场数据加载成功 | 交易对: BNB/USDT
+2025-04-07 19:40:36 [ExchangeClient] INFO: 理财账户余额: {'BNB': 0.3603223, 'USDT': 329.12524793}
+2025-04-07 19:40:37 [GridTrader] INFO: 总资产: 770.21 USDT | 现货: 246.41 USDT (BNB: 0.2277, USDT: 123.40) | 理财: 523.81 USDT (BNB: 0.3603, USDT: 329.13)
+2025-04-07 19:40:37 [GridTrader] INFO: 发现可划转USDT: 0.16276094752001313
+2025-04-07 19:40:38 [ExchangeClient] INFO: 找到USDT活期理财产品: USDT001
+2025-04-07 19:40:38 [ExchangeClient] INFO: 开始申购: 0.16 USDT 到活期理财
+2025-04-07 19:40:39 [ExchangeClient] INFO: 划转成功: {'purchaseId': '8181033964', 'success': True, 'amount': '0.16'}
+2025-04-07 19:40:39 [GridTrader] INFO: 从理财赎回BNB: 0.000419632187491914
+2025-04-07 19:40:40 [ExchangeClient] INFO: 找到BNB活期理财产品: BNB001
+2025-04-07 19:40:40 [ExchangeClient] INFO: 开始赎回: 0.00041963 BNB 到现货
+2025-04-07 19:40:41 [ExchangeClient] INFO: 划转成功: {'redeemId': '559251587', 'success': True}
+2025-04-07 19:40:41 [GridTrader] INFO: 资金分配完成\nUSDT: 452.52\nBNB: 0.5880
+2025-04-07 19:40:41 [GridTrader] INFO: 使用预设基准价: 546.65
+2025-04-07 19:40:41 [GridTrader] INFO: 初始化完成 | 交易对: BNB/USDT | 基准价: 546.65
+2025-04-07 19:40:41 [root] INFO: 正在发送推送通知: 交易信号通知
+2025-04-07 19:40:41 [root] INFO: 消息推送成功: 网格交易启动成功
 交易对: BNB/USDT
-基准价: 656.38 USDT
+基准价: 546.65 USDT
 网格大小: 2.0%
 触发阈值: 0.4% (网格大小的1/5)
-2025-02-16 11:34:05 [GridTrader] INFO: 市场当前价: 656.6500 | 价差: +0.04%
-2025-02-16 11:34:05 [root] INFO: Web服务已启动:
-2025-02-16 11:34:05 [root] INFO: - 本地访问: http://localhost:58181
-2025-02-16 11:34:05 [root] INFO: - 局域网访问: http://0.0.0.0:58181
-2025-02-16 11:35:24 [root] INFO: ==================================================
-2025-02-16 11:35:24 [root] INFO: 网格交易系统启动
-2025-02-16 11:35:24 [root] INFO: ==================================================
-2025-02-16 11:35:24 [ExchangeClient] INFO: 交易所客户端初始化完成
-2025-02-16 11:35:24 [GridTrader] INFO: 正在加载市场数据...
-2025-02-16 11:35:25 [ExchangeClient] INFO: 时间同步完成 | 时差: -180ms
-2025-02-16 11:35:48 [ExchangeClient] INFO: 市场数据加载成功 | 交易对: BNB/USDT
-2025-02-16 11:35:49 [ExchangeClient] INFO: 理财账户余额: {'ANIME': 1e-08, 'BIO': 3e-08, 'BNB': 0.08699828, 'FDUSD': 0.51812543, 'USDT': 218.89576966}
-2025-02-16 11:35:50 [GridTrader] INFO: 总资产: 811.75 USDT
-2025-02-16 11:35:50 [GridTrader] INFO: 发现可划转USDT: 0.009002982719977126
-2025-02-16 11:35:51 [ExchangeClient] INFO: 找到USDT活期理财产品: USDT001
-2025-02-16 11:35:51 [ExchangeClient] INFO: 开始申购: 0.01 USDT 到活期理财
-2025-02-16 11:35:52 [ExchangeClient] ERROR: 申购失败: binance {"code":-6005,"msg":"smaller than min purchase limit"}
-2025-02-16 11:35:52 [GridTrader] ERROR: 初始资金检查失败: binance {"code":-6005,"msg":"smaller than min purchase limit"}
-2025-02-16 11:35:52 [GridTrader] INFO: 使用预设基准价: 656.38
-2025-02-16 11:35:52 [GridTrader] INFO: 初始化完成 | 交易对: BNB/USDT | 基准价: 656.38
-2025-02-16 11:35:52 [root] INFO: 正在发送推送通知: 交易信号通知
-2025-02-16 11:35:52 [root] ERROR: 消息推送失败: 状态码=200, 响应={'code': 999, 'msg': '请勿频繁推送相同内容', 'data': None}
-2025-02-16 11:35:52 [GridTrader] INFO: 市场当前价: 656.4200 | 价差: +0.01%
-2025-02-16 11:35:52 [root] INFO: Web服务已启动:
-2025-02-16 11:35:52 [root] INFO: - 本地访问: http://localhost:58181
-2025-02-16 11:35:52 [root] INFO: - 局域网访问: http://0.0.0.0:58181
-2025-02-16 11:37:44 [root] INFO: ==================================================
-2025-02-16 11:37:44 [root] INFO: 网格交易系统启动
-2025-02-16 11:37:44 [root] INFO: ==================================================
-2025-02-16 11:37:44 [ExchangeClient] INFO: 交易所客户端初始化完成
-2025-02-16 11:37:44 [GridTrader] INFO: 正在加载市场数据...
-2025-02-16 11:37:45 [ExchangeClient] INFO: 时间同步完成 | 时差: -180ms
-2025-02-16 11:38:08 [ExchangeClient] INFO: 市场数据加载成功 | 交易对: BNB/USDT
-2025-02-16 11:38:09 [ExchangeClient] INFO: 理财账户余额: {'ANIME': 1e-08, 'BIO': 3e-08, 'BNB': 0.08699828, 'FDUSD': 0.51812547, 'USDT': 218.89578897}
-2025-02-16 11:38:10 [GridTrader] INFO: 总资产: 811.73 USDT
-2025-02-16 11:38:10 [GridTrader] INFO: 发现可划转USDT: 0.01256612422400849
-2025-02-16 11:38:10 [ExchangeClient] INFO: 找到USDT活期理财产品: USDT001
-2025-02-16 11:38:10 [ExchangeClient] INFO: 开始申购: 0.01 USDT 到活期理财
-2025-02-16 11:38:11 [ExchangeClient] ERROR: 申购失败: binance {"code":-6005,"msg":"smaller than min purchase limit"}
-2025-02-16 11:38:11 [GridTrader] ERROR: 初始资金检查失败: binance {"code":-6005,"msg":"smaller than min purchase limit"}
-2025-02-16 11:38:11 [GridTrader] INFO: 使用预设基准价: 656.38
-2025-02-16 11:38:11 [GridTrader] INFO: 初始化完成 | 交易对: BNB/USDT | 基准价: 656.38
-2025-02-16 11:38:11 [root] INFO: 正在发送推送通知: 交易信号通知
-2025-02-16 11:38:12 [root] ERROR: 消息推送失败: 状态码=200, 响应={'code': 999, 'msg': '请勿频繁推送相同内容', 'data': None}
-2025-02-16 11:38:12 [GridTrader] INFO: 市场当前价: 656.4000 | 价差: +0.00%
-2025-02-16 11:38:12 [root] INFO: Web服务已启动:
-2025-02-16 11:38:12 [root] INFO: - 本地访问: http://localhost:58181
-2025-02-16 11:38:12 [root] INFO: - 局域网访问: http://0.0.0.0:58181
-2025-02-16 11:38:58 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: neutral
-2025-02-16 11:38:58 [GridTrader] INFO: 总资产: 811.86 USDT
-2025-02-16 11:38:59 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: neutral
-2025-02-16 11:38:59 [GridTrader] ERROR: 计算订单金额失败: 'TradingConfig' object has no attribute 'MIN_POSITION_PERCENT'
-2025-02-16 11:38:59 [GridTrader] INFO: 总资产: 811.86 USDT
-2025-02-16 11:39:00 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:39:00 [GridTrader] ERROR: 计算订单金额失败: 'TradingConfig' object has no attribute 'MIN_POSITION_PERCENT'
-2025-02-16 11:39:00 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:39:01 [GridTrader] INFO: 总资产: 811.88 USDT
-2025-02-16 11:39:01 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:39:01 [GridTrader] ERROR: 计算订单金额失败: 'TradingConfig' object has no attribute 'MIN_POSITION_PERCENT'
-2025-02-16 11:39:01 [GridTrader] INFO: 总资产: 811.88 USDT
-2025-02-16 11:39:02 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:39:02 [GridTrader] ERROR: 计算订单金额失败: 'TradingConfig' object has no attribute 'MIN_POSITION_PERCENT'
-2025-02-16 11:39:03 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:39:03 [GridTrader] INFO: 总资产: 811.88 USDT
-2025-02-16 11:39:03 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:39:03 [GridTrader] ERROR: 计算订单金额失败: 'TradingConfig' object has no attribute 'MIN_POSITION_PERCENT'
-2025-02-16 11:39:04 [GridTrader] INFO: 总资产: 811.88 USDT
-2025-02-16 11:39:04 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:39:04 [GridTrader] ERROR: 计算订单金额失败: 'TradingConfig' object has no attribute 'MIN_POSITION_PERCENT'
-2025-02-16 11:39:05 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:39:05 [GridTrader] INFO: 总资产: 811.88 USDT
-2025-02-16 11:39:06 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:39:06 [GridTrader] ERROR: 计算订单金额失败: 'TradingConfig' object has no attribute 'MIN_POSITION_PERCENT'
-2025-02-16 11:39:06 [GridTrader] INFO: 总资产: 811.88 USDT
-2025-02-16 11:39:07 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:39:07 [GridTrader] ERROR: 计算订单金额失败: 'TradingConfig' object has no attribute 'MIN_POSITION_PERCENT'
-2025-02-16 11:39:07 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:39:08 [GridTrader] INFO: 总资产: 811.88 USDT
-2025-02-16 11:39:08 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:39:08 [GridTrader] ERROR: 计算订单金额失败: 'TradingConfig' object has no attribute 'MIN_POSITION_PERCENT'
-2025-02-16 11:39:08 [GridTrader] INFO: 总资产: 811.88 USDT
-2025-02-16 11:39:09 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:39:09 [GridTrader] ERROR: 计算订单金额失败: 'TradingConfig' object has no attribute 'MIN_POSITION_PERCENT'
-2025-02-16 11:39:11 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:39:11 [GridTrader] INFO: 总资产: 811.88 USDT
-2025-02-16 11:39:12 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:39:12 [GridTrader] ERROR: 计算订单金额失败: 'TradingConfig' object has no attribute 'MIN_POSITION_PERCENT'
-2025-02-16 11:39:12 [GridTrader] INFO: 总资产: 811.88 USDT
-2025-02-16 11:39:13 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:39:13 [GridTrader] ERROR: 计算订单金额失败: 'TradingConfig' object has no attribute 'MIN_POSITION_PERCENT'
-2025-02-16 11:39:13 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:39:13 [GridTrader] INFO: 总资产: 811.88 USDT
-2025-02-16 11:39:14 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:39:14 [GridTrader] ERROR: 计算订单金额失败: 'TradingConfig' object has no attribute 'MIN_POSITION_PERCENT'
-2025-02-16 11:39:14 [GridTrader] INFO: 总资产: 811.88 USDT
-2025-02-16 11:39:15 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:39:15 [GridTrader] ERROR: 计算订单金额失败: 'TradingConfig' object has no attribute 'MIN_POSITION_PERCENT'
-2025-02-16 11:39:15 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:39:16 [GridTrader] INFO: 总资产: 811.88 USDT
-2025-02-16 11:39:16 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:39:16 [GridTrader] ERROR: 计算订单金额失败: 'TradingConfig' object has no attribute 'MIN_POSITION_PERCENT'
-2025-02-16 11:39:17 [GridTrader] INFO: 总资产: 811.88 USDT
-2025-02-16 11:39:17 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:39:17 [GridTrader] ERROR: 计算订单金额失败: 'TradingConfig' object has no attribute 'MIN_POSITION_PERCENT'
-2025-02-16 11:39:18 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:39:18 [GridTrader] INFO: 总资产: 811.88 USDT
-2025-02-16 11:39:19 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:39:19 [GridTrader] ERROR: 计算订单金额失败: 'TradingConfig' object has no attribute 'MIN_POSITION_PERCENT'
-2025-02-16 11:39:19 [GridTrader] INFO: 总资产: 811.88 USDT
-2025-02-16 11:39:19 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:39:19 [GridTrader] ERROR: 计算订单金额失败: 'TradingConfig' object has no attribute 'MIN_POSITION_PERCENT'
-2025-02-16 11:39:20 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:39:20 [GridTrader] INFO: 总资产: 811.88 USDT
-2025-02-16 11:39:21 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:39:21 [GridTrader] ERROR: 计算订单金额失败: 'TradingConfig' object has no attribute 'MIN_POSITION_PERCENT'
-2025-02-16 11:39:21 [GridTrader] INFO: 总资产: 811.88 USDT
-2025-02-16 11:39:22 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:39:22 [GridTrader] ERROR: 计算订单金额失败: 'TradingConfig' object has no attribute 'MIN_POSITION_PERCENT'
-2025-02-16 11:39:23 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:39:23 [GridTrader] INFO: 总资产: 811.88 USDT
-2025-02-16 11:39:23 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:39:23 [GridTrader] ERROR: 计算订单金额失败: 'TradingConfig' object has no attribute 'MIN_POSITION_PERCENT'
-2025-02-16 11:39:24 [GridTrader] INFO: 总资产: 811.88 USDT
-2025-02-16 11:39:24 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:39:24 [GridTrader] ERROR: 计算订单金额失败: 'TradingConfig' object has no attribute 'MIN_POSITION_PERCENT'
-2025-02-16 11:39:25 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:39:25 [GridTrader] INFO: 总资产: 811.88 USDT
-2025-02-16 11:39:26 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:39:26 [GridTrader] ERROR: 计算订单金额失败: 'TradingConfig' object has no attribute 'MIN_POSITION_PERCENT'
-2025-02-16 11:39:26 [GridTrader] INFO: 总资产: 811.88 USDT
-2025-02-16 11:39:27 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:39:27 [GridTrader] ERROR: 计算订单金额失败: 'TradingConfig' object has no attribute 'MIN_POSITION_PERCENT'
-2025-02-16 11:39:27 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:39:28 [GridTrader] INFO: 总资产: 811.88 USDT
-2025-02-16 11:39:29 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:39:29 [GridTrader] ERROR: 计算订单金额失败: 'TradingConfig' object has no attribute 'MIN_POSITION_PERCENT'
-2025-02-16 11:39:29 [GridTrader] INFO: 总资产: 811.88 USDT
-2025-02-16 11:39:30 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:39:30 [GridTrader] ERROR: 计算订单金额失败: 'TradingConfig' object has no attribute 'MIN_POSITION_PERCENT'
-2025-02-16 11:39:30 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:39:30 [GridTrader] INFO: 总资产: 811.88 USDT
-2025-02-16 11:39:31 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:39:31 [GridTrader] ERROR: 计算订单金额失败: 'TradingConfig' object has no attribute 'MIN_POSITION_PERCENT'
-2025-02-16 11:39:31 [GridTrader] INFO: 总资产: 811.88 USDT
-2025-02-16 11:39:32 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:39:32 [GridTrader] ERROR: 计算订单金额失败: 'TradingConfig' object has no attribute 'MIN_POSITION_PERCENT'
-2025-02-16 11:39:32 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:39:33 [GridTrader] INFO: 总资产: 811.88 USDT
-2025-02-16 11:39:33 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:39:33 [GridTrader] ERROR: 计算订单金额失败: 'TradingConfig' object has no attribute 'MIN_POSITION_PERCENT'
-2025-02-16 11:39:33 [GridTrader] INFO: 总资产: 811.88 USDT
-2025-02-16 11:39:34 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:39:34 [GridTrader] ERROR: 计算订单金额失败: 'TradingConfig' object has no attribute 'MIN_POSITION_PERCENT'
-2025-02-16 11:39:35 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:39:35 [GridTrader] INFO: 总资产: 811.88 USDT
-2025-02-16 11:39:35 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:39:35 [GridTrader] ERROR: 计算订单金额失败: 'TradingConfig' object has no attribute 'MIN_POSITION_PERCENT'
-2025-02-16 11:39:36 [GridTrader] INFO: 总资产: 811.88 USDT
-2025-02-16 11:39:36 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:39:36 [GridTrader] ERROR: 计算订单金额失败: 'TradingConfig' object has no attribute 'MIN_POSITION_PERCENT'
-2025-02-16 11:39:37 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:39:37 [GridTrader] INFO: 总资产: 811.88 USDT
-2025-02-16 11:39:38 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:39:38 [GridTrader] ERROR: 计算订单金额失败: 'TradingConfig' object has no attribute 'MIN_POSITION_PERCENT'
-2025-02-16 11:39:38 [GridTrader] INFO: 总资产: 811.88 USDT
-2025-02-16 11:39:38 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:39:38 [GridTrader] ERROR: 计算订单金额失败: 'TradingConfig' object has no attribute 'MIN_POSITION_PERCENT'
-2025-02-16 11:39:39 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:39:41 [GridTrader] INFO: 总资产: 811.88 USDT
-2025-02-16 11:39:41 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:39:41 [GridTrader] ERROR: 计算订单金额失败: 'TradingConfig' object has no attribute 'MIN_POSITION_PERCENT'
-2025-02-16 11:39:42 [GridTrader] INFO: 总资产: 811.88 USDT
-2025-02-16 11:39:42 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:39:42 [GridTrader] ERROR: 计算订单金额失败: 'TradingConfig' object has no attribute 'MIN_POSITION_PERCENT'
-2025-02-16 11:39:43 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:39:43 [GridTrader] INFO: 总资产: 811.88 USDT
-2025-02-16 11:39:44 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:39:44 [GridTrader] ERROR: 计算订单金额失败: 'TradingConfig' object has no attribute 'MIN_POSITION_PERCENT'
-2025-02-16 11:39:44 [GridTrader] INFO: 总资产: 811.88 USDT
-2025-02-16 11:39:45 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:39:45 [GridTrader] ERROR: 计算订单金额失败: 'TradingConfig' object has no attribute 'MIN_POSITION_PERCENT'
-2025-02-16 11:39:45 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:39:46 [GridTrader] INFO: 总资产: 811.88 USDT
-2025-02-16 11:39:46 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:39:46 [GridTrader] ERROR: 计算订单金额失败: 'TradingConfig' object has no attribute 'MIN_POSITION_PERCENT'
-2025-02-16 11:39:46 [GridTrader] INFO: 总资产: 811.88 USDT
-2025-02-16 11:39:47 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:39:47 [GridTrader] ERROR: 计算订单金额失败: 'TradingConfig' object has no attribute 'MIN_POSITION_PERCENT'
-2025-02-16 11:39:48 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:39:48 [GridTrader] INFO: 总资产: 811.88 USDT
-2025-02-16 11:39:48 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:39:48 [GridTrader] ERROR: 计算订单金额失败: 'TradingConfig' object has no attribute 'MIN_POSITION_PERCENT'
-2025-02-16 11:39:49 [GridTrader] INFO: 总资产: 811.88 USDT
-2025-02-16 11:39:49 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:39:49 [GridTrader] ERROR: 计算订单金额失败: 'TradingConfig' object has no attribute 'MIN_POSITION_PERCENT'
-2025-02-16 11:39:50 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:39:50 [GridTrader] INFO: 总资产: 811.88 USDT
-2025-02-16 11:39:51 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:39:51 [GridTrader] ERROR: 计算订单金额失败: 'TradingConfig' object has no attribute 'MIN_POSITION_PERCENT'
-2025-02-16 11:39:51 [GridTrader] INFO: 总资产: 811.88 USDT
-2025-02-16 11:39:52 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:39:52 [GridTrader] ERROR: 计算订单金额失败: 'TradingConfig' object has no attribute 'MIN_POSITION_PERCENT'
-2025-02-16 11:39:52 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:39:53 [GridTrader] INFO: 总资产: 811.88 USDT
-2025-02-16 11:39:53 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:39:53 [GridTrader] ERROR: 计算订单金额失败: 'TradingConfig' object has no attribute 'MIN_POSITION_PERCENT'
-2025-02-16 11:39:53 [GridTrader] INFO: 总资产: 811.88 USDT
-2025-02-16 11:39:54 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:39:54 [GridTrader] ERROR: 计算订单金额失败: 'TradingConfig' object has no attribute 'MIN_POSITION_PERCENT'
-2025-02-16 11:39:55 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:39:55 [GridTrader] INFO: 总资产: 811.88 USDT
-2025-02-16 11:39:55 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:39:55 [GridTrader] ERROR: 计算订单金额失败: 'TradingConfig' object has no attribute 'MIN_POSITION_PERCENT'
-2025-02-16 11:39:56 [GridTrader] INFO: 总资产: 811.88 USDT
-2025-02-16 11:39:56 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:39:56 [GridTrader] ERROR: 计算订单金额失败: 'TradingConfig' object has no attribute 'MIN_POSITION_PERCENT'
-2025-02-16 11:39:57 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:39:57 [GridTrader] INFO: 总资产: 811.88 USDT
-2025-02-16 11:39:58 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:39:58 [GridTrader] ERROR: 计算订单金额失败: 'TradingConfig' object has no attribute 'MIN_POSITION_PERCENT'
-2025-02-16 11:39:58 [GridTrader] INFO: 总资产: 811.88 USDT
-2025-02-16 11:39:58 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:39:58 [GridTrader] ERROR: 计算订单金额失败: 'TradingConfig' object has no attribute 'MIN_POSITION_PERCENT'
-2025-02-16 11:39:59 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:39:59 [GridTrader] INFO: 总资产: 811.88 USDT
-2025-02-16 11:40:00 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:40:00 [GridTrader] ERROR: 计算订单金额失败: 'TradingConfig' object has no attribute 'MIN_POSITION_PERCENT'
-2025-02-16 11:40:00 [GridTrader] INFO: 总资产: 811.88 USDT
-2025-02-16 11:40:01 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:40:01 [GridTrader] ERROR: 计算订单金额失败: 'TradingConfig' object has no attribute 'MIN_POSITION_PERCENT'
-2025-02-16 11:40:02 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:40:02 [GridTrader] INFO: 总资产: 811.88 USDT
-2025-02-16 11:40:02 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:40:02 [GridTrader] ERROR: 计算订单金额失败: 'TradingConfig' object has no attribute 'MIN_POSITION_PERCENT'
-2025-02-16 11:40:03 [GridTrader] INFO: 总资产: 811.88 USDT
-2025-02-16 11:40:03 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:40:03 [GridTrader] ERROR: 计算订单金额失败: 'TradingConfig' object has no attribute 'MIN_POSITION_PERCENT'
-2025-02-16 11:40:04 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:40:04 [GridTrader] INFO: 总资产: 811.88 USDT
-2025-02-16 11:40:05 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:40:05 [GridTrader] ERROR: 计算订单金额失败: 'TradingConfig' object has no attribute 'MIN_POSITION_PERCENT'
-2025-02-16 11:40:05 [GridTrader] INFO: 总资产: 811.88 USDT
-2025-02-16 11:40:05 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:40:05 [GridTrader] ERROR: 计算订单金额失败: 'TradingConfig' object has no attribute 'MIN_POSITION_PERCENT'
-2025-02-16 11:40:06 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:40:06 [GridTrader] INFO: 总资产: 811.89 USDT
-2025-02-16 11:40:07 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:40:07 [GridTrader] ERROR: 计算订单金额失败: 'TradingConfig' object has no attribute 'MIN_POSITION_PERCENT'
-2025-02-16 11:40:07 [GridTrader] INFO: 总资产: 811.89 USDT
-2025-02-16 11:40:08 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:40:08 [GridTrader] ERROR: 计算订单金额失败: 'TradingConfig' object has no attribute 'MIN_POSITION_PERCENT'
-2025-02-16 11:40:08 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:40:09 [GridTrader] INFO: 总资产: 811.89 USDT
-2025-02-16 11:40:09 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:40:09 [GridTrader] ERROR: 计算订单金额失败: 'TradingConfig' object has no attribute 'MIN_POSITION_PERCENT'
-2025-02-16 11:40:11 [GridTrader] INFO: 总资产: 811.92 USDT
-2025-02-16 11:40:11 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:40:11 [GridTrader] ERROR: 计算订单金额失败: 'TradingConfig' object has no attribute 'MIN_POSITION_PERCENT'
-2025-02-16 11:40:12 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:40:12 [GridTrader] INFO: 总资产: 811.92 USDT
-2025-02-16 11:40:13 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:40:13 [GridTrader] ERROR: 计算订单金额失败: 'TradingConfig' object has no attribute 'MIN_POSITION_PERCENT'
-2025-02-16 11:40:13 [GridTrader] INFO: 总资产: 811.99 USDT
-2025-02-16 11:40:14 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:40:14 [GridTrader] ERROR: 计算订单金额失败: 'TradingConfig' object has no attribute 'MIN_POSITION_PERCENT'
-2025-02-16 11:40:14 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:40:15 [GridTrader] INFO: 总资产: 811.99 USDT
-2025-02-16 11:40:15 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:40:15 [GridTrader] ERROR: 计算订单金额失败: 'TradingConfig' object has no attribute 'MIN_POSITION_PERCENT'
-2025-02-16 11:40:16 [GridTrader] INFO: 总资产: 811.99 USDT
-2025-02-16 11:40:16 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:40:16 [GridTrader] ERROR: 计算订单金额失败: 'TradingConfig' object has no attribute 'MIN_POSITION_PERCENT'
-2025-02-16 11:40:17 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:40:17 [GridTrader] INFO: 总资产: 811.99 USDT
-2025-02-16 11:40:18 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:40:18 [GridTrader] ERROR: 计算订单金额失败: 'TradingConfig' object has no attribute 'MIN_POSITION_PERCENT'
-2025-02-16 11:40:18 [GridTrader] INFO: 总资产: 812.03 USDT
-2025-02-16 11:40:18 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:40:18 [GridTrader] ERROR: 计算订单金额失败: 'TradingConfig' object has no attribute 'MIN_POSITION_PERCENT'
-2025-02-16 11:40:19 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:40:19 [GridTrader] INFO: 总资产: 812.03 USDT
-2025-02-16 11:40:20 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:40:20 [GridTrader] ERROR: 计算订单金额失败: 'TradingConfig' object has no attribute 'MIN_POSITION_PERCENT'
-2025-02-16 11:40:20 [GridTrader] INFO: 总资产: 812.03 USDT
-2025-02-16 11:40:21 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:40:21 [GridTrader] ERROR: 计算订单金额失败: 'TradingConfig' object has no attribute 'MIN_POSITION_PERCENT'
-2025-02-16 11:40:21 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:40:22 [GridTrader] INFO: 总资产: 812.03 USDT
-2025-02-16 11:40:22 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:40:22 [GridTrader] ERROR: 计算订单金额失败: 'TradingConfig' object has no attribute 'MIN_POSITION_PERCENT'
-2025-02-16 11:40:23 [GridTrader] INFO: 总资产: 812.03 USDT
-2025-02-16 11:40:23 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:40:23 [GridTrader] ERROR: 计算订单金额失败: 'TradingConfig' object has no attribute 'MIN_POSITION_PERCENT'
-2025-02-16 11:40:24 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:40:24 [GridTrader] INFO: 总资产: 812.05 USDT
-2025-02-16 11:40:25 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:40:25 [GridTrader] ERROR: 计算订单金额失败: 'TradingConfig' object has no attribute 'MIN_POSITION_PERCENT'
-2025-02-16 11:40:25 [GridTrader] INFO: 总资产: 812.05 USDT
-2025-02-16 11:40:25 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:40:25 [GridTrader] ERROR: 计算订单金额失败: 'TradingConfig' object has no attribute 'MIN_POSITION_PERCENT'
-2025-02-16 11:40:26 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:40:26 [GridTrader] INFO: 总资产: 812.08 USDT
-2025-02-16 11:40:27 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:40:27 [GridTrader] ERROR: 计算订单金额失败: 'TradingConfig' object has no attribute 'MIN_POSITION_PERCENT'
-2025-02-16 11:40:27 [GridTrader] INFO: 总资产: 812.08 USDT
-2025-02-16 11:40:28 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:40:28 [GridTrader] ERROR: 计算订单金额失败: 'TradingConfig' object has no attribute 'MIN_POSITION_PERCENT'
-2025-02-16 11:40:28 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:40:29 [GridTrader] INFO: 总资产: 812.09 USDT
-2025-02-16 11:40:29 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:40:29 [GridTrader] ERROR: 计算订单金额失败: 'TradingConfig' object has no attribute 'MIN_POSITION_PERCENT'
-2025-02-16 11:40:30 [GridTrader] INFO: 总资产: 812.07 USDT
-2025-02-16 11:40:30 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:40:30 [GridTrader] ERROR: 计算订单金额失败: 'TradingConfig' object has no attribute 'MIN_POSITION_PERCENT'
-2025-02-16 11:40:31 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:40:31 [GridTrader] INFO: 总资产: 812.07 USDT
-2025-02-16 11:40:32 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:40:32 [GridTrader] ERROR: 计算订单金额失败: 'TradingConfig' object has no attribute 'MIN_POSITION_PERCENT'
-2025-02-16 11:40:32 [GridTrader] INFO: 总资产: 812.03 USDT
-2025-02-16 11:40:33 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:40:33 [GridTrader] ERROR: 计算订单金额失败: 'TradingConfig' object has no attribute 'MIN_POSITION_PERCENT'
-2025-02-16 11:40:33 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:40:34 [GridTrader] INFO: 总资产: 812.03 USDT
-2025-02-16 11:40:34 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:40:34 [GridTrader] ERROR: 计算订单金额失败: 'TradingConfig' object has no attribute 'MIN_POSITION_PERCENT'
-2025-02-16 11:40:34 [GridTrader] INFO: 总资产: 812.03 USDT
-2025-02-16 11:40:35 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:40:35 [GridTrader] ERROR: 计算订单金额失败: 'TradingConfig' object has no attribute 'MIN_POSITION_PERCENT'
-2025-02-16 11:40:36 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:40:36 [GridTrader] INFO: 总资产: 812.03 USDT
-2025-02-16 11:40:36 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:40:36 [GridTrader] ERROR: 计算订单金额失败: 'TradingConfig' object has no attribute 'MIN_POSITION_PERCENT'
-2025-02-16 11:40:37 [GridTrader] INFO: 总资产: 812.03 USDT
-2025-02-16 11:43:34 [root] INFO: ==================================================
-2025-02-16 11:43:34 [root] INFO: 网格交易系统启动
-2025-02-16 11:43:34 [root] INFO: ==================================================
-2025-02-16 11:43:34 [ExchangeClient] INFO: 交易所客户端初始化完成
-2025-02-16 11:43:34 [GridTrader] INFO: 正在加载市场数据...
-2025-02-16 11:43:34 [ExchangeClient] INFO: 时间同步完成 | 时差: -187ms
-2025-02-16 11:43:57 [ExchangeClient] INFO: 市场数据加载成功 | 交易对: BNB/USDT
-2025-02-16 11:43:59 [ExchangeClient] INFO: 理财账户余额: {'ANIME': 1e-08, 'BIO': 3e-08, 'BNB': 0.08699828, 'FDUSD': 0.51812557, 'USDT': 218.89584693}
-2025-02-16 11:44:00 [GridTrader] INFO: 总资产: 812.32 USDT
-2025-02-16 11:44:00 [GridTrader] INFO: 从理财赎回USDT: 0.08263430841600439
-2025-02-16 11:44:00 [ExchangeClient] INFO: 找到USDT活期理财产品: USDT001
-2025-02-16 11:44:00 [ExchangeClient] INFO: 开始赎回: 0.08 USDT 到现货
-2025-02-16 11:44:01 [ExchangeClient] INFO: 划转成功: {'redeemId': 520321688, 'success': True}
-2025-02-16 11:44:01 [GridTrader] INFO: 发现可划转BNB: 0.0002789778184835723
-2025-02-16 11:44:01 [ExchangeClient] INFO: 找到BNB活期理财产品: BNB001
-2025-02-16 11:44:01 [ExchangeClient] INFO: 开始申购: 0.00027898 BNB 到活期理财
-2025-02-16 11:44:02 [ExchangeClient] ERROR: 申购失败: binance {"code":-6005,"msg":"smaller than min purchase limit"}
-2025-02-16 11:44:02 [GridTrader] ERROR: 初始资金检查失败: binance {"code":-6005,"msg":"smaller than min purchase limit"}
-2025-02-16 11:44:02 [GridTrader] INFO: 使用预设基准价: 656.38
-2025-02-16 11:44:02 [GridTrader] INFO: 初始化完成 | 交易对: BNB/USDT | 基准价: 656.38
-2025-02-16 11:44:02 [root] INFO: 正在发送推送通知: 交易信号通知
-2025-02-16 11:44:03 [root] ERROR: 消息推送失败: 状态码=200, 响应={'code': 999, 'msg': '请勿频繁推送相同内容', 'data': None}
-2025-02-16 11:44:03 [GridTrader] INFO: 市场当前价: 658.0700 | 价差: +0.26%
-2025-02-16 11:44:03 [root] INFO: Web服务已启动:
-2025-02-16 11:44:03 [root] INFO: - 本地访问: http://localhost:58181
-2025-02-16 11:44:03 [root] INFO: - 局域网访问: http://0.0.0.0:58181
-2025-02-16 11:44:04 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: neutral
-2025-02-16 11:44:05 [GridTrader] INFO: 总资产: 812.33 USDT
-2025-02-16 11:44:05 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: neutral
-2025-02-16 11:44:05 [GridTrader] INFO: 总资产: 812.33 USDT
-2025-02-16 11:44:06 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:44:07 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:44:07 [GridTrader] INFO: 总资产: 812.33 USDT
-2025-02-16 11:44:08 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:44:09 [GridTrader] INFO: 总资产: 812.32 USDT
-2025-02-16 11:44:09 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:44:32 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:44:32 [GridTrader] INFO: 总资产: 812.18 USDT
-2025-02-16 11:44:32 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:44:33 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:44:33 [GridTrader] INFO: 总资产: 812.18 USDT
-2025-02-16 11:44:33 [GridTrader] INFO: 总资产: 812.19 USDT
-2025-02-16 11:44:33 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:44:34 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:44:34 [GridTrader] INFO: 总资产: 812.19 USDT
-2025-02-16 11:44:34 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:44:34 [GridTrader] INFO: 总资产: 812.19 USDT
-2025-02-16 11:44:34 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:44:34 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:44:35 [GridTrader] INFO: 总资产: 812.20 USDT
-2025-02-16 11:44:35 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:44:35 [GridTrader] INFO: 总资产: 812.20 USDT
-2025-02-16 11:44:35 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:44:35 [GridTrader] INFO: 总资产: 812.20 USDT
-2025-02-16 11:44:35 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:44:36 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:44:36 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:44:37 [GridTrader] INFO: 总资产: 812.22 USDT
-2025-02-16 11:44:37 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:44:38 [GridTrader] INFO: 总资产: 812.22 USDT
-2025-02-16 11:44:38 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:44:40 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:44:40 [GridTrader] INFO: 总资产: 812.22 USDT
-2025-02-16 11:44:40 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:44:41 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:44:41 [GridTrader] INFO: 总资产: 812.23 USDT
-2025-02-16 11:44:41 [GridTrader] INFO: 总资产: 812.23 USDT
-2025-02-16 11:44:41 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:44:41 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:44:42 [GridTrader] INFO: 总资产: 812.23 USDT
-2025-02-16 11:44:42 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:44:43 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:44:43 [GridTrader] INFO: 总资产: 812.25 USDT
-2025-02-16 11:44:43 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:44:45 [GridTrader] INFO: 总资产: 812.28 USDT
-2025-02-16 11:44:45 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:44:45 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:44:46 [GridTrader] INFO: 总资产: 812.29 USDT
-2025-02-16 11:44:46 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:44:47 [GridTrader] INFO: 总资产: 812.28 USDT
-2025-02-16 11:44:47 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:44:48 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:44:48 [GridTrader] INFO: 总资产: 812.28 USDT
-2025-02-16 11:44:49 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:44:49 [GridTrader] INFO: 总资产: 812.29 USDT
-2025-02-16 11:44:49 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:44:50 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:44:50 [GridTrader] INFO: 总资产: 812.29 USDT
-2025-02-16 11:44:51 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:44:51 [GridTrader] INFO: 总资产: 812.32 USDT
-2025-02-16 11:44:52 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:44:52 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:44:53 [GridTrader] INFO: 总资产: 812.32 USDT
-2025-02-16 11:44:53 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:44:53 [GridTrader] INFO: 总资产: 812.38 USDT
-2025-02-16 11:44:54 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:44:55 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:44:55 [GridTrader] INFO: 总资产: 812.40 USDT
-2025-02-16 11:44:55 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:44:56 [GridTrader] INFO: 总资产: 812.40 USDT
-2025-02-16 11:44:56 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:44:57 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:44:57 [GridTrader] INFO: 总资产: 812.40 USDT
-2025-02-16 11:44:58 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:44:58 [GridTrader] INFO: 总资产: 812.40 USDT
-2025-02-16 11:44:59 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:44:59 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:45:00 [GridTrader] INFO: 总资产: 812.42 USDT
-2025-02-16 11:45:00 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:45:01 [GridTrader] INFO: 总资产: 812.39 USDT
-2025-02-16 11:45:01 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:45:03 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:45:04 [GridTrader] INFO: 总资产: 812.33 USDT
-2025-02-16 11:45:04 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:45:04 [GridTrader] INFO: 总资产: 812.33 USDT
-2025-02-16 11:45:05 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:45:06 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:45:06 [GridTrader] INFO: 总资产: 812.33 USDT
-2025-02-16 11:45:06 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:45:07 [GridTrader] INFO: 总资产: 812.33 USDT
-2025-02-16 11:45:07 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:45:08 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:45:08 [GridTrader] INFO: 总资产: 812.33 USDT
-2025-02-16 11:45:09 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:45:09 [GridTrader] INFO: 总资产: 812.33 USDT
-2025-02-16 11:45:09 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:45:10 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:45:10 [GridTrader] INFO: 总资产: 812.36 USDT
-2025-02-16 11:45:11 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:45:11 [GridTrader] INFO: 总资产: 812.36 USDT
-2025-02-16 11:45:12 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:45:12 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:45:13 [GridTrader] INFO: 总资产: 812.37 USDT
-2025-02-16 11:45:13 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:45:13 [GridTrader] INFO: 总资产: 812.37 USDT
-2025-02-16 11:45:14 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:45:15 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:45:15 [GridTrader] INFO: 总资产: 812.41 USDT
-2025-02-16 11:45:15 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: weak_downtrend
-2025-02-16 11:45:16 [GridTrader] INFO: 总资产: 812.41 USDT
-2025-02-16 11:46:15 [root] INFO: ==================================================
-2025-02-16 11:46:15 [root] INFO: 网格交易系统启动
-2025-02-16 11:46:15 [root] INFO: ==================================================
-2025-02-16 11:46:15 [ExchangeClient] INFO: 交易所客户端初始化完成
-2025-02-16 11:46:15 [GridTrader] INFO: 正在加载市场数据...
-2025-02-16 11:46:16 [ExchangeClient] INFO: 时间同步完成 | 时差: -196ms
-2025-02-16 11:46:39 [ExchangeClient] INFO: 市场数据加载成功 | 交易对: BNB/USDT
-2025-02-16 11:46:41 [ExchangeClient] INFO: 理财账户余额: {'ANIME': 1e-08, 'BIO': 3e-08, 'BNB': 0.08699828, 'FDUSD': 0.51812561, 'USDT': 218.8158759}
-2025-02-16 11:46:41 [GridTrader] INFO: 总资产: 812.45 USDT
-2025-02-16 11:46:42 [GridTrader] INFO: 从理财赎回USDT: 0.02196746515201653
-2025-02-16 11:46:42 [ExchangeClient] INFO: 找到USDT活期理财产品: USDT001
-2025-02-16 11:46:42 [ExchangeClient] INFO: 开始赎回: 0.02 USDT 到现货
-2025-02-16 11:46:43 [ExchangeClient] INFO: 划转成功: {'redeemId': 520322476, 'success': True}
-2025-02-16 11:46:43 [GridTrader] INFO: 发现可划转BNB: 0.0004115949239184291
-2025-02-16 11:46:43 [ExchangeClient] INFO: 找到BNB活期理财产品: BNB001
-2025-02-16 11:46:43 [ExchangeClient] INFO: 开始申购: 0.00041159 BNB 到活期理财
-2025-02-16 11:46:44 [ExchangeClient] ERROR: 申购失败: binance {"code":-6005,"msg":"smaller than min purchase limit"}
-2025-02-16 11:46:44 [GridTrader] ERROR: 初始资金检查失败: binance {"code":-6005,"msg":"smaller than min purchase limit"}
-2025-02-16 11:46:44 [GridTrader] INFO: 使用预设基准价: 656.38
-2025-02-16 11:46:44 [GridTrader] INFO: 初始化完成 | 交易对: BNB/USDT | 基准价: 656.38
-2025-02-16 11:46:44 [root] INFO: 正在发送推送通知: 交易信号通知
-2025-02-16 11:46:45 [root] ERROR: 消息推送失败: 状态码=200, 响应={'code': 999, 'msg': '请勿频繁推送相同内容', 'data': None}
-2025-02-16 11:46:45 [GridTrader] INFO: 市场当前价: 658.5400 | 价差: +0.33%
-2025-02-16 11:46:45 [root] INFO: Web服务已启动:
-2025-02-16 11:46:45 [root] INFO: - 本地访问: http://localhost:58181
-2025-02-16 11:46:45 [root] INFO: - 局域网访问: http://0.0.0.0:58181
-2025-02-16 11:46:46 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: neutral
-2025-02-16 11:46:46 [GridTrader] INFO: 总资产: 812.45 USDT
-2025-02-16 11:46:47 [GridTrader] INFO: 总资产: 812.45 USDT
-2025-02-16 11:46:48 [GridTrader] INFO: 总资产: 812.46 USDT
-2025-02-16 11:46:49 [GridTrader] INFO: 总资产: 812.46 USDT
-2025-02-16 11:46:51 [GridTrader] INFO: 总资产: 812.46 USDT
-2025-02-16 11:46:52 [GridTrader] INFO: 总资产: 812.46 USDT
-2025-02-16 11:46:53 [GridTrader] INFO: 总资产: 812.27 USDT
-2025-02-16 11:46:54 [GridTrader] INFO: 总资产: 812.27 USDT
-2025-02-16 11:46:56 [GridTrader] INFO: 总资产: 812.29 USDT
-2025-02-16 11:46:57 [GridTrader] INFO: 总资产: 812.28 USDT
-2025-02-16 11:46:58 [GridTrader] INFO: 总资产: 812.28 USDT
-2025-02-16 11:46:59 [GridTrader] INFO: 总资产: 812.28 USDT
-2025-02-16 11:47:01 [GridTrader] INFO: 总资产: 812.24 USDT
-2025-02-16 11:47:01 [GridTrader] INFO: 总资产: 812.21 USDT
-2025-02-16 11:47:03 [GridTrader] INFO: 总资产: 812.23 USDT
-2025-02-16 11:48:17 [root] INFO: ==================================================
-2025-02-16 11:48:17 [root] INFO: 网格交易系统启动
-2025-02-16 11:48:17 [root] INFO: ==================================================
-2025-02-16 11:48:17 [ExchangeClient] INFO: 交易所客户端初始化完成
-2025-02-16 11:48:17 [GridTrader] INFO: 正在加载市场数据...
-2025-02-16 11:48:18 [ExchangeClient] INFO: 时间同步完成 | 时差: -190ms
-2025-02-16 11:48:41 [ExchangeClient] INFO: 市场数据加载成功 | 交易对: BNB/USDT
-2025-02-16 11:48:42 [ExchangeClient] INFO: 理财账户余额: {'ANIME': 1e-08, 'BIO': 3e-08, 'BNB': 0.08699828, 'FDUSD': 0.51812565, 'USDT': 218.79589522}
-2025-02-16 11:48:43 [GridTrader] INFO: 总资产: 812.38 USDT
-2025-02-16 11:48:43 [GridTrader] INFO: 发现可划转USDT: 0.008364993855991543
-2025-02-16 11:48:44 [ExchangeClient] INFO: 找到USDT活期理财产品: USDT001
-2025-02-16 11:48:44 [ExchangeClient] INFO: 开始申购: 0.01 USDT 到活期理财
-2025-02-16 11:48:44 [ExchangeClient] ERROR: 申购失败: binance {"code":-6005,"msg":"smaller than min purchase limit"}
-2025-02-16 11:48:44 [GridTrader] ERROR: 初始资金检查失败: binance {"code":-6005,"msg":"smaller than min purchase limit"}
-2025-02-16 11:48:44 [GridTrader] INFO: 使用预设基准价: 656.38
-2025-02-16 11:48:44 [GridTrader] INFO: 初始化完成 | 交易对: BNB/USDT | 基准价: 656.38
-2025-02-16 11:48:44 [root] INFO: 正在发送推送通知: 交易信号通知
-2025-02-16 11:48:45 [root] ERROR: 消息推送失败: 状态码=200, 响应={'code': 999, 'msg': '请勿频繁推送相同内容', 'data': None}
-2025-02-16 11:48:45 [GridTrader] INFO: 市场当前价: 658.4100 | 价差: +0.31%
-2025-02-16 11:48:45 [root] INFO: Web服务已启动:
-2025-02-16 11:48:45 [root] INFO: - 本地访问: http://localhost:58181
-2025-02-16 11:48:45 [root] INFO: - 局域网访问: http://0.0.0.0:58181
-2025-02-16 11:48:47 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: neutral
-2025-02-16 11:53:48 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: neutral
-2025-02-16 11:54:18 [root] INFO: ==================================================
-2025-02-16 11:54:18 [root] INFO: 网格交易系统启动
-2025-02-16 11:54:18 [root] INFO: ==================================================
-2025-02-16 11:54:18 [ExchangeClient] INFO: 交易所客户端初始化完成
-2025-02-16 11:54:18 [GridTrader] INFO: 正在加载市场数据...
-2025-02-16 11:54:20 [ExchangeClient] INFO: 时间同步完成 | 时差: -202ms
-2025-02-16 11:54:43 [ExchangeClient] INFO: 市场数据加载成功 | 交易对: BNB/USDT
-2025-02-16 11:54:44 [ExchangeClient] INFO: 理财账户余额: {'ANIME': 1e-08, 'BIO': 3e-08, 'BNB': 0.08699828, 'FDUSD': 0.51812575, 'USDT': 218.79595315}
-2025-02-16 11:54:45 [GridTrader] INFO: 总资产: 812.60 USDT
-2025-02-16 11:54:46 [GridTrader] INFO: 从理财赎回USDT: 0.026751864000004844
-2025-02-16 11:54:46 [ExchangeClient] INFO: 找到USDT活期理财产品: USDT001
-2025-02-16 11:54:46 [ExchangeClient] INFO: 开始赎回: 0.03 USDT 到现货
-2025-02-16 11:54:47 [ExchangeClient] INFO: 划转成功: {'redeemId': 520324766, 'success': True}
-2025-02-16 11:54:47 [GridTrader] INFO: 发现可划转BNB: 0.0005147690682852923
-2025-02-16 11:54:47 [ExchangeClient] INFO: 找到BNB活期理财产品: BNB001
-2025-02-16 11:54:47 [ExchangeClient] INFO: 开始申购: 0.00051477 BNB 到活期理财
-2025-02-16 11:54:48 [ExchangeClient] ERROR: 申购失败: binance {"code":-6005,"msg":"smaller than min purchase limit"}
-2025-02-16 11:54:48 [GridTrader] ERROR: 初始资金检查失败: binance {"code":-6005,"msg":"smaller than min purchase limit"}
-2025-02-16 11:54:48 [GridTrader] INFO: 使用预设基准价: 656.38
-2025-02-16 11:54:48 [GridTrader] INFO: 初始化完成 | 交易对: BNB/USDT | 基准价: 656.38
-2025-02-16 11:54:48 [root] INFO: 正在发送推送通知: 交易信号通知
-2025-02-16 11:54:49 [root] ERROR: 消息推送失败: 状态码=200, 响应={'code': 999, 'msg': '请勿频繁推送相同内容', 'data': None}
-2025-02-16 11:54:49 [GridTrader] INFO: 市场当前价: 659.0000 | 价差: +0.40%
-2025-02-16 11:54:49 [root] INFO: Web服务已启动:
-2025-02-16 11:54:49 [root] INFO: - 本地访问: http://localhost:58181
-2025-02-16 11:54:49 [root] INFO: - 局域网访问: http://0.0.0.0:58181
-2025-02-16 11:54:50 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: neutral
-2025-02-16 11:57:00 [root] INFO: ==================================================
-2025-02-16 11:57:00 [root] INFO: 网格交易系统启动
-2025-02-16 11:57:00 [root] INFO: ==================================================
-2025-02-16 11:57:00 [ExchangeClient] INFO: 交易所客户端初始化完成
-2025-02-16 11:57:00 [GridTrader] INFO: 正在加载市场数据...
-2025-02-16 11:57:02 [ExchangeClient] INFO: 时间同步完成 | 时差: -317ms
-2025-02-16 11:57:25 [ExchangeClient] INFO: 市场数据加载成功 | 交易对: BNB/USDT
-2025-02-16 11:57:26 [ExchangeClient] INFO: 理财账户余额: {'ANIME': 1e-08, 'BIO': 3e-08, 'BNB': 0.08699828, 'FDUSD': 0.5181258, 'USDT': 218.76598212}
-2025-02-16 11:57:27 [GridTrader] INFO: 总资产: 812.74 USDT
-2025-02-16 11:57:28 [GridTrader] INFO: 从理财赎回USDT: 0.01873103968000578
-2025-02-16 11:57:28 [ExchangeClient] INFO: 找到USDT活期理财产品: USDT001
-2025-02-16 11:57:28 [ExchangeClient] INFO: 开始赎回: 0.02 USDT 到现货
-2025-02-16 11:57:29 [ExchangeClient] INFO: 划转成功: {'redeemId': 520325617, 'success': True}
-2025-02-16 11:57:29 [GridTrader] INFO: 发现可划转BNB: 0.0006160695978770503
-2025-02-16 11:57:29 [ExchangeClient] INFO: 找到BNB活期理财产品: BNB001
-2025-02-16 11:57:29 [ExchangeClient] INFO: 开始申购: 0.00061607 BNB 到活期理财
-2025-02-16 11:57:30 [ExchangeClient] ERROR: 申购失败: binance {"code":-6005,"msg":"smaller than min purchase limit"}
-2025-02-16 11:57:30 [GridTrader] ERROR: 初始资金检查失败: binance {"code":-6005,"msg":"smaller than min purchase limit"}
-2025-02-16 11:57:30 [GridTrader] INFO: 使用预设基准价: 656.38
-2025-02-16 11:57:30 [GridTrader] INFO: 初始化完成 | 交易对: BNB/USDT | 基准价: 656.38
-2025-02-16 11:57:30 [root] INFO: 正在发送推送通知: 交易信号通知
-2025-02-16 11:57:30 [root] ERROR: 消息推送失败: 状态码=200, 响应={'code': 999, 'msg': '请勿频繁推送相同内容', 'data': None}
-2025-02-16 11:57:31 [GridTrader] INFO: 市场当前价: 659.4100 | 价差: +0.46%
-2025-02-16 11:57:31 [root] INFO: Web服务已启动:
-2025-02-16 11:57:31 [root] INFO: - 本地访问: http://localhost:58181
-2025-02-16 11:57:31 [root] INFO: - 局域网访问: http://0.0.0.0:58181
-2025-02-16 11:57:32 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: neutral
-2025-02-16 11:57:32 [GridTrader] INFO: 订单金额计算 | 类型: buy | 目标金额: 81.27 | 最小金额: 40.64 | 最大金额: 121.91 | 可用余额: 123.52 | 调整后金额: 81.27 | 趋势: neutral
-2025-02-16 11:57:33 [GridTrader] INFO: 订单金额计算 | 类型: sell | 目标金额: 81.27 | 最小金额: 40.64 | 最大金额: 0.19 | 可用余额: 0.19 | 调整后金额: 0.19 | 趋势: neutral
-2025-02-16 11:57:34 [GridTrader] INFO: 订单金额计算 | 类型: buy | 目标金额: 81.27 | 最小金额: 40.64 | 最大金额: 121.91 | 可用余额: 123.52 | 调整后金额: 81.27 | 趋势: neutral
-2025-02-16 11:57:35 [GridTrader] INFO: 订单金额计算 | 类型: sell | 目标金额: 81.27 | 最小金额: 40.64 | 最大金额: 0.19 | 可用余额: 0.19 | 调整后金额: 0.19 | 趋势: neutral
-2025-02-16 11:57:36 [GridTrader] INFO: 订单金额计算 | 类型: buy | 目标金额: 81.27 | 最小金额: 40.64 | 最大金额: 121.91 | 可用余额: 123.52 | 调整后金额: 81.27 | 趋势: neutral
-2025-02-16 11:57:37 [GridTrader] INFO: 订单金额计算 | 类型: sell | 目标金额: 81.27 | 最小金额: 40.64 | 最大金额: 0.19 | 可用余额: 0.19 | 调整后金额: 0.19 | 趋势: neutral
-2025-02-16 11:57:38 [GridTrader] INFO: 订单金额计算 | 类型: buy | 目标金额: 81.27 | 最小金额: 40.64 | 最大金额: 121.91 | 可用余额: 123.52 | 调整后金额: 81.27 | 趋势: neutral
-2025-02-16 11:57:39 [GridTrader] INFO: 订单金额计算 | 类型: sell | 目标金额: 81.27 | 最小金额: 40.64 | 最大金额: 0.19 | 可用余额: 0.19 | 调整后金额: 0.19 | 趋势: neutral
-2025-02-16 11:57:40 [GridTrader] INFO: 订单金额计算 | 类型: buy | 目标金额: 81.27 | 最小金额: 40.64 | 最大金额: 121.91 | 可用余额: 123.52 | 调整后金额: 81.27 | 趋势: neutral
-2025-02-16 11:57:41 [GridTrader] INFO: 订单金额计算 | 类型: sell | 目标金额: 81.27 | 最小金额: 40.64 | 最大金额: 0.19 | 可用余额: 0.19 | 调整后金额: 0.19 | 趋势: neutral
-2025-02-16 11:57:42 [GridTrader] INFO: 订单金额计算 | 类型: buy | 目标金额: 81.27 | 最小金额: 40.64 | 最大金额: 121.91 | 可用余额: 123.52 | 调整后金额: 81.27 | 趋势: neutral
-2025-02-16 11:57:43 [GridTrader] INFO: 订单金额计算 | 类型: sell | 目标金额: 81.27 | 最小金额: 40.64 | 最大金额: 0.19 | 可用余额: 0.19 | 调整后金额: 0.19 | 趋势: neutral
-2025-02-16 11:57:44 [GridTrader] INFO: 订单金额计算 | 类型: buy | 目标金额: 81.27 | 最小金额: 40.64 | 最大金额: 121.91 | 可用余额: 123.52 | 调整后金额: 81.27 | 趋势: neutral
-2025-02-16 11:57:45 [GridTrader] INFO: 订单金额计算 | 类型: sell | 目标金额: 81.27 | 最小金额: 40.64 | 最大金额: 0.19 | 可用余额: 0.19 | 调整后金额: 0.19 | 趋势: neutral
-2025-02-16 11:57:46 [GridTrader] INFO: 订单金额计算 | 类型: buy | 目标金额: 81.27 | 最小金额: 40.64 | 最大金额: 121.91 | 可用余额: 123.52 | 调整后金额: 81.27 | 趋势: neutral
-2025-02-16 11:57:47 [GridTrader] INFO: 订单金额计算 | 类型: sell | 目标金额: 81.27 | 最小金额: 40.64 | 最大金额: 0.19 | 可用余额: 0.19 | 调整后金额: 0.19 | 趋势: neutral
-2025-02-16 11:57:48 [GridTrader] INFO: 订单金额计算 | 类型: buy | 目标金额: 81.27 | 最小金额: 40.64 | 最大金额: 121.91 | 可用余额: 123.52 | 调整后金额: 81.27 | 趋势: neutral
-2025-02-16 11:57:49 [GridTrader] INFO: 订单金额计算 | 类型: sell | 目标金额: 81.27 | 最小金额: 40.64 | 最大金额: 0.19 | 可用余额: 0.19 | 调整后金额: 0.19 | 趋势: neutral
-2025-02-16 11:57:50 [GridTrader] INFO: 订单金额计算 | 类型: buy | 目标金额: 81.27 | 最小金额: 40.64 | 最大金额: 121.91 | 可用余额: 123.52 | 调整后金额: 81.27 | 趋势: neutral
-2025-02-16 11:57:51 [GridTrader] INFO: 订单金额计算 | 类型: sell | 目标金额: 81.27 | 最小金额: 40.64 | 最大金额: 0.19 | 可用余额: 0.19 | 调整后金额: 0.19 | 趋势: neutral
-2025-02-16 11:57:52 [GridTrader] INFO: 订单金额计算 | 类型: buy | 目标金额: 81.27 | 最小金额: 40.64 | 最大金额: 121.91 | 可用余额: 123.52 | 调整后金额: 81.27 | 趋势: neutral
-2025-02-16 11:57:53 [GridTrader] INFO: 订单金额计算 | 类型: sell | 目标金额: 81.27 | 最小金额: 40.64 | 最大金额: 0.19 | 可用余额: 0.19 | 调整后金额: 0.19 | 趋势: neutral
-2025-02-16 12:01:42 [root] INFO: ==================================================
-2025-02-16 12:01:42 [root] INFO: 网格交易系统启动
-2025-02-16 12:01:42 [root] INFO: ==================================================
-2025-02-16 12:01:42 [ExchangeClient] INFO: 交易所客户端初始化完成
-2025-02-16 12:01:42 [GridTrader] INFO: 正在加载市场数据...
-2025-02-16 12:01:44 [ExchangeClient] INFO: 时间同步完成 | 时差: -209ms
-2025-02-16 12:02:07 [ExchangeClient] INFO: 市场数据加载成功 | 交易对: BNB/USDT
-2025-02-16 12:02:08 [ExchangeClient] INFO: 理财账户余额: {'ANIME': 1e-08, 'BIO': 3e-08, 'BNB': 0.08699828, 'FDUSD': 0.51812586, 'USDT': 218.74602068}
-2025-02-16 12:02:09 [GridTrader] INFO: 总资产: 813.08 USDT | 现货: 536.88 USDT (BNB: 0.2848, USDT: 348.79) | 理财: 276.20 USDT (BNB: 0.0870, USDT: 218.75)
-2025-02-16 12:02:09 [GridTrader] INFO: 从理财赎回USDT: 0.0532473969279863
-2025-02-16 12:02:10 [ExchangeClient] INFO: 找到USDT活期理财产品: USDT001
-2025-02-16 12:02:10 [ExchangeClient] INFO: 开始赎回: 0.05 USDT 到现货
-2025-02-16 12:02:11 [ExchangeClient] INFO: 划转成功: {'redeemId': 520327512, 'success': True}
-2025-02-16 12:02:11 [GridTrader] INFO: 发现可划转BNB: 0.0008231491909269917
-2025-02-16 12:02:11 [ExchangeClient] INFO: 找到BNB活期理财产品: BNB001
-2025-02-16 12:02:11 [ExchangeClient] INFO: 开始申购: 0.00082315 BNB 到活期理财
-2025-02-16 12:02:12 [ExchangeClient] ERROR: 申购失败: binance {"code":-6005,"msg":"smaller than min purchase limit"}
-2025-02-16 12:02:12 [GridTrader] ERROR: 初始资金检查失败: binance {"code":-6005,"msg":"smaller than min purchase limit"}
-2025-02-16 12:02:12 [GridTrader] INFO: 使用预设基准价: 656.38
-2025-02-16 12:02:12 [GridTrader] INFO: 初始化完成 | 交易对: BNB/USDT | 基准价: 656.38
-2025-02-16 12:02:12 [root] INFO: 正在发送推送通知: 交易信号通知
-2025-02-16 12:02:12 [root] ERROR: 消息推送失败: 状态码=200, 响应={'code': 999, 'msg': '请勿频繁推送相同内容', 'data': None}
-2025-02-16 12:02:13 [GridTrader] INFO: 市场当前价: 660.3900 | 价差: +0.61%
-2025-02-16 12:02:13 [root] INFO: Web服务已启动:
-2025-02-16 12:02:13 [root] INFO: - 本地访问: http://localhost:58181
-2025-02-16 12:02:13 [root] INFO: - 局域网访问: http://0.0.0.0:58181
-2025-02-16 12:02:37 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: neutral
-2025-02-16 12:02:37 [GridTrader] INFO: 订单金额计算 | 类型: buy | 目标金额: 81.31 | 最小金额: 40.65 | 最大金额: 121.96 | USDT余额: 123.5373 | 当前价格: 659.78 | 调整后金额: 81.31 | 趋势: neutral
-2025-02-16 12:02:39 [GridTrader] INFO: 订单金额计算 | 类型: sell | 目标金额: 81.31 | 最小金额: 40.65 | 最大金额: 121.96 | BNB余额: 0.1879 | 当前价格: 659.79 | 调整后金额: 81.31 | 趋势: neutral
-2025-02-16 12:03:37 [GridTrader] INFO: 订单金额计算 | 类型: buy | 目标金额: 81.30 | 最小金额: 40.65 | 最大金额: 121.95 | USDT余额: 123.5848 | 当前价格: 660.40 | 调整后金额: 81.30 | 趋势: neutral
-2025-02-16 12:03:38 [GridTrader] INFO: 订单金额计算 | 类型: sell | 目标金额: 81.30 | 最小金额: 40.65 | 最大金额: 121.95 | BNB余额: 0.1879 | 当前价格: 660.40 | 调整后金额: 81.30 | 趋势: neutral
-2025-02-16 12:04:38 [GridTrader] INFO: 订单金额计算 | 类型: buy | 目标金额: 81.31 | 最小金额: 40.66 | 最大金额: 121.97 | USDT余额: 123.5848 | 当前价格: 660.72 | 调整后金额: 81.31 | 趋势: neutral
-2025-02-16 12:04:38 [GridTrader] INFO: 订单金额计算 | 类型: sell | 目标金额: 81.31 | 最小金额: 40.66 | 最大金额: 121.97 | BNB余额: 0.1879 | 当前价格: 660.72 | 调整后金额: 81.31 | 趋势: neutral
-2025-02-16 12:05:20 [root] INFO: ==================================================
-2025-02-16 12:05:20 [root] INFO: 网格交易系统启动
-2025-02-16 12:05:20 [root] INFO: ==================================================
-2025-02-16 12:05:20 [ExchangeClient] INFO: 交易所客户端初始化完成
-2025-02-16 12:05:20 [GridTrader] INFO: 正在加载市场数据...
-2025-02-16 12:05:21 [ExchangeClient] INFO: 时间同步完成 | 时差: -214ms
-2025-02-16 12:05:44 [ExchangeClient] INFO: 市场数据加载成功 | 交易对: BNB/USDT
-2025-02-16 12:05:45 [ExchangeClient] INFO: 理财账户余额: {'ANIME': 1e-08, 'BIO': 3e-08, 'BNB': 0.08699828, 'FDUSD': 0.51812593, 'USDT': 218.69605921}
-2025-02-16 12:05:46 [GridTrader] INFO: 总资产: 536.93 USDT | 现货: 260.76 USDT (BNB: 0.1978, USDT: 130.09) | 理财: 276.17 USDT (BNB: 0.0870, USDT: 218.70)
-2025-02-16 12:05:46 [GridTrader] INFO: 发现可划转USDT: 44.181227677375986
-2025-02-16 12:05:46 [ExchangeClient] INFO: 找到USDT活期理财产品: USDT001
-2025-02-16 12:05:46 [ExchangeClient] INFO: 开始申购: 44.18 USDT 到活期理财
-2025-02-16 12:05:47 [ExchangeClient] INFO: 划转成功: {'purchaseId': 7822082682, 'success': True, 'amount': '44.18'}
-2025-02-16 12:05:47 [GridTrader] INFO: 发现可划转BNB: 0.06776022429733422
-2025-02-16 12:05:48 [ExchangeClient] INFO: 找到BNB活期理财产品: BNB001
-2025-02-16 12:05:48 [ExchangeClient] INFO: 开始申购: 0.06776022 BNB 到活期理财
-2025-02-16 12:05:49 [ExchangeClient] INFO: 划转成功: {'purchaseId': 7822083086, 'success': True, 'amount': '0.06776022'}
-2025-02-16 12:05:49 [GridTrader] INFO: 资金分配完成
-USDT: 348.79
-BNB: 0.2848
-2025-02-16 12:05:49 [GridTrader] INFO: 使用预设基准价: 656.38
-2025-02-16 12:05:49 [GridTrader] INFO: 初始化完成 | 交易对: BNB/USDT | 基准价: 656.38
-2025-02-16 12:05:49 [root] INFO: 正在发送推送通知: 交易信号通知
-2025-02-16 12:05:49 [root] ERROR: 消息推送失败: 状态码=200, 响应={'code': 999, 'msg': '请勿频繁推送相同内容', 'data': None}
-2025-02-16 12:05:49 [GridTrader] INFO: 市场当前价: 660.6500 | 价差: +0.65%
-2025-02-16 12:05:49 [root] INFO: Web服务已启动:
-2025-02-16 12:05:49 [root] INFO: - 本地访问: http://localhost:58181
-2025-02-16 12:05:49 [root] INFO: - 局域网访问: http://0.0.0.0:58181
-2025-02-16 12:06:11 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: neutral
-2025-02-16 12:06:11 [GridTrader] INFO: 订单金额计算 | 类型: buy | 目标金额: 53.69 | 最小金额: 26.85 | 最大金额: 80.54 | USDT余额: 123.5848 | 当前价格: 660.80 | 调整后金额: 53.69 | 趋势: neutral
-2025-02-16 12:06:12 [GridTrader] INFO: 订单金额计算 | 类型: sell | 目标金额: 53.69 | 最小金额: 26.85 | 最大金额: 80.54 | BNB余额: 0.1879 | 当前价格: 660.80 | 调整后金额: 53.69 | 趋势: neutral
-2025-02-16 12:06:14 [GridTrader] INFO: 订单金额计算 | 类型: buy | 目标金额: 53.69 | 最小金额: 26.85 | 最大金额: 80.54 | USDT余额: 123.5848 | 当前价格: 660.90 | 调整后金额: 53.69 | 趋势: neutral
-2025-02-16 12:06:16 [ExchangeClient] INFO: 理财账户余额更新: {'ANIME': 1e-08, 'BIO': 3e-08, 'BNB': 0.1547585, 'FDUSD': 0.51812593, 'USDT': 262.87605922}
-2025-02-16 12:06:16 [GridTrader] INFO: 订单金额计算 | 类型: buy | 目标金额: 53.69 | 最小金额: 26.85 | 最大金额: 80.54 | USDT余额: 81.6138 | 当前价格: 660.89 | 调整后金额: 53.69 | 趋势: neutral
-2025-02-16 12:06:16 [GridTrader] INFO: 订单金额计算 | 类型: sell | 目标金额: 53.69 | 最小金额: 26.85 | 最大金额: 80.54 | BNB余额: 0.1235 | 当前价格: 660.89 | 调整后金额: 53.69 | 趋势: neutral
-2025-02-16 12:06:17 [AdvancedRiskManager] INFO: 风控检查 | 当前仓位比例: 32.20% | 最大允许比例: 90.00% | 最小底仓比例: 10.00%
-2025-02-16 12:06:18 [GridTrader] INFO: 订单金额计算 | 类型: sell | 目标金额: 53.69 | 最小金额: 26.85 | 最大金额: 80.54 | BNB余额: 0.1235 | 当前价格: 660.76 | 调整后金额: 53.69 | 趋势: neutral
-2025-02-16 12:06:19 [GridTrader] INFO: 订单金额计算 | 类型: buy | 目标金额: 53.69 | 最小金额: 26.85 | 最大金额: 80.54 | USDT余额: 81.6138 | 当前价格: 660.71 | 调整后金额: 53.69 | 趋势: neutral
-2025-02-16 12:06:19 [GridTrader] INFO: 订单金额计算 | 类型: sell | 目标金额: 53.69 | 最小金额: 26.85 | 最大金额: 80.54 | BNB余额: 0.1235 | 当前价格: 660.72 | 调整后金额: 53.69 | 趋势: neutral
-2025-02-16 12:06:21 [GridTrader] INFO: 订单金额计算 | 类型: buy | 目标金额: 53.69 | 最小金额: 26.85 | 最大金额: 80.54 | USDT余额: 81.6138 | 当前价格: 660.72 | 调整后金额: 53.69 | 趋势: neutral
-2025-02-16 12:06:21 [GridTrader] INFO: 订单金额计算 | 类型: sell | 目标金额: 53.69 | 最小金额: 26.85 | 最大金额: 80.54 | BNB余额: 0.1235 | 当前价格: 660.75 | 调整后金额: 53.69 | 趋势: neutral
-2025-02-16 12:06:23 [GridTrader] INFO: 订单金额计算 | 类型: buy | 目标金额: 53.69 | 最小金额: 26.85 | 最大金额: 80.54 | USDT余额: 81.6138 | 当前价格: 660.89 | 调整后金额: 53.69 | 趋势: neutral
-2025-02-16 12:06:23 [GridTrader] INFO: 订单金额计算 | 类型: sell | 目标金额: 53.69 | 最小金额: 26.85 | 最大金额: 80.54 | BNB余额: 0.1235 | 当前价格: 660.89 | 调整后金额: 53.69 | 趋势: neutral
-2025-02-16 12:06:25 [GridTrader] INFO: 订单金额计算 | 类型: buy | 目标金额: 53.69 | 最小金额: 26.85 | 最大金额: 80.54 | USDT余额: 81.6138 | 当前价格: 660.86 | 调整后金额: 53.69 | 趋势: neutral
-2025-02-16 12:06:25 [GridTrader] INFO: 订单金额计算 | 类型: sell | 目标金额: 53.69 | 最小金额: 26.85 | 最大金额: 80.54 | BNB余额: 0.1235 | 当前价格: 660.84 | 调整后金额: 53.69 | 趋势: neutral
-2025-02-16 12:06:26 [GridTrader] INFO: 订单金额计算 | 类型: buy | 目标金额: 53.69 | 最小金额: 26.85 | 最大金额: 80.54 | USDT余额: 81.6138 | 当前价格: 660.84 | 调整后金额: 53.69 | 趋势: neutral
-2025-02-16 12:06:27 [GridTrader] INFO: 订单金额计算 | 类型: sell | 目标金额: 53.69 | 最小金额: 26.85 | 最大金额: 80.54 | BNB余额: 0.1235 | 当前价格: 660.85 | 调整后金额: 53.69 | 趋势: neutral
-2025-02-16 12:06:28 [GridTrader] INFO: 订单金额计算 | 类型: buy | 目标金额: 53.69 | 最小金额: 26.85 | 最大金额: 80.54 | USDT余额: 81.6138 | 当前价格: 660.85 | 调整后金额: 53.69 | 趋势: neutral
-2025-02-16 12:06:29 [GridTrader] INFO: 订单金额计算 | 类型: sell | 目标金额: 53.69 | 最小金额: 26.85 | 最大金额: 80.54 | BNB余额: 0.1235 | 当前价格: 660.89 | 调整后金额: 53.69 | 趋势: neutral
-2025-02-16 12:06:31 [GridTrader] INFO: 订单金额计算 | 类型: buy | 目标金额: 53.69 | 最小金额: 26.85 | 最大金额: 80.54 | USDT余额: 81.6138 | 当前价格: 660.89 | 调整后金额: 53.69 | 趋势: neutral
-2025-02-16 12:06:31 [GridTrader] INFO: 订单金额计算 | 类型: sell | 目标金额: 53.69 | 最小金额: 26.85 | 最大金额: 80.54 | BNB余额: 0.1235 | 当前价格: 660.89 | 调整后金额: 53.69 | 趋势: neutral
-2025-02-16 12:06:32 [GridTrader] INFO: 订单金额计算 | 类型: buy | 目标金额: 53.69 | 最小金额: 26.85 | 最大金额: 80.54 | USDT余额: 81.6138 | 当前价格: 661.00 | 调整后金额: 53.69 | 趋势: neutral
-2025-02-16 12:06:33 [GridTrader] INFO: 订单金额计算 | 类型: sell | 目标金额: 53.69 | 最小金额: 26.85 | 最大金额: 80.54 | BNB余额: 0.1235 | 当前价格: 661.00 | 调整后金额: 53.69 | 趋势: neutral
-2025-02-16 12:06:34 [GridTrader] INFO: 订单金额计算 | 类型: buy | 目标金额: 53.69 | 最小金额: 26.85 | 最大金额: 80.54 | USDT余额: 81.6138 | 当前价格: 661.00 | 调整后金额: 53.69 | 趋势: neutral
-2025-02-16 12:06:35 [GridTrader] INFO: 订单金额计算 | 类型: sell | 目标金额: 53.69 | 最小金额: 26.85 | 最大金额: 80.54 | BNB余额: 0.1235 | 当前价格: 660.90 | 调整后金额: 53.69 | 趋势: neutral
-2025-02-16 12:06:36 [GridTrader] INFO: 订单金额计算 | 类型: buy | 目标金额: 53.69 | 最小金额: 26.85 | 最大金额: 80.54 | USDT余额: 81.6138 | 当前价格: 660.90 | 调整后金额: 53.69 | 趋势: neutral
-2025-02-16 12:06:37 [GridTrader] INFO: 订单金额计算 | 类型: sell | 目标金额: 53.69 | 最小金额: 26.85 | 最大金额: 80.54 | BNB余额: 0.1235 | 当前价格: 660.91 | 调整后金额: 53.69 | 趋势: neutral
-2025-02-16 12:06:38 [GridTrader] INFO: 订单金额计算 | 类型: buy | 目标金额: 53.69 | 最小金额: 26.85 | 最大金额: 80.54 | USDT余额: 81.6138 | 当前价格: 660.99 | 调整后金额: 53.69 | 趋势: neutral
-2025-02-16 12:06:39 [GridTrader] INFO: 订单金额计算 | 类型: sell | 目标金额: 53.69 | 最小金额: 26.85 | 最大金额: 80.54 | BNB余额: 0.1235 | 当前价格: 660.93 | 调整后金额: 53.69 | 趋势: neutral
-2025-02-16 12:06:40 [GridTrader] INFO: 订单金额计算 | 类型: buy | 目标金额: 53.69 | 最小金额: 26.85 | 最大金额: 80.54 | USDT余额: 81.6138 | 当前价格: 660.89 | 调整后金额: 53.69 | 趋势: neutral
-2025-02-16 12:06:41 [GridTrader] INFO: 订单金额计算 | 类型: sell | 目标金额: 53.69 | 最小金额: 26.85 | 最大金额: 80.54 | BNB余额: 0.1235 | 当前价格: 660.88 | 调整后金额: 53.69 | 趋势: neutral
-2025-02-16 12:06:42 [GridTrader] INFO: 订单金额计算 | 类型: buy | 目标金额: 53.69 | 最小金额: 26.85 | 最大金额: 80.54 | USDT余额: 81.6138 | 当前价格: 660.93 | 调整后金额: 53.69 | 趋势: neutral
-2025-02-16 12:06:43 [GridTrader] INFO: 订单金额计算 | 类型: sell | 目标金额: 53.69 | 最小金额: 26.85 | 最大金额: 80.54 | BNB余额: 0.1235 | 当前价格: 660.95 | 调整后金额: 53.69 | 趋势: neutral
-2025-02-16 12:06:44 [GridTrader] INFO: 订单金额计算 | 类型: buy | 目标金额: 53.69 | 最小金额: 26.85 | 最大金额: 80.54 | USDT余额: 81.6138 | 当前价格: 660.95 | 调整后金额: 53.69 | 趋势: neutral
-2025-02-16 12:06:45 [GridTrader] INFO: 订单金额计算 | 类型: sell | 目标金额: 53.69 | 最小金额: 26.85 | 最大金额: 80.54 | BNB余额: 0.1235 | 当前价格: 660.95 | 调整后金额: 53.69 | 趋势: neutral
-2025-02-16 12:06:48 [GridTrader] INFO: 订单金额计算 | 类型: buy | 目标金额: 53.70 | 最小金额: 26.85 | 最大金额: 80.55 | USDT余额: 81.6138 | 当前价格: 660.96 | 调整后金额: 53.70 | 趋势: neutral
-2025-02-16 12:06:48 [GridTrader] INFO: 订单金额计算 | 类型: sell | 目标金额: 53.70 | 最小金额: 26.85 | 最大金额: 80.55 | BNB余额: 0.1235 | 当前价格: 660.96 | 调整后金额: 53.70 | 趋势: neutral
-2025-02-16 12:06:50 [GridTrader] INFO: 订单金额计算 | 类型: buy | 目标金额: 53.70 | 最小金额: 26.85 | 最大金额: 80.55 | USDT余额: 81.6138 | 当前价格: 660.86 | 调整后金额: 53.70 | 趋势: neutral
-2025-02-16 12:06:50 [GridTrader] INFO: 订单金额计算 | 类型: sell | 目标金额: 53.70 | 最小金额: 26.85 | 最大金额: 80.55 | BNB余额: 0.1235 | 当前价格: 660.86 | 调整后金额: 53.70 | 趋势: neutral
-2025-02-16 12:06:51 [GridTrader] INFO: 订单金额计算 | 类型: buy | 目标金额: 53.70 | 最小金额: 26.85 | 最大金额: 80.55 | USDT余额: 81.6138 | 当前价格: 660.94 | 调整后金额: 53.70 | 趋势: neutral
-2025-02-16 12:06:52 [GridTrader] INFO: 订单金额计算 | 类型: sell | 目标金额: 53.70 | 最小金额: 26.85 | 最大金额: 80.55 | BNB余额: 0.1235 | 当前价格: 660.93 | 调整后金额: 53.70 | 趋势: neutral
-2025-02-16 12:06:53 [GridTrader] INFO: 订单金额计算 | 类型: buy | 目标金额: 53.70 | 最小金额: 26.85 | 最大金额: 80.55 | USDT余额: 81.6138 | 当前价格: 660.93 | 调整后金额: 53.70 | 趋势: neutral
-2025-02-16 12:06:54 [GridTrader] INFO: 订单金额计算 | 类型: sell | 目标金额: 53.70 | 最小金额: 26.85 | 最大金额: 80.55 | BNB余额: 0.1235 | 当前价格: 660.94 | 调整后金额: 53.70 | 趋势: neutral
-2025-02-16 12:06:55 [GridTrader] INFO: 订单金额计算 | 类型: buy | 目标金额: 53.70 | 最小金额: 26.85 | 最大金额: 80.55 | USDT余额: 81.6138 | 当前价格: 660.88 | 调整后金额: 53.70 | 趋势: neutral
-2025-02-16 12:06:56 [GridTrader] INFO: 订单金额计算 | 类型: sell | 目标金额: 53.70 | 最小金额: 26.85 | 最大金额: 80.55 | BNB余额: 0.1235 | 当前价格: 660.88 | 调整后金额: 53.70 | 趋势: neutral
-2025-02-16 12:06:57 [GridTrader] INFO: 订单金额计算 | 类型: buy | 目标金额: 53.70 | 最小金额: 26.85 | 最大金额: 80.55 | USDT余额: 81.6138 | 当前价格: 660.87 | 调整后金额: 53.70 | 趋势: neutral
-2025-02-16 12:06:58 [GridTrader] INFO: 订单金额计算 | 类型: sell | 目标金额: 53.70 | 最小金额: 26.85 | 最大金额: 80.55 | BNB余额: 0.1235 | 当前价格: 660.87 | 调整后金额: 53.70 | 趋势: neutral
-2025-02-16 12:06:59 [GridTrader] INFO: 订单金额计算 | 类型: buy | 目标金额: 53.70 | 最小金额: 26.85 | 最大金额: 80.55 | USDT余额: 81.6138 | 当前价格: 660.88 | 调整后金额: 53.70 | 趋势: neutral
-2025-02-16 12:07:00 [GridTrader] INFO: 订单金额计算 | 类型: sell | 目标金额: 53.70 | 最小金额: 26.85 | 最大金额: 80.55 | BNB余额: 0.1235 | 当前价格: 660.88 | 调整后金额: 53.70 | 趋势: neutral
-2025-02-16 12:07:01 [GridTrader] INFO: 订单金额计算 | 类型: buy | 目标金额: 53.70 | 最小金额: 26.85 | 最大金额: 80.55 | USDT余额: 81.6138 | 当前价格: 660.88 | 调整后金额: 53.70 | 趋势: neutral
-2025-02-16 12:07:02 [GridTrader] INFO: 订单金额计算 | 类型: sell | 目标金额: 53.70 | 最小金额: 26.85 | 最大金额: 80.55 | BNB余额: 0.1235 | 当前价格: 660.88 | 调整后金额: 53.70 | 趋势: neutral
-2025-02-16 12:07:03 [GridTrader] INFO: 订单金额计算 | 类型: buy | 目标金额: 53.70 | 最小金额: 26.85 | 最大金额: 80.55 | USDT余额: 81.6138 | 当前价格: 660.87 | 调整后金额: 53.70 | 趋势: neutral
-2025-02-16 12:07:04 [GridTrader] INFO: 订单金额计算 | 类型: sell | 目标金额: 53.70 | 最小金额: 26.85 | 最大金额: 80.55 | BNB余额: 0.1235 | 当前价格: 660.70 | 调整后金额: 53.70 | 趋势: neutral
-2025-02-16 12:07:05 [GridTrader] INFO: 订单金额计算 | 类型: buy | 目标金额: 53.70 | 最小金额: 26.85 | 最大金额: 80.55 | USDT余额: 81.6138 | 当前价格: 660.71 | 调整后金额: 53.70 | 趋势: neutral
-2025-02-16 12:07:06 [GridTrader] INFO: 订单金额计算 | 类型: sell | 目标金额: 53.70 | 最小金额: 26.85 | 最大金额: 80.55 | BNB余额: 0.1235 | 当前价格: 660.71 | 调整后金额: 53.70 | 趋势: neutral
-2025-02-16 12:07:07 [GridTrader] INFO: 订单金额计算 | 类型: buy | 目标金额: 53.70 | 最小金额: 26.85 | 最大金额: 80.55 | USDT余额: 81.6138 | 当前价格: 660.70 | 调整后金额: 53.70 | 趋势: neutral
-2025-02-16 12:07:08 [GridTrader] INFO: 订单金额计算 | 类型: sell | 目标金额: 53.70 | 最小金额: 26.85 | 最大金额: 80.55 | BNB余额: 0.1235 | 当前价格: 660.62 | 调整后金额: 53.70 | 趋势: neutral
-2025-02-16 12:07:09 [GridTrader] INFO: 订单金额计算 | 类型: buy | 目标金额: 53.70 | 最小金额: 26.85 | 最大金额: 80.55 | USDT余额: 81.6138 | 当前价格: 660.60 | 调整后金额: 53.70 | 趋势: neutral
-2025-02-16 12:07:10 [GridTrader] INFO: 订单金额计算 | 类型: sell | 目标金额: 53.70 | 最小金额: 26.85 | 最大金额: 80.55 | BNB余额: 0.1235 | 当前价格: 660.51 | 调整后金额: 53.70 | 趋势: neutral
-2025-02-16 12:07:11 [GridTrader] INFO: 订单金额计算 | 类型: buy | 目标金额: 53.70 | 最小金额: 26.85 | 最大金额: 80.55 | USDT余额: 81.6138 | 当前价格: 660.51 | 调整后金额: 53.70 | 趋势: neutral
-2025-02-16 12:07:12 [GridTrader] INFO: 订单金额计算 | 类型: sell | 目标金额: 53.70 | 最小金额: 26.85 | 最大金额: 80.55 | BNB余额: 0.1235 | 当前价格: 660.45 | 调整后金额: 53.70 | 趋势: neutral
-2025-02-16 12:07:13 [GridTrader] INFO: 订单金额计算 | 类型: buy | 目标金额: 53.70 | 最小金额: 26.85 | 最大金额: 80.55 | USDT余额: 81.6138 | 当前价格: 660.45 | 调整后金额: 53.70 | 趋势: neutral
-2025-02-16 12:07:14 [GridTrader] INFO: 订单金额计算 | 类型: sell | 目标金额: 53.70 | 最小金额: 26.85 | 最大金额: 80.55 | BNB余额: 0.1235 | 当前价格: 660.45 | 调整后金额: 53.70 | 趋势: neutral
-2025-02-16 12:07:15 [GridTrader] INFO: 订单金额计算 | 类型: buy | 目标金额: 53.70 | 最小金额: 26.85 | 最大金额: 80.55 | USDT余额: 81.6138 | 当前价格: 660.60 | 调整后金额: 53.70 | 趋势: neutral
-2025-02-16 12:07:16 [GridTrader] INFO: 订单金额计算 | 类型: sell | 目标金额: 53.70 | 最小金额: 26.85 | 最大金额: 80.55 | BNB余额: 0.1235 | 当前价格: 660.69 | 调整后金额: 53.70 | 趋势: neutral
-2025-02-16 12:07:18 [GridTrader] INFO: 订单金额计算 | 类型: buy | 目标金额: 53.70 | 最小金额: 26.85 | 最大金额: 80.55 | USDT余额: 81.6138 | 当前价格: 660.70 | 调整后金额: 53.70 | 趋势: neutral
-2025-02-16 12:07:19 [GridTrader] INFO: 订单金额计算 | 类型: sell | 目标金额: 53.70 | 最小金额: 26.85 | 最大金额: 80.55 | BNB余额: 0.1235 | 当前价格: 660.81 | 调整后金额: 53.70 | 趋势: neutral
-2025-02-16 12:07:20 [GridTrader] INFO: 订单金额计算 | 类型: buy | 目标金额: 53.70 | 最小金额: 26.85 | 最大金额: 80.55 | USDT余额: 81.6138 | 当前价格: 660.73 | 调整后金额: 53.70 | 趋势: neutral
-2025-02-16 12:07:21 [GridTrader] INFO: 订单金额计算 | 类型: sell | 目标金额: 53.70 | 最小金额: 26.85 | 最大金额: 80.55 | BNB余额: 0.1235 | 当前价格: 660.73 | 调整后金额: 53.70 | 趋势: neutral
-2025-02-16 12:07:22 [GridTrader] INFO: 订单金额计算 | 类型: buy | 目标金额: 53.70 | 最小金额: 26.85 | 最大金额: 80.55 | USDT余额: 81.6138 | 当前价格: 660.72 | 调整后金额: 53.70 | 趋势: neutral
-2025-02-16 12:07:23 [GridTrader] INFO: 订单金额计算 | 类型: sell | 目标金额: 53.70 | 最小金额: 26.85 | 最大金额: 80.55 | BNB余额: 0.1235 | 当前价格: 660.81 | 调整后金额: 53.70 | 趋势: neutral
-2025-02-16 12:07:24 [GridTrader] INFO: 订单金额计算 | 类型: buy | 目标金额: 53.70 | 最小金额: 26.85 | 最大金额: 80.55 | USDT余额: 81.6138 | 当前价格: 660.84 | 调整后金额: 53.70 | 趋势: neutral
-2025-02-16 12:07:25 [GridTrader] INFO: 订单金额计算 | 类型: sell | 目标金额: 53.70 | 最小金额: 26.85 | 最大金额: 80.55 | BNB余额: 0.1235 | 当前价格: 660.84 | 调整后金额: 53.70 | 趋势: neutral
-2025-02-16 12:07:26 [GridTrader] INFO: 订单金额计算 | 类型: buy | 目标金额: 53.70 | 最小金额: 26.85 | 最大金额: 80.55 | USDT余额: 81.6138 | 当前价格: 660.83 | 调整后金额: 53.70 | 趋势: neutral
-2025-02-16 12:07:26 [GridTrader] INFO: 订单金额计算 | 类型: sell | 目标金额: 53.70 | 最小金额: 26.85 | 最大金额: 80.55 | BNB余额: 0.1235 | 当前价格: 660.83 | 调整后金额: 53.70 | 趋势: neutral
-2025-02-16 12:07:28 [GridTrader] INFO: 订单金额计算 | 类型: buy | 目标金额: 53.70 | 最小金额: 26.85 | 最大金额: 80.55 | USDT余额: 81.6138 | 当前价格: 660.77 | 调整后金额: 53.70 | 趋势: neutral
-2025-02-16 12:07:28 [GridTrader] INFO: 订单金额计算 | 类型: sell | 目标金额: 53.70 | 最小金额: 26.85 | 最大金额: 80.55 | BNB余额: 0.1235 | 当前价格: 660.73 | 调整后金额: 53.70 | 趋势: neutral
-2025-02-16 12:07:30 [GridTrader] INFO: 订单金额计算 | 类型: buy | 目标金额: 53.70 | 最小金额: 26.85 | 最大金额: 80.55 | USDT余额: 81.6138 | 当前价格: 660.73 | 调整后金额: 53.70 | 趋势: neutral
-2025-02-16 12:07:30 [GridTrader] INFO: 订单金额计算 | 类型: sell | 目标金额: 53.70 | 最小金额: 26.85 | 最大金额: 80.55 | BNB余额: 0.1235 | 当前价格: 660.73 | 调整后金额: 53.70 | 趋势: neutral
-2025-02-16 12:07:31 [GridTrader] INFO: 订单金额计算 | 类型: buy | 目标金额: 53.70 | 最小金额: 26.85 | 最大金额: 80.55 | USDT余额: 81.6138 | 当前价格: 660.73 | 调整后金额: 53.70 | 趋势: neutral
-2025-02-16 12:07:32 [GridTrader] INFO: 订单金额计算 | 类型: sell | 目标金额: 53.70 | 最小金额: 26.85 | 最大金额: 80.55 | BNB余额: 0.1235 | 当前价格: 660.73 | 调整后金额: 53.70 | 趋势: neutral
-2025-02-16 12:07:33 [GridTrader] INFO: 订单金额计算 | 类型: buy | 目标金额: 53.70 | 最小金额: 26.85 | 最大金额: 80.55 | USDT余额: 81.6138 | 当前价格: 660.80 | 调整后金额: 53.70 | 趋势: neutral
-2025-02-16 12:07:34 [GridTrader] INFO: 订单金额计算 | 类型: sell | 目标金额: 53.70 | 最小金额: 26.85 | 最大金额: 80.55 | BNB余额: 0.1235 | 当前价格: 660.80 | 调整后金额: 53.70 | 趋势: neutral
-2025-02-16 12:07:35 [GridTrader] INFO: 订单金额计算 | 类型: buy | 目标金额: 53.70 | 最小金额: 26.85 | 最大金额: 80.55 | USDT余额: 81.6138 | 当前价格: 660.80 | 调整后金额: 53.70 | 趋势: neutral
-2025-02-16 12:07:36 [GridTrader] INFO: 订单金额计算 | 类型: sell | 目标金额: 53.70 | 最小金额: 26.85 | 最大金额: 80.55 | BNB余额: 0.1235 | 当前价格: 660.79 | 调整后金额: 53.70 | 趋势: neutral
-2025-02-16 12:07:37 [GridTrader] INFO: 订单金额计算 | 类型: buy | 目标金额: 53.70 | 最小金额: 26.85 | 最大金额: 80.55 | USDT余额: 81.6138 | 当前价格: 660.79 | 调整后金额: 53.70 | 趋势: neutral
-2025-02-16 12:07:38 [GridTrader] INFO: 订单金额计算 | 类型: sell | 目标金额: 53.70 | 最小金额: 26.85 | 最大金额: 80.55 | BNB余额: 0.1235 | 当前价格: 660.80 | 调整后金额: 53.70 | 趋势: neutral
-2025-02-16 12:08:04 [root] INFO: ==================================================
-2025-02-16 12:08:04 [root] INFO: 网格交易系统启动
-2025-02-16 12:08:04 [root] INFO: ==================================================
-2025-02-16 12:08:04 [ExchangeClient] INFO: 交易所客户端初始化完成
-2025-02-16 12:08:04 [GridTrader] INFO: 正在加载市场数据...
-2025-02-16 12:08:05 [ExchangeClient] INFO: 时间同步完成 | 时差: -221ms
-2025-02-16 12:08:27 [ExchangeClient] INFO: 市场数据加载成功 | 交易对: BNB/USDT
-2025-02-16 12:08:29 [ExchangeClient] INFO: 理财账户余额: {'ANIME': 1e-08, 'BIO': 3e-08, 'BNB': 0.1547585, 'FDUSD': 0.51812598, 'USDT': 262.87609395}
-2025-02-16 12:08:30 [GridTrader] INFO: 总资产: 536.85 USDT | 现货: 171.78 USDT (BNB: 0.1300, USDT: 85.91) | 理财: 365.06 USDT (BNB: 0.1548, USDT: 262.88)
-2025-02-16 12:08:30 [GridTrader] INFO: 发现可划转USDT: 0.01398142598399943
-2025-02-16 12:08:30 [ExchangeClient] INFO: 找到USDT活期理财产品: USDT001
-2025-02-16 12:08:30 [ExchangeClient] INFO: 开始申购: 0.01 USDT 到活期理财
-2025-02-16 12:08:31 [ExchangeClient] ERROR: 申购失败: binance {"code":-6005,"msg":"smaller than min purchase limit"}
-2025-02-16 12:08:31 [GridTrader] ERROR: 初始资金检查失败: binance {"code":-6005,"msg":"smaller than min purchase limit"}
-2025-02-16 12:08:31 [GridTrader] INFO: 使用预设基准价: 656.38
-2025-02-16 12:08:31 [GridTrader] INFO: 初始化完成 | 交易对: BNB/USDT | 基准价: 656.38
-2025-02-16 12:08:31 [root] INFO: 正在发送推送通知: 交易信号通知
-2025-02-16 12:08:32 [root] ERROR: 消息推送失败: 状态码=200, 响应={'code': 999, 'msg': '请勿频繁推送相同内容', 'data': None}
-2025-02-16 12:08:32 [GridTrader] INFO: 市场当前价: 660.3900 | 价差: +0.61%
-2025-02-16 12:08:32 [root] INFO: Web服务已启动:
-2025-02-16 12:08:32 [root] INFO: - 本地访问: http://localhost:58181
-2025-02-16 12:08:32 [root] INFO: - 局域网访问: http://0.0.0.0:58181
-2025-02-16 12:08:57 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: neutral
-2025-02-16 12:08:58 [GridTrader] INFO: 订单金额计算 | 类型: buy | 目标金额: 53.68 | 最小金额: 26.84 | 最大金额: 80.53 | USDT余额: 81.6138 | 当前价格: 660.64 | 调整后金额: 53.68 | 趋势: neutral
-2025-02-16 12:09:00 [GridTrader] INFO: 订单金额计算 | 类型: sell | 目标金额: 53.68 | 最小金额: 26.84 | 最大金额: 80.53 | BNB余额: 0.1235 | 当前价格: 660.63 | 调整后金额: 53.68 | 趋势: neutral
-2025-02-16 12:09:01 [GridTrader] INFO: 订单金额计算 | 类型: buy | 目标金额: 53.68 | 最小金额: 26.84 | 最大金额: 80.53 | USDT余额: 81.6138 | 当前价格: 660.64 | 调整后金额: 53.68 | 趋势: neutral
-2025-02-16 12:09:02 [GridTrader] INFO: 订单金额计算 | 类型: sell | 目标金额: 53.68 | 最小金额: 26.84 | 最大金额: 80.53 | BNB余额: 0.1235 | 当前价格: 660.63 | 调整后金额: 53.68 | 趋势: neutral
-2025-02-16 12:09:03 [GridTrader] INFO: 订单金额计算 | 类型: buy | 目标金额: 53.68 | 最小金额: 26.84 | 最大金额: 80.53 | USDT余额: 81.6138 | 当前价格: 660.63 | 调整后金额: 53.68 | 趋势: neutral
-2025-02-16 12:09:04 [GridTrader] INFO: 订单金额计算 | 类型: sell | 目标金额: 53.68 | 最小金额: 26.84 | 最大金额: 80.53 | BNB余额: 0.1235 | 当前价格: 660.63 | 调整后金额: 53.68 | 趋势: neutral
-2025-02-16 12:09:05 [GridTrader] INFO: 订单金额计算 | 类型: buy | 目标金额: 53.68 | 最小金额: 26.84 | 最大金额: 80.53 | USDT余额: 81.6138 | 当前价格: 660.73 | 调整后金额: 53.68 | 趋势: neutral
-2025-02-16 12:09:06 [GridTrader] INFO: 订单金额计算 | 类型: sell | 目标金额: 53.68 | 最小金额: 26.84 | 最大金额: 80.53 | BNB余额: 0.1235 | 当前价格: 660.73 | 调整后金额: 53.68 | 趋势: neutral
-2025-02-16 12:09:07 [GridTrader] INFO: 订单金额计算 | 类型: buy | 目标金额: 53.68 | 最小金额: 26.84 | 最大金额: 80.53 | USDT余额: 81.6138 | 当前价格: 660.63 | 调整后金额: 53.68 | 趋势: neutral
-2025-02-16 12:09:08 [GridTrader] INFO: 订单金额计算 | 类型: sell | 目标金额: 53.68 | 最小金额: 26.84 | 最大金额: 80.53 | BNB余额: 0.1235 | 当前价格: 660.63 | 调整后金额: 53.68 | 趋势: neutral
-2025-02-16 12:09:09 [GridTrader] INFO: 订单金额计算 | 类型: buy | 目标金额: 53.68 | 最小金额: 26.84 | 最大金额: 80.53 | USDT余额: 81.6138 | 当前价格: 660.62 | 调整后金额: 53.68 | 趋势: neutral
-2025-02-16 12:09:10 [GridTrader] INFO: 订单金额计算 | 类型: sell | 目标金额: 53.68 | 最小金额: 26.84 | 最大金额: 80.53 | BNB余额: 0.1235 | 当前价格: 660.62 | 调整后金额: 53.68 | 趋势: neutral
-2025-02-16 12:09:11 [GridTrader] INFO: 订单金额计算 | 类型: buy | 目标金额: 53.68 | 最小金额: 26.84 | 最大金额: 80.53 | USDT余额: 81.6138 | 当前价格: 660.51 | 调整后金额: 53.68 | 趋势: neutral
-2025-02-16 12:09:12 [GridTrader] INFO: 订单金额计算 | 类型: sell | 目标金额: 53.68 | 最小金额: 26.84 | 最大金额: 80.53 | BNB余额: 0.1235 | 当前价格: 660.51 | 调整后金额: 53.68 | 趋势: neutral
-2025-02-16 12:09:13 [GridTrader] INFO: 订单金额计算 | 类型: buy | 目标金额: 53.68 | 最小金额: 26.84 | 最大金额: 80.53 | USDT余额: 81.6138 | 当前价格: 660.51 | 调整后金额: 53.68 | 趋势: neutral
-2025-02-16 12:09:14 [GridTrader] INFO: 订单金额计算 | 类型: sell | 目标金额: 53.68 | 最小金额: 26.84 | 最大金额: 80.53 | BNB余额: 0.1235 | 当前价格: 660.50 | 调整后金额: 53.68 | 趋势: neutral
-2025-02-16 12:09:16 [GridTrader] INFO: 订单金额计算 | 类型: buy | 目标金额: 53.68 | 最小金额: 26.84 | 最大金额: 80.53 | USDT余额: 81.6138 | 当前价格: 660.51 | 调整后金额: 53.68 | 趋势: neutral
-2025-02-16 12:09:16 [GridTrader] INFO: 订单金额计算 | 类型: sell | 目标金额: 53.68 | 最小金额: 26.84 | 最大金额: 80.53 | BNB余额: 0.1235 | 当前价格: 660.51 | 调整后金额: 53.68 | 趋势: neutral
-2025-02-16 12:10:54 [root] INFO: ==================================================
-2025-02-16 12:10:54 [root] INFO: 网格交易系统启动
-2025-02-16 12:10:54 [root] INFO: ==================================================
-2025-02-16 12:10:54 [ExchangeClient] INFO: 交易所客户端初始化完成
-2025-02-16 12:10:54 [GridTrader] INFO: 正在加载市场数据...
-2025-02-16 12:10:55 [ExchangeClient] INFO: 时间同步完成 | 时差: -230ms
-2025-02-16 12:11:18 [ExchangeClient] INFO: 市场数据加载成功 | 交易对: BNB/USDT
-2025-02-16 12:11:20 [ExchangeClient] INFO: 理财账户余额: {'ANIME': 1e-08, 'BIO': 3e-08, 'BNB': 0.15475851, 'FDUSD': 0.51812603, 'USDT': 262.87612875}
-2025-02-16 12:11:20 [GridTrader] INFO: 总资产: 537.16 USDT | 现货: 171.93 USDT (BNB: 0.1300, USDT: 85.91) | 理财: 365.24 USDT (BNB: 0.1548, USDT: 262.88)
-2025-02-16 12:11:21 [GridTrader] INFO: 从理财赎回USDT: 0.03706242833598594
-2025-02-16 12:11:21 [ExchangeClient] INFO: 找到USDT活期理财产品: USDT001
-2025-02-16 12:11:21 [ExchangeClient] INFO: 开始赎回: 0.04 USDT 到现货
-2025-02-16 12:11:22 [ExchangeClient] INFO: 划转成功: {'redeemId': 520331392, 'success': True}
-2025-02-16 12:11:22 [GridTrader] INFO: 发现可划转BNB: 0.00010727151696174331
-2025-02-16 12:11:22 [ExchangeClient] INFO: 找到BNB活期理财产品: BNB001
-2025-02-16 12:11:22 [ExchangeClient] INFO: 开始申购: 0.00010727 BNB 到活期理财
-2025-02-16 12:11:23 [ExchangeClient] ERROR: 申购失败: binance {"code":-6005,"msg":"smaller than min purchase limit"}
-2025-02-16 12:11:23 [GridTrader] ERROR: 初始资金检查失败: binance {"code":-6005,"msg":"smaller than min purchase limit"}
-2025-02-16 12:11:23 [GridTrader] INFO: 使用预设基准价: 656.38
-2025-02-16 12:11:23 [GridTrader] INFO: 初始化完成 | 交易对: BNB/USDT | 基准价: 656.38
-2025-02-16 12:11:23 [root] INFO: 正在发送推送通知: 交易信号通知
-2025-02-16 12:11:24 [root] ERROR: 消息推送失败: 状态码=200, 响应={'code': 999, 'msg': '请勿频繁推送相同内容', 'data': None}
-2025-02-16 12:11:24 [GridTrader] INFO: 市场当前价: 661.4500 | 价差: +0.77%
-2025-02-16 12:11:24 [root] INFO: Web服务已启动:
-2025-02-16 12:11:24 [root] INFO: - 本地访问: http://localhost:58181
-2025-02-16 12:11:24 [root] INFO: - 局域网访问: http://0.0.0.0:58181
-2025-02-16 12:12:03 [TrendAnalyzer] INFO: 趋势分析 | MA: weak_down | MACD: neutral | 强度: weak | 确认趋势: neutral
-2025-02-16 12:12:03 [GridTrader] INFO: 订单金额计算 | 类型: buy | 目标金额: 53.72 | 最小金额: 26.86 | 最大金额: 80.57 | USDT余额: 81.6518 | 当前价格: 661.01 | 调整后金额: 53.72 | 趋势: neutral
-2025-02-16 12:12:04 [GridTrader] INFO: 订单金额计算 | 类型: sell | 目标金额: 53.72 | 最小金额: 26.86 | 最大金额: 80.57 | BNB余额: 0.1235 | 当前价格: 661.00 | 调整后金额: 53.72 | 趋势: neutral
+2025-04-07 19:40:42 [GridTrader] INFO: 市场当前价: 540.3500 | 价差: -1.15%
+2025-04-07 19:40:42 [root] INFO: Web服务已启动:
+2025-04-07 19:40:42 [root] INFO: - 本地访问: http://localhost:58181
+2025-04-07 19:40:42 [root] INFO: - 局域网访问: http://0.0.0.0:58181
+2025-04-07 19:40:43 [ExchangeClient] INFO: 理财账户余额: {'BNB': 0.35990268, 'USDT': 329.28524794}
+2025-04-07 19:40:44 [GridTrader] INFO: 目标订单金额计算 | 总资产: 770.21 USDT | 计算金额 (10%): 77.02 USDT
+2025-04-07 19:49:20 [ExchangeClient] INFO: 交易所连接已安全关闭
+2025-04-07 19:49:20 [root] INFO: 交易所连接已关闭
+2025-04-07 19:50:40 [root] INFO: ==================================================
+2025-04-07 19:50:40 [root] INFO: 网格交易系统启动
+2025-04-07 19:50:40 [root] INFO: ==================================================
+2025-04-07 19:50:40 [ExchangeClient] INFO: 交易所客户端初始化完成
+2025-04-07 19:50:40 [GridTrader] INFO: 正在加载市场数据...
+2025-04-07 19:50:43 [ExchangeClient] INFO: 时间同步完成 | 时差: -548ms
+2025-04-07 19:50:46 [ExchangeClient] INFO: 市场数据加载成功 | 交易对: BNB/USDT
+2025-04-07 19:50:49 [ExchangeClient] INFO: 理财账户余额: {'BNB': 0.35990268, 'USDT': 329.28533919}
+2025-04-07 19:50:50 [GridTrader] INFO: 总资产: 769.93 USDT | 现货: 246.36 USDT (BNB: 0.2281, USDT: 123.24) | 理财: 523.57 USDT (BNB: 0.3599, USDT: 329.29)
+2025-04-07 19:50:50 [GridTrader] INFO: 发现可划转USDT: 0.04790325321600619
+2025-04-07 19:50:51 [ExchangeClient] INFO: 找到USDT活期理财产品: USDT001
+2025-04-07 19:50:51 [ExchangeClient] INFO: 开始申购: 0.05 USDT 到活期理财
+2025-04-07 19:50:52 [ExchangeClient] ERROR: 申购失败: binance {"code":-6005,"msg":"smaller than min purchase limit"}
+2025-04-07 19:50:52 [GridTrader] ERROR: 初始资金检查失败: binance {"code":-6005,"msg":"smaller than min purchase limit"}
+2025-04-07 19:50:52 [GridTrader] INFO: 使用预设基准价: 546.65
+2025-04-07 19:50:52 [GridTrader] INFO: 初始化完成 | 交易对: BNB/USDT | 基准价: 546.65
+2025-04-07 19:50:52 [root] INFO: 正在发送推送通知: 交易信号通知
+2025-04-07 19:50:52 [root] INFO: 消息推送成功: 网格交易启动成功
+交易对: BNB/USDT
+基准价: 546.65 USDT
+网格大小: 2.0%
+触发阈值: 0.4% (网格大小的1/5)
+2025-04-07 19:50:52 [GridTrader] INFO: 市场当前价: 539.8300 | 价差: -1.25%
+2025-04-07 19:50:52 [root] INFO: Web服务已启动:
+2025-04-07 19:50:52 [root] INFO: - 本地访问: http://localhost:58181
+2025-04-07 19:50:52 [root] INFO: - 局域网访问: http://0.0.0.0:58181
+2025-04-07 19:51:51 [GridTrader] INFO: 目标订单金额计算 | 总资产: 769.98 USDT | 计算金额 (10%): 77.00 USDT
+2025-04-07 19:56:48 [ExchangeClient] INFO: 交易所连接已安全关闭
+2025-04-07 19:56:48 [root] INFO: 交易所连接已关闭

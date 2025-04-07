@@ -20,6 +20,7 @@ class OrderThrottler:
 
 class OrderTracker:
     def __init__(self):
+        self.logger = logging.getLogger(self.__class__.__name__)
         self.data_dir = os.path.join(os.path.dirname(__file__), 'data')
         if not os.path.exists(self.data_dir):
             os.makedirs(self.data_dir)
@@ -35,7 +36,6 @@ class OrderTracker:
         self.trade_history = []
         self.load_trade_history()
         self.clean_old_archives()
-        self.logger = logging.getLogger(self.__class__.__name__)
     
     def log_order(self, order):
         self.order_states[order['id']] = {
@@ -77,6 +77,18 @@ class OrderTracker:
                 self.logger.info(f"加载了 {len(self.trade_history)} 条历史交易记录")
         except Exception as e:
             self.logger.error(f"加载历史交易记录失败: {str(e)}")
+
+    def save_trade_history(self):
+        """将当前交易历史保存到文件"""
+        try:
+            # 先备份当前文件
+            self.backup_history()
+            # 保存当前记录
+            with open(self.history_file, 'w', encoding='utf-8') as f:
+                json.dump(self.trade_history, f, ensure_ascii=False, indent=2)
+            self.logger.info(f"已将 {len(self.trade_history)} 条交易记录保存到 {self.history_file}")
+        except Exception as e:
+            self.logger.error(f"保存交易记录失败: {str(e)}")
 
     def backup_history(self):
         """备份交易历史"""

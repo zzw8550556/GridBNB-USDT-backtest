@@ -1,11 +1,21 @@
 import asyncio
 import logging
 import traceback
+import platform
+import sys
 from trader import GridTrader
 from helpers import LogConfig, send_pushplus_message
 from web_server import start_web_server
 from exchange_client import ExchangeClient
 from config import TradingConfig
+
+# 在Windows平台上设置SelectorEventLoop
+if platform.system() == 'Windows':
+    import asyncio
+    # 在Windows平台上强制使用SelectorEventLoop
+    if sys.version_info[0] == 3 and sys.version_info[1] >= 8:
+        asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
+        logging.info("已设置Windows SelectorEventLoop策略")
 
 async def main():
     try:

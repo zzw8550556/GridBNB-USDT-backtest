@@ -1,4 +1,4 @@
-from config import TradingConfig, FLIP_THRESHOLD, SAFETY_MARGIN, COOLDOWN
+﻿from config import TradingConfig, FLIP_THRESHOLD, SAFETY_MARGIN, COOLDOWN
 from exchange_client import ExchangeClient
 from order_tracker import OrderTracker, OrderThrottler
 from risk_manager import AdvancedRiskManager
@@ -10,7 +10,7 @@ import time
 import math
 from helpers import send_pushplus_message
 import json
-from api import TradingMonitor
+from monitor import TradingMonitor
 
 class GridTrader:
     def __init__(self, exchange, config):
@@ -27,7 +27,6 @@ class GridTrader:
         self.active_orders = {'buy': None, 'sell': None}
         self.order_tracker = OrderTracker()
         self.risk_manager = AdvancedRiskManager(self)
-        self.trend_analyzer = TrendAnalyzer(self)  # 添加趋势分析器
         self.total_assets = 0
         self.last_trade_time = None
         self.last_trade_price = None
@@ -161,6 +160,9 @@ class GridTrader:
             # 从最低价反弹指定比例时触发买入
             if self.lowest and current_price >= self.lowest * (1 + threshold):
                 self.logger.info(f"触发买入信号 | 当前价: {current_price:.2f} | 已反弹: {(current_price/self.lowest-1)*100:.2f}%")
+                # 检查买入余额是否充足
+                if not await self.check_buy_balance(current_price):
+                    return False
                 return True
         return False
     
@@ -182,81 +184,36 @@ class GridTrader:
             # 从最高价下跌指定比例时触发卖出
             if self.highest and current_price <= self.highest * (1 - threshold):
                 self.logger.info(f"触发卖出信号 | 当前价: {current_price:.2f} | 已下跌: {(1-current_price/self.highest)*100:.2f}%")
+                # 检查卖出余额是否充足
+                if not await self.check_sell_balance():
+                    return False
                 return True
         return False
     
     async def _calculate_order_amount(self, order_type):
-        """计算订单金额"""
+        """计算目标订单金额 (总资产的10%)\n"""
         try:
             current_time = time.time()
             
             # 使用缓存避免频繁计算和日志输出
-            cache_key = f'order_amount_{order_type}'
+            cache_key = f'order_amount_target' # 使用不同的缓存键
             if hasattr(self, cache_key) and \
                current_time - getattr(self, f'{cache_key}_time') < 60:  # 1分钟缓存
                 return getattr(self, cache_key)
             
-            current_price = await self._get_latest_price()
             total_assets = await self._get_total_assets()
             
-            # 计算订单金额范围
-            min_trade_amount = max(
-                self.config.MIN_TRADE_AMOUNT,
-                total_assets * 0.05
-            )
-            max_trade_amount = total_assets * 0.15
-            
-            # 目标金额为总资产的10%
-            target_amount = total_assets * 0.1
-            
-            if order_type == 'buy':
-                available_usdt = await self.get_available_balance('USDT')
-                amount = min(target_amount, max_trade_amount, available_usdt)
-                amount = max(amount, min_trade_amount)
-            else:
-                # 卖出订单计算
-                bnb_balance = float(await self.get_available_balance('BNB'))
-                
-                # 先计算BNB的等值USDT金额
-                bnb_value = bnb_balance * current_price
-                
-                # 在目标金额和BNB价值之间取较小值
-                amount = min(target_amount, bnb_value)
-                
-                # 确保金额在允许范围内
-                amount = min(max(amount, min_trade_amount), max_trade_amount)
-                
-                # 如果可用BNB价值小于最小交易金额，使用全部可用BNB
-                if bnb_value < min_trade_amount:
-                    amount = bnb_value
-            
-            # 根据趋势调整金额
-            trend = await self.trend_analyzer.analyze_trend()
-            if trend in ['strong_uptrend', 'weak_uptrend']:
-                if order_type == 'buy':
-                    amount *= 1.2
-                else:
-                    amount *= 0.8
-            elif trend in ['strong_downtrend', 'weak_downtrend']:
-                if order_type == 'buy':
-                    amount *= 0.6
-                else:
-                    amount *= 1.2
+            # 目标金额严格等于总资产的10%
+            amount = total_assets * 0.1
             
             # 只在金额变化超过1%时记录日志
+            # 使用 max(..., 0.01) 避免除以零错误
             if not hasattr(self, f'{cache_key}_last') or \
-               abs(amount - getattr(self, f'{cache_key}_last')) / getattr(self, f'{cache_key}_last') > 0.01:
+               abs(amount - getattr(self, f'{cache_key}_last', 0)) / max(getattr(self, f'{cache_key}_last', 0.01), 0.01) > 0.01:
                 self.logger.info(
-                    f"订单金额计算 | "
-                    f"类型: {order_type} | "
-                    f"目标金额: {target_amount:.2f} | "
-                    f"最小金额: {min_trade_amount:.2f} | "
-                    f"最大金额: {max_trade_amount:.2f} | "
-                    f"{'USDT' if order_type == 'buy' else 'BNB'}余额: "
-                    f"{await self.get_available_balance('USDT' if order_type == 'buy' else 'BNB'):.4f} | "
-                    f"当前价格: {current_price:.2f} | "
-                    f"调整后金额: {amount:.2f} | "
-                    f"趋势: {trend}"
+                    f"目标订单金额计算 | "
+                    f"总资产: {total_assets:.2f} USDT | "
+                    f"计算金额 (10%): {amount:.2f} USDT"
                 )
                 setattr(self, f'{cache_key}_last', amount)
             
@@ -267,8 +224,9 @@ class GridTrader:
             return amount
             
         except Exception as e:
-            self.logger.error(f"计算订单金额失败: {str(e)}")
-            return 0
+            self.logger.error(f"计算目标订单金额失败: {str(e)}")
+            # 返回一个合理的默认值或上次缓存值，避免返回0导致后续计算错误
+            return getattr(self, cache_key, 0) # 如果缓存存在则返回缓存，否则返回0
     
     async def get_available_balance(self, currency):
         balance = await self.exchange.fetch_balance({'type': 'spot'})
@@ -384,128 +342,209 @@ class GridTrader:
             self.logger.error(f"获取仓位比例失败: {str(e)}")
             return 0
 
-    async def _get_daily_pnl(self):
-        """获取当日盈亏比例（示例实现）"""
-        # TODO: 实现实际盈亏计算逻辑
-        return 0
-
     async def execute_order(self, side):
-        """执行订单"""
-        try:
-            # 获取订单簿数据
-            order_book = await self.exchange.fetch_order_book(self.config.SYMBOL, limit=5)
-            if not order_book:
-                self.logger.error("获取订单簿失败")
-                return False
-            
-            # 使用买1/卖1价格
-            if side == 'buy':
-                order_price = order_book['asks'][0][0]  # 卖1价买入
-            else:
-                order_price = order_book['bids'][0][0]  # 买1价卖出
-            
-            # 计算交易数量
-            amount_usdt = await self._calculate_order_amount(side)
-            amount = self._adjust_amount_precision(amount_usdt / order_price)
-            
-            self.logger.info(
-                f"创建{side}单 | "
-                f"价格: {order_price} | "
-                f"动态金额: {amount_usdt:.2f} USDT | "
-                f"数量: {amount:.4f} BNB"
-            )
-            
-            # 创建订单
-            order = await self.exchange.create_order(
-                self.config.SYMBOL,
-                'limit',
-                side,
-                amount,
-                order_price
-            )
-            
-            # 更新活跃订单状态
-            self.active_orders[side] = order['id']
-            self.order_tracker.add_order(order)
-            
-            # 缩短等待时间到3秒
-            await asyncio.sleep(3)
-            updated_order = await self.exchange.fetch_order(order['id'], self.config.SYMBOL)
-            
-            # 如果订单已成交，更新状态并返回
-            if updated_order['status'] == 'closed':
-                self.logger.info("订单已成交")
-                # 更新基准价
-                self.base_price = float(updated_order['price'])
+        """执行订单，带重试机制"""
+        max_retries = 10  # 最大重试次数
+        retry_count = 0
+        check_interval = 3  # 下单后等待检查时间（秒）
+
+        while retry_count < max_retries:
+            try:
+                # 获取最新订单簿数据
+                order_book = await self.exchange.fetch_order_book(self.config.SYMBOL, limit=5)
+                if not order_book or not order_book.get('asks') or not order_book.get('bids'):
+                    self.logger.error("获取订单簿数据失败或数据不完整")
+                    retry_count += 1
+                    await asyncio.sleep(3)
+                    continue
+
+                # 使用买1/卖1价格
+                if side == 'buy':
+                    order_price = order_book['asks'][0][0]  # 卖1价买入
+                else:
+                    order_price = order_book['bids'][0][0]  # 买1价卖出
+
+                # 计算交易数量
+                amount_usdt = await self._calculate_order_amount(side)
+                amount = self._adjust_amount_precision(amount_usdt / order_price)
+                
+                # 检查余额是否足够
+                if side == 'buy':
+                    if not await self.check_buy_balance(order_price):
+                        self.logger.warning(f"买入余额不足，第 {retry_count + 1} 次尝试中止")
+                        return False
+                else:
+                    if not await self.check_sell_balance():
+                        self.logger.warning(f"卖出余额不足，第 {retry_count + 1} 次尝试中止")
+                        return False
+
+                self.logger.info(
+                    f"尝试第 {retry_count + 1}/{max_retries} 次 {side} 单 | "
+                    f"价格: {order_price} | "
+                    f"金额: {amount_usdt:.2f} USDT | "
+                    f"数量: {amount:.8f} BNB"
+                )
+                
+                # 创建订单
+                order = await self.exchange.create_order(
+                    self.config.SYMBOL,
+                    'limit',
+                    side,
+                    amount,
+                    order_price
+                )
+                
+                # 更新活跃订单状态
+                order_id = order['id']
+                self.active_orders[side] = order_id
+                self.order_tracker.add_order(order)
+                
+                # 等待指定时间后检查订单状态
+                self.logger.info(f"订单已提交，等待 {check_interval} 秒后检查状态")
+                await asyncio.sleep(check_interval)
+                
+                # 检查订单状态
+                updated_order = await self.exchange.fetch_order(order_id, self.config.SYMBOL)
+                
+                # 订单已成交
+                if updated_order['status'] == 'closed':
+                    self.logger.info(f"订单已成交 | ID: {order_id}")
+                    # 更新基准价
+                    self.base_price = float(updated_order['price'])
+                    # 清除活跃订单状态
+                    self.active_orders[side] = None
+                    
+                    # 更新交易记录
+                    trade_info = {
+                        'timestamp': time.time(),
+                        'side': side,
+                        'price': float(updated_order['price']),
+                        'amount': float(updated_order['filled']),
+                        'order_id': updated_order['id']
+                    }
+                    self.order_tracker.add_trade(trade_info)
+                    
+                    # 更新最后交易时间和价格
+                    self.last_trade_time = time.time()
+                    self.last_trade_price = float(updated_order['price'])
+                    
+                    # 更新总资产信息
+                    await self._update_total_assets()
+                    
+                    self.logger.info(f"基准价已更新: {self.base_price}")
+                    
+                    # 发送通知
+                    send_pushplus_message(
+                        f"网格交易成功通知\\n"
+                        f"操作：{{'买入' if side == 'buy' else '卖出'}} {self.config.SYMBOL}\\n"
+                        f"交易对：{self.config.SYMBOL}\\n"
+                        f"价格：{updated_order['price']}\\n"
+                        f"数量：{updated_order['filled']}\\n"
+                        f"金额：{float(updated_order['price']) * float(updated_order['filled']):.2f} USDT\\n"
+                        f"网格范围：{self.grid_size}%\\n"
+                        f"尝试次数：{retry_count + 1}/{max_retries}"
+                    )
+                    
+                    # 交易完成后，检查并转移多余资金到理财
+                    await self._transfer_excess_funds()
+                    
+                    return updated_order
+                
+                # 如果订单未成交，取消订单并重试
+                self.logger.warning(f"订单未成交，尝试取消 | ID: {order_id} | 状态: {updated_order['status']}")
+                try:
+                    await self.exchange.cancel_order(order_id, self.config.SYMBOL)
+                    self.logger.info(f"订单已取消，准备重试 | ID: {order_id}")
+                except Exception as e:
+                    # 如果取消订单时出错，检查是否已成交
+                    self.logger.warning(f"取消订单时出错: {str(e)}，再次检查订单状态")
+                    try:
+                        check_order = await self.exchange.fetch_order(order_id, self.config.SYMBOL)
+                        if check_order['status'] == 'closed':
+                            self.logger.info(f"订单已经成交 | ID: {order_id}")
+                            # 处理已成交的订单（与上面相同的逻辑）
+                            self.base_price = float(check_order['price'])
+                            self.active_orders[side] = None
+                            trade_info = {
+                                'timestamp': time.time(),
+                                'side': side,
+                                'price': float(check_order['price']),
+                                'amount': float(check_order['filled']),
+                                'order_id': check_order['id']
+                            }
+                            self.order_tracker.add_trade(trade_info)
+                            self.last_trade_time = time.time()
+                            self.last_trade_price = float(check_order['price'])
+                            await self._update_total_assets()
+                            self.logger.info(f"基准价已更新: {self.base_price}")
+                            send_pushplus_message(
+                                f"网格交易成功通知\\n操作：{{'买入' if side == 'buy' else '卖出'}} {self.config.SYMBOL}\\n价格：{check_order['price']}"
+                            )
+                            
+                            # 交易完成后，检查并转移多余资金到理财
+                            await self._transfer_excess_funds()
+                            
+                            return check_order
+                    except Exception as check_e:
+                        self.logger.error(f"检查订单状态失败: {str(check_e)}")
+                
                 # 清除活跃订单状态
                 self.active_orders[side] = None
                 
-                # 更新交易记录，确保web页面能显示
-                trade_info = {
-                    'timestamp': time.time(),
-                    'side': side,
-                    'price': float(updated_order['price']),
-                    'amount': float(updated_order['amount']),
-                    'profit': 0,  # 这里可以计算实际利润
-                    'order_id': updated_order['id']
-                }
-                self.order_tracker.add_trade(trade_info)
+                # 增加重试计数
+                retry_count += 1
                 
-                # 更新最后交易时间和价格
-                self.last_trade_time = time.time()
-                self.last_trade_price = float(updated_order['price'])
+                # 如果还有重试次数，等待一秒后继续
+                if retry_count < max_retries:
+                    self.logger.info(f"等待1秒后进行第 {retry_count + 1} 次尝试")
+                    await asyncio.sleep(1)
                 
-                # 更新总资产信息
-                await self._update_total_assets()
-                
-                self.logger.info(f"基准价已更新: {self.base_price}")
-                
-                # 发送通知
-                send_pushplus_message(
-                    f"网格交易信号通知\n"
-                    f"操作：{'买入' if side == 'buy' else '卖出'} {self.config.SYMBOL}\n"
-                    f"交易对：{self.config.SYMBOL}\n"
-                    f"价格：{order_price}\n"
-                    f"数量：{amount}\n"
-                    f"金额：{amount_usdt:.2f} USDT\n"
-                    f"网格范围：{self.grid_size}%\n"
-                    f"触发阈值：{FLIP_THRESHOLD(self.grid_size)*100:.2f}%"
-                )
-                
-                return order
-            
-            # 如果订单未成交，取消订单
-            self.logger.warning("订单未成交，尝试取消")
-            try:
-                await self.exchange.cancel_order(order['id'], self.config.SYMBOL)
             except Exception as e:
-                self.logger.error(f"取消订单失败: {str(e)}")
-            
-            # 清除活跃订单状态
-            self.active_orders[side] = None
-            
-            # 发送错误通知
+                self.logger.error(f"执行{side}单失败: {str(e)}")
+                
+                # 尝试清理可能存在的订单
+                if 'order_id' in locals() and self.active_orders.get(side) == order_id:
+                    try:
+                        await self.exchange.cancel_order(order_id, self.config.SYMBOL)
+                        self.logger.info(f"已取消错误订单 | ID: {order_id}")
+                    except Exception as cancel_e:
+                        self.logger.error(f"取消错误订单失败: {str(cancel_e)}")
+                    finally:
+                        self.active_orders[side] = None
+                
+                # 增加重试计数
+                retry_count += 1
+                
+                # 如果是关键错误，停止重试
+                if "资金不足" in str(e) or "Insufficient" in str(e):
+                    self.logger.error("资金不足，停止重试")
+                    # 发送错误通知
+                    send_pushplus_message(
+                        f"网格交易错误通知\\n"
+                        f"操作：{{'买入' if side == 'buy' else '卖出'}}失败\\n"
+                        f"交易对：{self.config.SYMBOL}\\n"
+                        f"错误信息：{str(e)}",
+                        "错误通知"
+                    )
+                    return False
+                
+                # 如果还有重试次数，稍等后继续
+                if retry_count < max_retries:
+                    self.logger.info(f"等待2秒后进行第 {retry_count + 1} 次尝试")
+                    await asyncio.sleep(2)
+        
+        # 达到最大重试次数后仍未成功
+        if retry_count >= max_retries:
+            self.logger.error(f"{side}单执行失败，达到最大重试次数: {max_retries}")
             send_pushplus_message(
-                f"网格交易错误通知\n"
-                f"操作：{'买入' if side == 'buy' else '卖出'}失败\n"
-                f"交易对：{self.config.SYMBOL}\n"
-                f"错误信息：订单未能成交",
+                f"网格交易错误通知\\n"
+                f"操作：{{'买入' if side == 'buy' else '卖出'}}失败\\n"
+                f"交易对：{self.config.SYMBOL}\\n"
+                f"错误信息：达到最大重试次数 {max_retries} 后订单仍未成交",
                 "错误通知"
             )
-            
-            return False
-            
-        except Exception as e:
-            self.logger.error(f"执行{side}单失败: {str(e)}")
-            # 发送错误通知
-            send_pushplus_message(
-                f"网格交易错误通知\n"
-                f"操作：{'买入' if side == 'buy' else '卖出'}失败\n"
-                f"交易对：{self.config.SYMBOL}\n"
-                f"错误信息：{str(e)}",
-                "错误通知"
-            )
-            return False
+        
+        return False
 
     async def _wait_for_balance(self, side, amount, price):
         """等待直到有足够的余额可用"""
@@ -526,21 +565,6 @@ class GridTrader:
             await asyncio.sleep(1)
         
         raise Exception("等待资金到账超时")
-
-    def _calculate_trade_profit(self, order):
-        """计算交易利润"""
-        try:
-            if not self.last_trade_price:
-                return 0
-            
-            current_price = float(order['price'])
-            if order['side'] == 'sell':
-                return (current_price - self.last_trade_price) / self.last_trade_price
-            else:
-                return (self.last_trade_price - current_price) / current_price
-        except Exception as e:
-            self.logger.error(f"计算利润失败: {str(e)}")
-            return 0
 
     async def _adjust_grid_after_trade(self):
         """根据市场波动动态调整网格大小"""
@@ -573,7 +597,7 @@ class GridTrader:
             self.logger.info(
                 f"动态调整网格 | 操作: {action} | "
                 f"波动率: {volatility:.2%} | "
-                f"新尺寸: {self.grid_size}%"
+                f"新尺寸: {self.grid_size:.2f}%"
             )
 
     def _log_order(self, order):
@@ -605,11 +629,11 @@ class GridTrader:
             
             # 发送通知
             send_pushplus_message(
-                f"网格交易执行通知\n"
-                f"交易方向：{'买入' if side == 'buy' else '卖出'}\n"
-                f"成交价格：{price}\n"
-                f"成交数量：{amount}\n"
-                f"交易金额：{total:.2f} USDT\n"
+                f"网格交易执行通知\\n"
+                f"交易方向：{{'买入' if side == 'buy' else '卖出'}}\\n"
+                f"成交价格：{price}\\n"
+                f"成交数量：{amount}\\n"
+                f"交易金额：{total:.2f} USDT\\n"
                 f"预计利润：{profit:.2f} USDT"
             )
         except Exception as e:
@@ -665,7 +689,7 @@ class GridTrader:
                                 self.active_orders[side] = None
                         # 发送成交通知
                         send_pushplus_message(
-                            f"BNB {order['side']}单成交\n"
+                            f"BNB {{'买入' if side == 'buy' else '卖出'}}单成交\\n"
                             f"价格: {order['price']} USDT"
                         )
                     elif order['status'] == 'open':
@@ -697,9 +721,6 @@ class GridTrader:
             volatility = await self._calculate_volatility()
             self.logger.info(f"当前波动率: {volatility:.4f}")
             
-            # 获取市场趋势
-            trend = await self.trend_analyzer.analyze_trend()
-            
             # 根据波动率获取基础网格大小
             base_grid = None
             for range_config in self.config.GRID_PARAMS['volatility_threshold']['ranges']:
@@ -707,23 +728,13 @@ class GridTrader:
                     base_grid = range_config['grid']
                     break
             
-            # 根据趋势调整网格
-            if trend == 'strong_uptrend':
-                new_grid = base_grid * 1.3  # 强上涨趋势扩大30%
-                trend_desc = "强上涨趋势，显著扩大网格"
-            elif trend == 'weak_uptrend':
-                new_grid = base_grid * 1.1  # 弱上涨趋势扩大10%
-                trend_desc = "弱上涨趋势，小幅扩大网格"
-            elif trend == 'strong_downtrend':
-                new_grid = base_grid * 0.7  # 强下跌趋势缩小30%
-                trend_desc = "强下跌趋势，显著缩小网格"
-            elif trend == 'weak_downtrend':
-                new_grid = base_grid * 0.9  # 弱下跌趋势缩小10%
-                trend_desc = "弱下跌趋势，小幅缩小网格"
-            else:
-                new_grid = base_grid  # 震荡市场保持网格
-                trend_desc = "震荡市场，保持网格"
+            # 如果没有匹配到波动率范围，使用默认网格
+            if base_grid is None:
+                base_grid = self.config.INITIAL_GRID
             
+            # 删除趋势调整逻辑
+            new_grid = base_grid
+
             # 确保网格在允许范围内
             new_grid = max(min(new_grid, self.config.GRID_PARAMS['max']), self.config.GRID_PARAMS['min'])
             
@@ -731,7 +742,6 @@ class GridTrader:
                 self.logger.info(
                     f"调整网格大小 | "
                     f"波动率: {volatility:.2%} | "
-                    f"趋势: {trend_desc} | "
                     f"原网格: {self.grid_size:.2f}% | "
                     f"新网格: {new_grid:.2f}%"
                 )
@@ -789,11 +799,6 @@ class GridTrader:
         kelly_f = max(0.0, (win_rate * payoff_ratio - (1 - win_rate)) / payoff_ratio)  # 确保非负
         kelly_f = min(kelly_f, 0.3)  # 最大不超过30%仓位
         
-        # 获取价格趋势因子（1小时变化率）
-        price_trend = await self._get_price_trend()
-        trend_factor = 1 + price_trend * 2  # 趋势强度放大系数设为2
-        trend_factor = max(0.5, min(trend_factor, 1.5))  # 限制趋势因子在0.5-1.5之间
-        
         # 获取价格分位因子
         price_percentile = await self._get_price_percentile()
         if side == 'buy':
@@ -803,7 +808,7 @@ class GridTrader:
         
         # 动态计算交易金额
         risk_adjusted_amount = min(
-            total_assets * self.config.RISK_FACTOR * volatility_factor * kelly_f * trend_factor * percentile_factor,
+            total_assets * self.config.RISK_FACTOR * volatility_factor * kelly_f * percentile_factor,
             total_assets * self.config.MAX_POSITION_RATIO
         )
         
@@ -840,29 +845,6 @@ class GridTrader:
         avg_win = np.mean([t['profit'] for t in trades if t['profit'] > 0])
         avg_loss = np.mean([abs(t['profit']) for t in trades if t['profit'] < 0])
         return avg_win / avg_loss if avg_loss != 0 else 1.0
-
-    async def _get_price_trend(self):
-        """获取价格趋势（基于1小时K线）"""
-        try:
-            # 获取最近2根1小时K线
-            ohlcv = await self.exchange.fetch_ohlcv(self.config.SYMBOL, '1h', limit=2)
-            if len(ohlcv) < 2:
-                return 0.0
-            
-            # 计算价格变化率
-            prev_close = ohlcv[-2][4]  # 前一根K线收盘价
-            current_price = await self._get_latest_price()
-            
-            # 计算趋势强度
-            trend = (current_price - prev_close) / prev_close
-            
-            # 添加平滑处理
-            self.logger.debug(f"价格趋势计算 | 前收盘: {prev_close} | 现价: {current_price} | 趋势: {trend:.2%}")
-            return trend
-            
-        except Exception as e:
-            self.logger.error(f"获取价格趋势失败: {str(e)}")
-            return 0.0
 
     async def save_trade_stats(self):
         """保存交易统计数据"""
@@ -946,32 +928,72 @@ class GridTrader:
         return min(required, self.config.MAX_POSITION_RATIO * total_assets)
 
     async def _transfer_excess_funds(self):
-        """将多余资金转回理财账户"""
+        """将超出总资产16%目标的部分资金转回理财账户"""
         try:
             balance = await self.exchange.fetch_balance()
             current_price = await self._get_latest_price()
+            total_assets = await self._get_total_assets()
             
-            # 保留资金 = 最小交易金额 * 2（为了确保有足够资金进行交易）
-            keep_amount = self.config.MIN_TRADE_AMOUNT * 2
-            
-            # 处理USDT
-            usdt_balance = float(balance['free'].get('USDT', 0))
-            if usdt_balance > keep_amount:
-                transfer_amount = usdt_balance - keep_amount
-                self.logger.info(f"转移多余USDT到理财: {transfer_amount:.2f}")
-                await self.exchange.transfer_to_savings('USDT', transfer_amount)
-            
-            # 处理BNB，保留等值于MIN_TRADE_AMOUNT的BNB
-            min_bnb_hold = keep_amount / current_price
-            bnb_balance = float(balance['free'].get('BNB', 0))
-            if bnb_balance > min_bnb_hold:
-                transfer_amount = bnb_balance - min_bnb_hold
-                self.logger.info(f"转移多余BNB到理财: {transfer_amount:.4f}")
-                await self.exchange.transfer_to_savings('BNB', transfer_amount)
-            
-            self.logger.info("多余资金已转移到理财账户")
+            # 如果无法获取价格或总资产，则跳过
+            if not current_price or current_price <= 0 or total_assets <= 0:
+                self.logger.warning("无法获取价格或总资产，跳过资金转移检查")
+                return
+
+            # 计算目标保留金额 (总资产的16%)
+            target_usdt_hold = total_assets * 0.16
+            target_bnb_hold_value = total_assets * 0.16
+            target_bnb_hold_amount = target_bnb_hold_value / current_price
+
+            # 获取当前现货可用余额
+            spot_usdt_balance = float(balance.get('free', {}).get('USDT', 0))
+            spot_bnb_balance = float(balance.get('free', {}).get('BNB', 0))
+
+            self.logger.info(
+                f"资金转移检查 | 总资产: {total_assets:.2f} USDT | "
+                f"目标USDT持有: {target_usdt_hold:.2f} | 现货USDT: {spot_usdt_balance:.2f} | "
+                f"目标BNB持有(等值): {target_bnb_hold_value:.2f} USDT ({target_bnb_hold_amount:.4f} BNB) | "
+                f"现货BNB: {spot_bnb_balance:.4f}"
+            )
+
+            transfer_executed = False # 标记是否执行了划转
+
+            # 处理USDT：如果现货超出目标，转移多余部分
+            if spot_usdt_balance > target_usdt_hold:
+                transfer_amount = spot_usdt_balance - target_usdt_hold
+                # 增加最小划转金额判断，避免无效操作
+                # 将阈值提高到 1.0 USDT
+                if transfer_amount > 1.0: 
+                    self.logger.info(f"转移多余USDT到理财: {transfer_amount:.2f}")
+                    try:
+                        await self.exchange.transfer_to_savings('USDT', transfer_amount)
+                        transfer_executed = True
+                    except Exception as transfer_e:
+                        self.logger.error(f"转移USDT到理财失败: {str(transfer_e)}")
+                else:
+                     self.logger.info(f"USDT超出部分 ({transfer_amount:.2f}) 过小，不执行划转")
+
+            # 处理BNB：如果现货超出目标，转移多余部分
+            if spot_bnb_balance > target_bnb_hold_amount:
+                transfer_amount = spot_bnb_balance - target_bnb_hold_amount
+                # 增加最小划转金额判断
+                # 将阈值提高到等值 1.0 USDT
+                if transfer_amount * current_price > 1.0: 
+                    self.logger.info(f"转移多余BNB到理财: {transfer_amount:.4f}")
+                    try:
+                        await self.exchange.transfer_to_savings('BNB', transfer_amount)
+                        transfer_executed = True
+                    except Exception as transfer_e:
+                        self.logger.error(f"转移BNB到理财失败: {str(transfer_e)}")
+                else:
+                    self.logger.info(f"BNB超出部分 ({transfer_amount:.4f}) 价值过小，不执行划转")
+
+            if transfer_executed:
+                self.logger.info("多余资金已尝试转移到理财账户")
+            else:
+                self.logger.info("无需转移资金到理财账户")
+
         except Exception as e:
-            self.logger.error(f"转移多余资金失败: {str(e)}")
+            self.logger.error(f"转移多余资金检查失败: {str(e)}")
 
     async def _check_flip_signal(self):
         """检查是否需要翻转交易方向"""
@@ -1081,8 +1103,8 @@ class GridTrader:
                 await self.exchange.transfer_to_spot('BNB', transfer_amount)
             
             self.logger.info(
-                f"资金分配完成\n"
-                f"USDT: {total_usdt:.2f}\n"
+                f"资金分配完成\\n"
+                f"USDT: {total_usdt:.2f}\\n"
                 f"BNB: {total_bnb:.4f}"
             )
         except Exception as e:
@@ -1097,17 +1119,30 @@ class GridTrader:
                current_time - self._assets_cache['time'] < 60:  # 1分钟缓存
                 return self._assets_cache['value']
             
+            # 设置一个默认返回值，以防发生异常
+            default_total = self._assets_cache['value'] if hasattr(self, '_assets_cache') else 0
+            
             balance = await self.exchange.fetch_balance()
             funding_balance = await self.exchange.fetch_funding_balance()
             current_price = await self._get_latest_price()
             
-            # 分别获取现货和理财账户余额
-            spot_bnb = float(balance['free'].get('BNB', 0) or 0)
-            spot_usdt = float(balance['free'].get('USDT', 0) or 0)
+            # 防御性检查：确保返回的价格是有效的
+            if not current_price or current_price <= 0:
+                self.logger.error("获取价格失败，无法计算总资产")
+                return default_total
+            
+            # 防御性检查：确保balance包含必要的键
+            if not balance:
+                self.logger.error("获取余额失败，返回默认总资产")
+                return default_total
+            
+            # 分别获取现货和理财账户余额（使用安全的get方法）
+            spot_bnb = float(balance.get('free', {}).get('BNB', 0) or 0)
+            spot_usdt = float(balance.get('free', {}).get('USDT', 0) or 0)
             
             # 加上已冻结的余额
-            spot_bnb += float(balance['used'].get('BNB', 0) or 0)
-            spot_usdt += float(balance['used'].get('USDT', 0) or 0)
+            spot_bnb += float(balance.get('used', {}).get('BNB', 0) or 0)
+            spot_usdt += float(balance.get('used', {}).get('USDT', 0) or 0)
             
             # 加上理财账户余额
             fund_bnb = 0
@@ -1115,11 +1150,6 @@ class GridTrader:
             if funding_balance:
                 fund_bnb = float(funding_balance.get('BNB', 0) or 0)
                 fund_usdt = float(funding_balance.get('USDT', 0) or 0)
-            
-            # 确保价格有效
-            if not current_price or current_price <= 0:
-                self.logger.error("获取价格失败，无法计算总资产")
-                return self._assets_cache['value'] if hasattr(self, '_assets_cache') else 0
             
             # 分别计算现货和理财账户总值
             spot_value = spot_usdt + (spot_bnb * current_price)
@@ -1134,7 +1164,7 @@ class GridTrader:
             
             # 只在资产变化超过1%时才记录日志
             if not hasattr(self, '_last_logged_assets') or \
-               abs(total_assets - self._last_logged_assets) / self._last_logged_assets > 0.01:
+               abs(total_assets - self._last_logged_assets) / max(self._last_logged_assets, 0.01) > 0.01:
                 self.logger.info(
                     f"总资产: {total_assets:.2f} USDT | "
                     f"现货: {spot_value:.2f} USDT "
@@ -1273,195 +1303,162 @@ class GridTrader:
     
     def _calculate_ema(self, data, period):
         """计算EMA"""
+        if not data or len(data) == 0:
+            return 0
+            
         multiplier = 2 / (period + 1)
         ema = data[0]
         for price in data[1:]:
             ema = (price - ema) * multiplier + ema
         return ema
     
-    async def determine_trend(self):
-        """综合判断市场趋势"""
+    async def check_buy_balance(self, current_price):
+        """检查买入前的余额，如果不够则从理财赎回"""
         try:
-            # 获取各项指标数据
-            short_ma, long_ma = await self.get_ma_data()
-            macd_line, signal_line = await self.get_macd_data()
-            adx = await self.get_adx_data(14)
+            # 计算所需买入资金
+            amount_usdt = await self._calculate_order_amount('buy')
             
-            if None in [short_ma, long_ma, macd_line, signal_line, adx]:
-                self.logger.error("获取技术指标数据失败")
-                return 'neutral'
+            # 获取现货余额
+            spot_balance = await self.exchange.fetch_balance({'type': 'spot'})
             
-            # 判断趋势
-            ma_trend = 'uptrend' if short_ma > long_ma else 'downtrend'
-            macd_trend = 'uptrend' if macd_line > signal_line else 'downtrend'
-            trend_strength = 'strong' if adx > 25 else 'weak'
+            # 防御性检查：确保返回的余额是有效的
+            if not spot_balance or 'free' not in spot_balance:
+                self.logger.error("获取现货余额失败，返回无效数据")
+                return False
+                
+            spot_usdt = float(spot_balance.get('free', {}).get('USDT', 0) or 0)
             
-            self.logger.info(
-                f"趋势分析 | "
-                f"MA趋势: {ma_trend} | "
-                f"MACD趋势: {macd_trend} | "
-                f"ADX: {adx:.2f}"
-            )
+            self.logger.info(f"买入前余额检查 | 所需USDT: {amount_usdt:.2f} | 现货USDT: {spot_usdt:.2f}")
             
-            # 综合判断
-            if ma_trend == 'uptrend' and macd_trend == 'uptrend' and trend_strength == 'strong':
-                return 'uptrend'
-            elif ma_trend == 'downtrend' and macd_trend == 'downtrend' and trend_strength == 'strong':
-                return 'downtrend'
+            # 如果现货余额足够，直接返回成功
+            if spot_usdt >= amount_usdt:
+                return True
+                
+            # 现货不足，尝试从理财赎回
+            self.logger.info(f"现货USDT不足，尝试从理财赎回...")
+            funding_balance = await self.exchange.fetch_funding_balance()
+            funding_usdt = float(funding_balance.get('USDT', 0) or 0)
+            
+            # 检查总余额是否足够
+            if spot_usdt + funding_usdt < amount_usdt:
+                # 总资金不足，发送通知
+                error_msg = f"资金不足通知\\n交易类型: 买入\\n所需USDT: {amount_usdt:.2f}\\n" \
+                           f"现货余额: {spot_usdt:.2f}\\n理财余额: {funding_usdt:.2f}\\n" \
+                           f"缺口: {amount_usdt - (spot_usdt + funding_usdt):.2f}"
+                self.logger.error(f"买入资金不足: 现货+理财总额不足以执行交易")
+                send_pushplus_message(error_msg, "资金不足警告")
+                return False
+                
+            # 计算需要赎回的金额（增加5%缓冲）
+            needed_amount = (amount_usdt - spot_usdt) * 1.05
+            
+            # 从理财赎回
+            self.logger.info(f"从理财赎回 {needed_amount:.2f} USDT")
+            await self.exchange.transfer_to_spot('USDT', needed_amount)
+            
+            # 等待资金到账
+            await asyncio.sleep(5)
+            
+            # 再次检查余额
+            new_balance = await self.exchange.fetch_balance({'type': 'spot'})
+            
+            # 防御性检查：确保返回的余额是有效的
+            if not new_balance or 'free' not in new_balance:
+                self.logger.error("赎回后获取现货余额失败，返回无效数据")
+                return False
+                
+            new_usdt = float(new_balance.get('free', {}).get('USDT', 0) or 0)
+            
+            self.logger.info(f"赎回后余额检查 | 现货USDT: {new_usdt:.2f}")
+            
+            if new_usdt >= amount_usdt:
+                return True
             else:
-                return 'neutral'
+                error_msg = f"资金赎回后仍不足\\n交易类型: 买入\\n所需USDT: {amount_usdt:.2f}\\n现货余额: {new_usdt:.2f}"
+                self.logger.error(error_msg)
+                send_pushplus_message(error_msg, "资金不足警告")
+                return False
                 
         except Exception as e:
-            self.logger.error(f"趋势判断失败: {str(e)}")
-            return 'neutral'
-
-class TrendAnalyzer:
-    def __init__(self, trader):
-        self.trader = trader
-        self.logger = logging.getLogger(self.__class__.__name__)
-        self.last_trend = 'neutral'
-        self.trend_start_time = time.time()
-        self.trend_signals = []  # 存储最近的趋势信号
-        self.signal_window = 6   # 增加到6个信号用于确认
-        self.last_log_time = 0   # 上次日志记录时间
-        self.log_interval = 300  # 每5分钟记录一次日志
-        
-    async def analyze_trend(self):
-        """分析市场趋势"""
+            self.logger.error(f"检查买入余额失败: {str(e)}")
+            send_pushplus_message(f"余额检查错误\\n交易类型: 买入\\n错误信息: {str(e)}", "系统错误")
+            return False
+            
+    async def check_sell_balance(self):
+        """检查卖出前的余额，如果不够则从理财赎回"""
         try:
-            current_time = time.time()
+            # 获取现货余额
+            spot_balance = await self.exchange.fetch_balance({'type': 'spot'})
             
-            # 获取技术指标数据
-            short_ma, long_ma = await self.trader.get_ma_data(20, 50)
-            macd_line, signal_line = await self.trader.get_macd_data()
-            adx = await self.trader.get_adx_data(14)
+            # 防御性检查：确保返回的余额是有效的
+            if not spot_balance or 'free' not in spot_balance:
+                self.logger.error("获取现货余额失败，返回无效数据")
+                return False
+                
+            spot_bnb = float(spot_balance.get('free', {}).get('BNB', 0) or 0)
             
-            if None in [short_ma, long_ma, macd_line, signal_line, adx]:
-                return self.last_trend
+            # 计算所需数量
+            amount_usdt = await self._calculate_order_amount('sell')
             
-            # 计算各个指标的趋势信号
-            ma_trend = self._get_ma_trend(short_ma, long_ma)
-            macd_trend = self._get_macd_trend(macd_line, signal_line)
-            trend_strength = self._get_trend_strength(adx)
+            # 确保当前价格有效
+            if not self.current_price or self.current_price <= 0:
+                self.logger.error("当前价格无效，无法计算BNB需求量")
+                return False
+                
+            bnb_needed = amount_usdt / self.current_price
             
-            # 记录趋势信号
-            current_signal = {
-                'ma': ma_trend,
-                'macd': macd_trend,
-                'strength': trend_strength,
-                'time': current_time
-            }
-            self.trend_signals.append(current_signal)
-            self.trend_signals = self.trend_signals[-self.signal_window:]  # 保留最近的信号
+            self.logger.info(f"卖出前余额检查 | 所需BNB: {bnb_needed:.8f} | 现货BNB: {spot_bnb:.8f}")
             
-            # 确定当前趋势
-            current_trend = self._determine_trend(ma_trend, macd_trend, trend_strength)
+            # 如果现货余额足够，直接返回成功
+            if spot_bnb >= bnb_needed:
+                return True
+                
+            # 现货不足，尝试从理财赎回
+            self.logger.info(f"现货BNB不足，尝试从理财赎回...")
+            funding_balance = await self.exchange.fetch_funding_balance()
+            funding_bnb = float(funding_balance.get('BNB', 0) or 0)
             
-            # 确认趋势
-            confirmed_trend = self._confirm_trend(current_trend)
+            # 检查总余额是否足够
+            if spot_bnb + funding_bnb < bnb_needed:
+                # 总资金不足，发送通知
+                error_msg = f"资金不足通知\\n交易类型: 卖出\\n所需BNB: {bnb_needed:.8f}\\n" \
+                           f"现货余额: {spot_bnb:.8f}\\n理财余额: {funding_bnb:.8f}\\n" \
+                           f"缺口: {bnb_needed - (spot_bnb + funding_bnb):.8f}"
+                self.logger.error(f"卖出资金不足: 现货+理财总额不足以执行交易")
+                send_pushplus_message(error_msg, "资金不足警告")
+                return False
+                
+            # 计算需要赎回的金额（增加5%缓冲）
+            needed_amount = (bnb_needed - spot_bnb) * 1.05
             
-            # 控制日志输出频率
-            if current_time - self.last_log_time >= self.log_interval:
-                self.logger.info(
-                    f"趋势分析 | "
-                    f"MA: {ma_trend} | "
-                    f"MACD: {macd_trend} | "
-                    f"强度: {trend_strength} | "
-                    f"确认趋势: {confirmed_trend}"
-                )
-                self.last_log_time = current_time
+            # 从理财赎回
+            self.logger.info(f"从理财赎回 {needed_amount:.8f} BNB")
+            await self.exchange.transfer_to_spot('BNB', needed_amount)
             
-            return confirmed_trend
+            # 等待资金到账
+            await asyncio.sleep(5)
             
+            # 再次检查余额
+            new_balance = await self.exchange.fetch_balance({'type': 'spot'})
+            
+            # 防御性检查：确保返回的余额是有效的
+            if not new_balance or 'free' not in new_balance:
+                self.logger.error("赎回后获取现货余额失败，返回无效数据")
+                return False
+                
+            new_bnb = float(new_balance.get('free', {}).get('BNB', 0) or 0)
+            
+            self.logger.info(f"赎回后余额检查 | 现货BNB: {new_bnb:.8f}")
+            
+            if new_bnb >= bnb_needed:
+                return True
+            else:
+                error_msg = f"资金赎回后仍不足\\n交易类型: 卖出\\n所需BNB: {bnb_needed:.8f}\\n现货余额: {new_bnb:.8f}"
+                self.logger.error(error_msg)
+                send_pushplus_message(error_msg, "资金不足警告")
+                return False
+                
         except Exception as e:
-            self.logger.error(f"趋势分析失败: {str(e)}")
-            return 'neutral'
-    
-    def _get_ma_trend(self, short_ma, long_ma):
-        """判断均线趋势"""
-        diff_percent = (short_ma - long_ma) / long_ma * 100
-        
-        if diff_percent > 0.5:  # 短期均线高于长期均线0.5%以上
-            return 'strong_up'
-        elif diff_percent > 0.1:
-            return 'weak_up'
-        elif diff_percent < -0.5:
-            return 'strong_down'
-        elif diff_percent < -0.1:
-            return 'weak_down'
-        else:
-            return 'neutral'
-    
-    def _get_macd_trend(self, macd_line, signal_line):
-        """判断MACD趋势"""
-        diff = macd_line - signal_line
-        
-        if diff > 0.1:  # MACD线显著高于信号线
-            return 'strong_up'
-        elif diff > 0:
-            return 'weak_up'
-        elif diff < -0.1:
-            return 'strong_down'
-        elif diff < 0:
-            return 'weak_down'
-        else:
-            return 'neutral'
-    
-    def _get_trend_strength(self, adx):
-        """判断趋势强度"""
-        if adx > 30:
-            return 'very_strong'
-        elif adx > 25:
-            return 'strong'
-        elif adx > 20:
-            return 'moderate'
-        else:
-            return 'weak'
-    
-    def _determine_trend(self, ma_trend, macd_trend, strength):
-        """综合判断趋势"""
-        if strength in ['very_strong', 'strong']:
-            if ma_trend in ['strong_up', 'weak_up'] and macd_trend in ['strong_up', 'weak_up']:
-                return 'strong_uptrend'
-            elif ma_trend in ['strong_down', 'weak_down'] and macd_trend in ['strong_down', 'weak_down']:
-                return 'strong_downtrend'
-        elif strength == 'moderate':
-            if ma_trend in ['strong_up', 'weak_up'] and macd_trend in ['strong_up', 'weak_up']:
-                return 'weak_uptrend'
-            elif ma_trend in ['strong_down', 'weak_down'] and macd_trend in ['strong_down', 'weak_down']:
-                return 'weak_downtrend'
-        
-        return 'neutral'
-    
-    def _confirm_trend(self, current_trend):
-        """趋势确认机制"""
-        # 如果趋势信号不足，返回中性
-        if len(self.trend_signals) < self.signal_window:
-            return 'neutral'
-        
-        # 检查信号的时间跨度是否足够
-        oldest_signal_time = self.trend_signals[0]['time']
-        newest_signal_time = self.trend_signals[-1]['time']
-        if newest_signal_time - oldest_signal_time < 900:  # 至少需要15分钟
-            return self.last_trend
-        
-        # 检查最近的趋势信号是否一致
-        trends = [signal['ma'] for signal in self.trend_signals]
-        up_count = sum(1 for t in trends if t.endswith('up'))
-        down_count = sum(1 for t in trends if t.endswith('down'))
-        
-        # 需要至少80%的信号一致才确认趋势
-        threshold = len(trends) * 0.8
-        
-        if up_count >= threshold:
-            return 'strong_uptrend' if current_trend == 'strong_uptrend' else 'weak_uptrend'
-        elif down_count >= threshold:
-            return 'strong_downtrend' if current_trend == 'strong_downtrend' else 'weak_downtrend'
-        
-        # 如果没有明确趋势，保持当前趋势一段时间
-        if time.time() - self.trend_start_time < 900:  # 15分钟内保持趋势
-            return self.last_trend
-        
-        return 'neutral'
-
-    # ... 其他方法将在下一部分继续 
+            self.logger.error(f"检查卖出余额失败: {str(e)}")
+            send_pushplus_message(f"余额检查错误\\n交易类型: 卖出\\n错误信息: {str(e)}", "系统错误")
+            return False

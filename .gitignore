@@ -1,0 +1,24 @@
+# Environment variables
+.env
+
+# Python virtual environment
+.venv/
+venv/
+ENV/
+
+# Python cache files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Log files
+*.log
+trading_system.log
+
+# Data directory
+data/
+
+# IDE / Editor specific files
+.vscode/
+.idea/ 

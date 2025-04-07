@@ -10,6 +10,8 @@ class IPLogger:
     def __init__(self):
         self.ip_records = []  # 存储IP访问记录
         self.max_records = 100  # 最多保存100条记录
+        self._log_cache = {'content': None, 'timestamp': 0}  # 添加日志缓存
+        self._cache_ttl = 2  # 缓存有效期（秒）
 
     def add_record(self, ip, path):
         # 查找是否存在相同IP的记录
@@ -48,6 +50,20 @@ def get_system_stats():
         'memory_percent': memory.percent
     }
 
+async def _read_log_content():
+    """公共的日志读取函数"""
+    log_path = os.path.join(LogConfig.LOG_DIR, 'trading_system.log')
+    if not os.path.exists(log_path):
+        return None
+        
+    async with aiofiles.open(log_path, mode='r', encoding='utf-8') as f:
+        content = await f.read()
+        
+    # 将日志按行分割并倒序排列
+    lines = content.strip().split('\n')
+    lines.reverse()
+    return '\n'.join(lines)
+
 async def handle_log(request):
     try:
         # 记录IP访问
@@ -57,16 +73,10 @@ async def handle_log(request):
         # 获取系统资源状态
         system_stats = get_system_stats()
         
-        log_path = os.path.join(LogConfig.LOG_DIR, 'trading_system.log')
-        if not os.path.exists(log_path):
+        # 读取日志内容
+        content = await _read_log_content()
+        if content is None:
             return web.Response(text="日志文件不存在", status=404)
-            
-        async with aiofiles.open(log_path, mode='r', encoding='utf-8') as f:
-            content = await f.read()
-            
-        lines = content.strip().split('\n')
-        lines.reverse()
-        content = '\n'.join(lines)
             
         html = f"""
         <!DOCTYPE html>
@@ -123,8 +133,8 @@ async def handle_log(request):
                                 <span class="status-value" id="base-price">--</span>
                             </div>
                             <div class="flex justify-between">
-                                <span>市场趋势</span>
-                                <span class="status-value" id="market-trend">--</span>
+                                <span>当前价格 (USDT)</span>
+                                <span class="status-value" id="current-price">--</span>
                             </div>
                         </div>
                     </div>
@@ -141,8 +151,8 @@ async def handle_log(request):
                                 <span class="status-value" id="threshold">--</span>
                             </div>
                             <div class="flex justify-between">
-                                <span>下次委托金额</span>
-                                <span class="status-value" id="next-order-amount">--</span>
+                                <span>目标委托金额</span>
+                                <span class="status-value" id="target-order-amount">--</span>
                             </div>
                         </div>
                     </div>
@@ -161,6 +171,14 @@ async def handle_log(request):
                             <div class="flex justify-between">
                                 <span>BNB余额</span>
                                 <span class="status-value" id="bnb-balance">--</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span>总盈亏(USDT)</span>
+                                <span class="status-value" id="total-profit">--</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span>盈亏率(%)</span>
+                                <span class="status-value" id="profit-rate">--</span>
                             </div>
                         </div>
                     </div>
@@ -254,6 +272,10 @@ async def handle_log(request):
                         document.querySelector('#base-price').textContent = 
                             data.base_price.toFixed(2) + ' USDT';
                         
+                        // 更新当前价格
+                        document.querySelector('#current-price').textContent = 
+                            data.current_price.toFixed(2);
+                        
                         // 更新网格参数
                         document.querySelector('#grid-size').textContent = 
                             (data.grid_size * 100).toFixed(2) + '%';
@@ -268,8 +290,17 @@ async def handle_log(request):
                         document.querySelector('#bnb-balance').textContent = 
                             data.bnb_balance.toFixed(4);
                         
+                        // 更新盈亏信息
+                        const totalProfitElement = document.querySelector('#total-profit');
+                        totalProfitElement.textContent = data.total_profit.toFixed(2);
+                        totalProfitElement.className = `status-value ${{data.total_profit >= 0 ? 'profit' : 'loss'}}`;
+
+                        const profitRateElement = document.querySelector('#profit-rate');
+                        profitRateElement.textContent = data.profit_rate.toFixed(2) + '%';
+                        profitRateElement.className = `status-value ${{data.profit_rate >= 0 ? 'profit' : 'loss'}}`;
+                        
                         // 更新交易历史
-                        document.querySelector('#trade-history').innerHTML = data.trade_history.map(function(trade) {{ return `
+                        document.querySelector('#trade-history').innerHTML = data.trade_history.map(function(trade) {{ return ` 
                             <tr class="border-b">
                                 <td class="py-2">${{trade.timestamp}}</td>
                                 <td class="py-2 ${{trade.side === 'buy' ? 'text-green-500' : 'text-red-500'}}">
@@ -281,19 +312,9 @@ async def handle_log(request):
                             </tr>
                         `; }}).join('');
                         
-                        // 更新市场趋势
-                        document.querySelector('#market-trend').textContent = data.market_trend;
-                        
-                        // 更新下次委托金额
-                        const nextOrderAmount = `买入: ${{data.next_buy_amount.toFixed(2)}} USDT\n卖出: ${{data.next_sell_amount.toFixed(2)}} USDT`;
-                        document.querySelector('#next-order-amount').textContent = nextOrderAmount;
-                        
-                        // 根据趋势设置颜色
-                        const trendElement = document.querySelector('#market-trend');
-                        trendElement.className = 'status-value ' + 
-                            (data.market_trend.includes('上涨') ? 'text-green-500' : 
-                             data.market_trend.includes('下跌') ? 'text-red-500' : 
-                             'text-gray-500');
+                        // 更新目标委托金额
+                        document.querySelector('#target-order-amount').textContent = 
+                            data.target_order_amount.toFixed(2) + ' USDT';
                         
                         console.log('状态更新成功:', data);
                     }} catch (error) {{
@@ -334,6 +355,16 @@ async def handle_status(request):
         usdt_balance = float(balance['total'].get('USDT', 0))
         total_assets = usdt_balance + (bnb_balance * current_price)
         
+        # 计算总盈亏和盈亏率
+        initial_principal = request.app['trader'].config.INITIAL_PRINCIPAL
+        total_profit = 0.0
+        profit_rate = 0.0
+        if initial_principal > 0:
+            total_profit = total_assets - initial_principal
+            profit_rate = (total_profit / initial_principal) * 100
+        else:
+            logging.warning("初始本金未设置或为0，无法计算盈亏率")
+        
         # 获取最近交易信息
         last_trade_price = request.app['trader'].last_trade_price
         last_trade_time = request.app['trader'].last_trade_time
@@ -351,22 +382,8 @@ async def handle_status(request):
                 'profit': trade.get('profit', 0)
             } for trade in trades[-10:]]  # 只取最近10笔交易
         
-        # 获取市场趋势
-        trend = 'neutral'  # 默认为震荡
-        if hasattr(request.app['trader'], 'trend_analyzer'):
-            trend = await request.app['trader'].trend_analyzer.analyze_trend()
-        
-        trend_text = {
-            'strong_uptrend': '强上涨',
-            'weak_uptrend': '弱上涨',
-            'strong_downtrend': '强下跌',
-            'weak_downtrend': '弱下跌',
-            'neutral': '震荡'
-        }.get(trend, '震荡')
-        
-        # 计算下次委托金额
-        next_buy_amount = await request.app['trader']._calculate_order_amount('buy')
-        next_sell_amount = await request.app['trader']._calculate_order_amount('sell')
+        # 计算目标委托金额 (总资产的10%)
+        target_order_amount = await request.app['trader']._calculate_order_amount('buy') # buy/sell 结果一样
         
         # 构建响应数据
         status = {
@@ -377,10 +394,13 @@ async def handle_status(request):
             "total_assets": total_assets,
             "usdt_balance": usdt_balance,
             "bnb_balance": bnb_balance,
-            "market_trend": trend_text,
-            "next_buy_amount": next_buy_amount,
-            "next_sell_amount": next_sell_amount,
-            "trade_history": trade_history or []
+            "target_order_amount": target_order_amount, # 使用新的字段
+            "trade_history": trade_history or [],
+            "last_trade_price": last_trade_price,
+            "last_trade_time": last_trade_time, # 保留原始时间戳供需要的地方
+            "last_trade_time_str": last_trade_time_str, # 添加格式化时间字符串
+            "total_profit": total_profit, # 添加总盈亏
+            "profit_rate": profit_rate # 添加盈亏率
         }
         
         return web.json_response(status)
@@ -432,17 +452,9 @@ async def start_web_server(trader):
 async def handle_log_content(request):
     """只返回日志内容的API端点"""
     try:
-        log_path = os.path.join(LogConfig.LOG_DIR, 'trading_system.log')
-        if not os.path.exists(log_path):
+        content = await _read_log_content()
+        if content is None:
             return web.Response(text="", status=404)
-            
-        async with aiofiles.open(log_path, mode='r', encoding='utf-8') as f:
-            content = await f.read()
-            
-        # 将日志按行分割并倒序排列
-        lines = content.strip().split('\n')
-        lines.reverse()
-        content = '\n'.join(lines)
             
         return web.Response(text=content)
     except Exception as e:

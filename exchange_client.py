@@ -5,6 +5,7 @@ from config import SYMBOL, DEBUG_MODE, API_TIMEOUT, RECV_WINDOW
 from datetime import datetime
 import time
 import asyncio
+import math # 导入 math 模块
 
 class ExchangeClient:
     def __init__(self):
@@ -39,14 +40,11 @@ class ExchangeClient:
         self.logger.setLevel(logging.INFO)
         self.logger.info("交易所客户端初始化完成")
         
-        self.balance_cache = {'timestamp': 0, 'data': None}
-        self.cache_ttl = 30  # 30秒缓存时间
-        self.time_diff = 0  # 添加时间差属性
         self.markets_loaded = False
-        self.funding_balance_cache = {
-            'timestamp': 0,
-            'data': {}
-        }
+        self.time_diff = 0
+        self.balance_cache = {'timestamp': 0, 'data': None}
+        self.funding_balance_cache = {'timestamp': 0, 'data': {}}
+        self.cache_ttl = 30  # 缓存有效期（秒）
     
     def _verify_credentials(self):
         """验证API密钥是否存在"""
@@ -162,6 +160,7 @@ class ExchangeClient:
             return {}
 
     async def fetch_balance(self, params=None):
+        """获取账户余额（含缓存机制）"""
         now = time.time()
         if now - self.balance_cache['timestamp'] < self.cache_ttl:
             return self.balance_cache['data']
@@ -170,6 +169,7 @@ class ExchangeClient:
             params = params or {}
             params['timestamp'] = int(time.time() * 1000) + self.time_diff
             balance = await self.exchange.fetch_balance(params)
+            
             # 获取理财账户余额
             funding_balance = await self.fetch_funding_balance()
             
@@ -186,7 +186,8 @@ class ExchangeClient:
             return balance
         except Exception as e:
             self.logger.error(f"获取余额失败: {str(e)}")
-            raise
+            # 出错时不抛出异常，而是返回一个空的但结构完整的余额字典
+            return {'free': {}, 'used': {}, 'total': {}}
     
     async def create_order(self, symbol, type, side, amount, price):
         try:
@@ -272,34 +273,6 @@ class ExchangeClient:
             self.logger.error(f"获取活期理财产品失败: {str(e)}")
             raise
 
-    async def transfer_to_savings(self, asset, amount):
-        """从现货账户申购活期理财"""
-        try:
-            # 获取产品ID
-            product_id = await self.get_flexible_product_id(asset)
-            
-            # 格式化金额，确保精度正确
-            if asset == 'USDT':
-                formatted_amount = "{:.2f}".format(float(amount))  # USDT保留2位小数
-            elif asset == 'BNB':
-                formatted_amount = "{:.8f}".format(float(amount))  # BNB保留8位小数
-            else:
-                formatted_amount = str(amount)
-            
-            params = {
-                'asset': asset,
-                'amount': formatted_amount,
-                'productId': product_id,
-                'timestamp': int(time.time() * 1000 + self.time_diff)
-            }
-            self.logger.info(f"开始申购: {formatted_amount} {asset} 到活期理财")
-            result = await self.exchange.sapi_post_simple_earn_flexible_subscribe(params)
-            self.logger.info(f"划转成功: {result}")
-            return result
-        except Exception as e:
-            self.logger.error(f"申购失败: {str(e)}")
-            raise
-
     async def transfer_to_spot(self, asset, amount):
         """从活期理财赎回到现货账户"""
         try:
@@ -324,7 +297,45 @@ class ExchangeClient:
             self.logger.info(f"开始赎回: {formatted_amount} {asset} 到现货")
             result = await self.exchange.sapi_post_simple_earn_flexible_redeem(params)
             self.logger.info(f"划转成功: {result}")
+            
+            # 赎回后清除余额缓存，确保下次获取最新余额
+            self.balance_cache = {'timestamp': 0, 'data': None}
+            self.funding_balance_cache = {'timestamp': 0, 'data': {}}
+            
             return result
         except Exception as e:
             self.logger.error(f"赎回失败: {str(e)}")
+            raise
+
+    async def transfer_to_savings(self, asset, amount):
+        """从现货账户申购活期理财"""
+        try:
+            # 获取产品ID
+            product_id = await self.get_flexible_product_id(asset)
+            
+            # 格式化金额，确保精度正确
+            if asset == 'USDT':
+                formatted_amount = "{:.2f}".format(float(amount))  # USDT保留2位小数
+            elif asset == 'BNB':
+                formatted_amount = "{:.8f}".format(float(amount))  # BNB保留8位小数
+            else:
+                formatted_amount = str(amount)
+            
+            params = {
+                'asset': asset,
+                'amount': formatted_amount,
+                'productId': product_id,
+                'timestamp': int(time.time() * 1000 + self.time_diff)
+            }
+            self.logger.info(f"开始申购: {formatted_amount} {asset} 到活期理财")
+            result = await self.exchange.sapi_post_simple_earn_flexible_subscribe(params)
+            self.logger.info(f"划转成功: {result}")
+            
+            # 申购后清除余额缓存，确保下次获取最新余额
+            self.balance_cache = {'timestamp': 0, 'data': None}
+            self.funding_balance_cache = {'timestamp': 0, 'data': {}}
+            
+            return result
+        except Exception as e:
+            self.logger.error(f"申购失败: {str(e)}")
             raise 

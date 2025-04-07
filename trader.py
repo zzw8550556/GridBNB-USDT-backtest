@@ -111,6 +111,39 @@ class GridTrader:
                 f"市场当前价: {market_price:.4f} | "
                 f"价差: {price_diff:+.2f}%"
             )
+
+            # 获取并更新最新的10条交易记录
+            try:
+                self.logger.info("正在获取最近10条交易记录...")
+                latest_trades = await self.exchange.fetch_my_trades(self.config.SYMBOL, limit=10)
+                if latest_trades:
+                    # 转换格式以匹配 OrderTracker 期望的格式 (如果需要)
+                    formatted_trades = []
+                    for trade in latest_trades:
+                        # 注意: ccxt 返回的 trade 结构可能需要调整
+                        # 假设 OrderTracker 需要 timestamp(秒), side, price, amount, profit, order_id
+                        # profit 可能需要后续计算或默认为0
+                        formatted_trade = {
+                            'timestamp': trade['timestamp'] / 1000, # ms to s
+                            'side': trade['side'],
+                            'price': trade['price'],
+                            'amount': trade['amount'],
+                            'cost': trade['cost'], # 保留原始 cost
+                            'fee': trade.get('fee', {}).get('cost', 0), # 提取手续费
+                            'order_id': trade.get('order'), # 关联订单ID
+                            'profit': 0 # 初始化时设为0，或者后续计算
+                        }
+                        formatted_trades.append(formatted_trade)
+                    
+                    # 直接替换 OrderTracker 中的历史记录
+                    self.order_tracker.trade_history = formatted_trades
+                    self.order_tracker.save_trade_history() # 保存到文件
+                    self.logger.info(f"已使用最新的 {len(formatted_trades)} 条交易记录更新历史。")
+                else:
+                    self.logger.info("未能获取到最新的交易记录，将使用本地历史。")
+            except Exception as trade_fetch_error:
+                self.logger.error(f"获取或处理最新交易记录时出错: {trade_fetch_error}")
+
             self.initialized = True
         except Exception as e:
             self.initialized = False

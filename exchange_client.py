@@ -337,4 +337,20 @@ class ExchangeClient:
             return result
         except Exception as e:
             self.logger.error(f"申购失败: {str(e)}")
-            raise 
+            raise
+
+    async def fetch_my_trades(self, symbol, limit=10):
+        """获取指定交易对的最近成交记录"""
+        self.logger.debug(f"获取最近 {limit} 条成交记录 for {symbol}...")
+        if not self.markets_loaded:
+            await self.load_markets()
+        try:
+            # 确保使用市场ID
+            market = self.exchange.market(symbol)
+            trades = await self.exchange.fetch_my_trades(market['id'], limit=limit)
+            self.logger.info(f"成功获取 {len(trades)} 条最近成交记录 for {symbol}")
+            return trades
+        except Exception as e:
+            self.logger.error(f"获取成交记录失败 for {symbol}: {str(e)}")
+            # 返回空列表或根据需要处理错误
+            return [] 

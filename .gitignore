@@ -88,6 +88,8 @@ celerybeat-schedule
 
 # Environments
 .env
+# 但不排除示例环境文件
+!.env.example
 .venv
 env/
 venv/

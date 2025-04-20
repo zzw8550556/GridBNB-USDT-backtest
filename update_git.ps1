@@ -7,10 +7,10 @@ git rm --cached .env
 git add .
 
 # Commit the changes
-git commit -m "Add .gitignore and remove .env from tracking"
+git commit -m "添加.gitignore和.env.example示例文件"
 
 # Push to GitHub
 git push
 
-Write-Host "Git operations completed. Press any key to exit..."
+Write-Host "已完成Git操作。按任意键退出..."
 $null = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")

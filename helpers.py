@@ -7,6 +7,45 @@ import psutil
 import os
 from logging.handlers import TimedRotatingFileHandler
 
+def format_trade_message(side, symbol, price, amount, total, grid_size, retry_count=None):
+    """格式化交易消息为美观的文本格式
+    
+    Args:
+        side (str): 交易方向 ('buy' 或 'sell')
+        symbol (str): 交易对
+        price (float): 交易价格
+        amount (float): 交易数量
+        total (float): 交易总额
+        grid_size (float): 网格大小
+        retry_count (tuple, optional): 重试次数，格式为 (当前次数, 最大次数)
+    
+    Returns:
+        str: 格式化后的消息文本
+    """
+    # 使用emoji增加可读性
+    direction_emoji = "🟢" if side == 'buy' else "🔴"
+    direction_text = "买入" if side == 'buy' else "卖出"
+    
+    # 构建消息主体
+    message = f"""
+{direction_emoji} {direction_text} {symbol}
+━━━━━━━━━━━━━━━━━━━━
+💰 价格：{price:.2f} USDT
+📊 数量：{amount:.4f} BNB
+💵 金额：{total:.2f} USDT
+📈 网格：{grid_size}%
+"""
+    
+    # 如果有重试信息，添加重试次数
+    if retry_count:
+        current, max_retries = retry_count
+        message += f"🔄 尝试：{current}/{max_retries}次\n"
+    
+    # 添加时间戳
+    message += f"⏰ 时间：{time.strftime('%Y-%m-%d %H:%M:%S')}"
+    
+    return message
+
 def send_pushplus_message(content, title="交易信号通知"):
     if not PUSHPLUS_TOKEN:
         logging.error("未配置PUSHPLUS_TOKEN，无法发送通知")
@@ -17,7 +56,7 @@ def send_pushplus_message(content, title="交易信号通知"):
         "token": PUSHPLUS_TOKEN,
         "title": title,
         "content": content,
-        "template": "txt"  # 改用文本模板，更可靠
+        "template": "txt"  # 使用文本模板
     }
     try:
         logging.info(f"正在发送推送通知: {title}")

@@ -122,11 +122,11 @@ async def handle_log(request):
                 <!-- 状态卡片 -->
                 <div class="grid-container mb-8">
                     <div class="card">
-                        <h2 class="text-lg font-semibold mb-4">基本信息</h2>
+                        <h2 class="text-lg font-semibold mb-4">基本信息 & S1</h2>
                         <div class="space-y-2">
                             <div class="flex justify-between">
                                 <span>交易对</span>
-                                <span class="status-value">BNB/USDT</span>
+                                <span class="status-value">{request.app['trader'].symbol}</span>
                             </div>
                             <div class="flex justify-between">
                                 <span>基准价格</span>
@@ -135,6 +135,18 @@ async def handle_log(request):
                             <div class="flex justify-between">
                                 <span>当前价格 (USDT)</span>
                                 <span class="status-value" id="current-price">--</span>
+                            </div>
+                            <div class="flex justify-between pt-2 border-t mt-2">
+                                <span>52日最高价 (S1)</span>
+                                <span class="status-value" id="s1-high">--</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span>52日最低价 (S1)</span>
+                                <span class="status-value" id="s1-low">--</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span>当前仓位 (%)</span>
+                                <span class="status-value" id="position-percentage">--</span>
                             </div>
                         </div>
                     </div>
@@ -270,33 +282,41 @@ async def handle_log(request):
                         
                         // 更新基本信息
                         document.querySelector('#base-price').textContent = 
-                            data.base_price.toFixed(2) + ' USDT';
+                            data.base_price ? data.base_price.toFixed(2) + ' USDT' : '--';
                         
                         // 更新当前价格
                         document.querySelector('#current-price').textContent = 
-                            data.current_price.toFixed(2);
+                            data.current_price ? data.current_price.toFixed(2) : '--';
+                        
+                        // 更新 S1 信息和仓位
+                        document.querySelector('#s1-high').textContent = 
+                            data.s1_daily_high ? data.s1_daily_high.toFixed(2) : '--';
+                        document.querySelector('#s1-low').textContent = 
+                            data.s1_daily_low ? data.s1_daily_low.toFixed(2) : '--';
+                        document.querySelector('#position-percentage').textContent = 
+                            data.position_percentage != null ? data.position_percentage.toFixed(2) + '%' : '--';
                         
                         // 更新网格参数
                         document.querySelector('#grid-size').textContent = 
-                            (data.grid_size * 100).toFixed(2) + '%';
+                            data.grid_size ? (data.grid_size * 100).toFixed(2) + '%' : '--';
                         document.querySelector('#threshold').textContent = 
-                            (data.threshold * 100).toFixed(2) + '%';
+                            data.threshold ? (data.threshold * 100).toFixed(2) + '%' : '--';
                         
                         // 更新资金状况
                         document.querySelector('#total-assets').textContent = 
-                            data.total_assets.toFixed(2) + ' USDT';
+                            data.total_assets ? data.total_assets.toFixed(2) + ' USDT' : '--';
                         document.querySelector('#usdt-balance').textContent = 
-                            data.usdt_balance.toFixed(2);
+                            data.usdt_balance != null ? data.usdt_balance.toFixed(2) : '--';
                         document.querySelector('#bnb-balance').textContent = 
-                            data.bnb_balance.toFixed(4);
+                            data.bnb_balance != null ? data.bnb_balance.toFixed(4) : '--';
                         
                         // 更新盈亏信息
                         const totalProfitElement = document.querySelector('#total-profit');
-                        totalProfitElement.textContent = data.total_profit.toFixed(2);
+                        totalProfitElement.textContent = data.total_profit ? data.total_profit.toFixed(2) : '--';
                         totalProfitElement.className = `status-value ${{data.total_profit >= 0 ? 'profit' : 'loss'}}`;
 
                         const profitRateElement = document.querySelector('#profit-rate');
-                        profitRateElement.textContent = data.profit_rate.toFixed(2) + '%';
+                        profitRateElement.textContent = data.profit_rate ? data.profit_rate.toFixed(2) + '%' : '--';
                         profitRateElement.className = `status-value ${{data.profit_rate >= 0 ? 'profit' : 'loss'}}`;
                         
                         // 更新交易历史
@@ -314,7 +334,7 @@ async def handle_log(request):
                         
                         // 更新目标委托金额
                         document.querySelector('#target-order-amount').textContent = 
-                            data.target_order_amount.toFixed(2) + ' USDT';
+                            data.target_order_amount ? data.target_order_amount.toFixed(2) + ' USDT' : '--';
                         
                         console.log('状态更新成功:', data);
                     }} catch (error) {{
@@ -338,16 +358,19 @@ async def handle_log(request):
 async def handle_status(request):
     """处理状态API请求"""
     try:
+        trader = request.app['trader']
+        s1_controller = trader.position_controller_s1 # 获取 S1 控制器实例
+
         # 获取交易所数据
-        balance = await request.app['trader'].exchange.fetch_balance()
-        current_price = await request.app['trader']._get_latest_price()
+        balance = await trader.exchange.fetch_balance()
+        current_price = await trader._get_latest_price() or 0 # 提供默认值以防失败
         
         # 获取理财账户余额
-        funding_balance = await request.app['trader'].exchange.fetch_funding_balance()
+        funding_balance = await trader.exchange.fetch_funding_balance()
         
         # 获取网格参数
-        grid_size = request.app['trader'].grid_size
-        grid_size_decimal = grid_size / 100
+        grid_size = trader.grid_size
+        grid_size_decimal = grid_size / 100 if grid_size else 0
         threshold = grid_size_decimal / 5
         
         # 计算总资产
@@ -356,7 +379,7 @@ async def handle_status(request):
         total_assets = usdt_balance + (bnb_balance * current_price)
         
         # 计算总盈亏和盈亏率
-        initial_principal = request.app['trader'].config.INITIAL_PRINCIPAL
+        initial_principal = trader.config.INITIAL_PRINCIPAL
         total_profit = 0.0
         profit_rate = 0.0
         if initial_principal > 0:
@@ -366,14 +389,14 @@ async def handle_status(request):
             logging.warning("初始本金未设置或为0，无法计算盈亏率")
         
         # 获取最近交易信息
-        last_trade_price = request.app['trader'].last_trade_price
-        last_trade_time = request.app['trader'].last_trade_time
+        last_trade_price = trader.last_trade_price
+        last_trade_time = trader.last_trade_time
         last_trade_time_str = datetime.fromtimestamp(last_trade_time).strftime('%Y-%m-%d %H:%M:%S') if last_trade_time else '--'
         
         # 获取交易历史
         trade_history = []
-        if hasattr(request.app['trader'], 'order_tracker'):
-            trades = request.app['trader'].order_tracker.get_trade_history()
+        if hasattr(trader, 'order_tracker'):
+            trades = trader.order_tracker.get_trade_history()
             trade_history = [{
                 'timestamp': datetime.fromtimestamp(trade['timestamp']).strftime('%Y-%m-%d %H:%M:%S'),
                 'side': trade.get('side', '--'),
@@ -383,29 +406,40 @@ async def handle_status(request):
             } for trade in trades[-10:]]  # 只取最近10笔交易
         
         # 计算目标委托金额 (总资产的10%)
-        target_order_amount = await request.app['trader']._calculate_order_amount('buy') # buy/sell 结果一样
+        target_order_amount = await trader._calculate_order_amount('buy') # buy/sell 结果一样
+        
+        # 获取仓位百分比 - 使用风控管理器的方法获取最准确的仓位比例
+        position_ratio = await trader.risk_manager._get_position_ratio()
+        position_percentage = position_ratio * 100
+        
+        # 获取 S1 高低价
+        s1_high = s1_controller.s1_daily_high if s1_controller else None
+        s1_low = s1_controller.s1_daily_low if s1_controller else None
         
         # 构建响应数据
         status = {
-            "base_price": request.app['trader'].base_price,
+            "base_price": trader.base_price,
             "current_price": current_price,
             "grid_size": grid_size_decimal,
             "threshold": threshold,
             "total_assets": total_assets,
             "usdt_balance": usdt_balance,
             "bnb_balance": bnb_balance,
-            "target_order_amount": target_order_amount, # 使用新的字段
+            "target_order_amount": target_order_amount,
             "trade_history": trade_history or [],
             "last_trade_price": last_trade_price,
-            "last_trade_time": last_trade_time, # 保留原始时间戳供需要的地方
-            "last_trade_time_str": last_trade_time_str, # 添加格式化时间字符串
-            "total_profit": total_profit, # 添加总盈亏
-            "profit_rate": profit_rate # 添加盈亏率
+            "last_trade_time": last_trade_time,
+            "last_trade_time_str": last_trade_time_str,
+            "total_profit": total_profit,
+            "profit_rate": profit_rate,
+            "s1_daily_high": s1_high,
+            "s1_daily_low": s1_low,
+            "position_percentage": position_percentage
         }
         
         return web.json_response(status)
     except Exception as e:
-        logging.error(f"获取状态数据失败: {str(e)}")
+        logging.error(f"获取状态数据失败: {str(e)}", exc_info=True)
         return web.json_response({"error": str(e)}, status=500)
 
 async def start_web_server(trader):

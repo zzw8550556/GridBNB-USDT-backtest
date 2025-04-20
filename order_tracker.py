@@ -103,7 +103,7 @@ class OrderTracker:
     def add_trade(self, trade):
         """添加交易记录"""
         # 验证必要字段
-        required_fields = ['timestamp', 'side', 'price', 'amount', 'profit', 'order_id']
+        required_fields = ['timestamp', 'side', 'price', 'amount', 'order_id']
         for field in required_fields:
             if field not in trade:
                 self.logger.error(f"交易记录缺少必要字段: {field}")
@@ -114,7 +114,6 @@ class OrderTracker:
             trade['timestamp'] = float(trade['timestamp'])
             trade['price'] = float(trade['price'])
             trade['amount'] = float(trade['amount'])
-            trade['profit'] = float(trade['profit'])
         except (ValueError, TypeError) as e:
             self.logger.error(f"交易记录数据类型错误: {str(e)}")
             return

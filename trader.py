@@ -8,9 +8,10 @@ import numpy as np
 from datetime import datetime
 import time
 import math
-from helpers import send_pushplus_message
+from helpers import send_pushplus_message, format_trade_message
 import json
 from monitor import TradingMonitor
+from position_controller_s1 import PositionControllerS1
 
 class GridTrader:
     def __init__(self, exchange, config):
@@ -56,6 +57,7 @@ class GridTrader:
             'data': {}
         }
         self.funding_cache_ttl = 60  # 理财余额缓存60秒
+        self.position_controller_s1 = PositionControllerS1(self)
 
     async def initialize(self):
         if self.initialized:
@@ -201,22 +203,32 @@ class GridTrader:
     
     async def _check_sell_signal(self):
         current_price = self.current_price
-        if current_price >= self._get_upper_band():
+        initial_upper_band = self._get_upper_band()  # 初始上轨价格
+        
+        if current_price >= initial_upper_band:
             # 记录最高价
             new_highest = current_price if self.highest is None else max(self.highest, current_price)
+            threshold = FLIP_THRESHOLD(self.grid_size)
+            
+            # 计算动态触发价格 (基于最高价的回调阈值)
+            dynamic_trigger_price = new_highest * (1 - threshold) if new_highest is not None else initial_upper_band
+            
             # 只在最高价更新时打印日志
             if new_highest != self.highest:
                 self.highest = new_highest
+                # 重新计算动态触发价，基于更新后的最高价
+                dynamic_trigger_price = self.highest * (1 - threshold)
+                
                 self.logger.info(
                     f"卖出监测 | "
                     f"当前价: {current_price:.2f} | "
-                    f"触发价: {self._get_upper_band():.5f} | "
+                    f"触发价(动态): {dynamic_trigger_price:.5f} | "
                     f"最高价: {self.highest:.2f}"
                 )
-            threshold = FLIP_THRESHOLD(self.grid_size)
+                
             # 从最高价下跌指定比例时触发卖出
             if self.highest and current_price <= self.highest * (1 - threshold):
-                self.logger.info(f"触发卖出信号 | 当前价: {current_price:.2f} | 已下跌: {(1-current_price/self.highest)*100:.2f}%")
+                self.logger.info(f"触发卖出信号 | 当前价: {current_price:.2f} | 目标价: {self.highest * (1 - threshold):.5f} | 已下跌: {(1-current_price/self.highest)*100:.2f}%")
                 # 检查卖出余额是否充足
                 if not await self.check_sell_balance():
                     return False
@@ -266,48 +278,81 @@ class GridTrader:
         return balance.get('free', {}).get(currency, 0) * SAFETY_MARGIN
     
     async def main_loop(self):
-        """主交易循环"""
         while True:
             try:
                 if not self.initialized:
                     await self.initialize()
-                
+                    await self.position_controller_s1.update_daily_s1_levels()
+
+                # 保留S1水平更新
+                await self.position_controller_s1.update_daily_s1_levels()
+
                 # 获取当前价格
                 current_price = await self._get_latest_price()
                 if not current_price:
+                    await asyncio.sleep(5)
                     continue
-                
                 self.current_price = current_price
-                
-                # 判断是否在监控状态
-                in_monitoring = (
-                    (current_price >= self._get_upper_band() and self.highest is not None) or  # 卖出监控
-                    (current_price <= self._get_lower_band() and self.lowest is not None)      # 买入监控
-                )
-                
-                # 根据状态设置不同的延迟
-                delay = 2 if in_monitoring else 5
-                
-                await asyncio.sleep(delay)  # 根据状态调整检测间隔
-                
-                # 检查是否需要调整网格大小
-                if self.last_grid_adjust_time and \
-                   time.time() - self.last_grid_adjust_time > self.config.GRID_PARAMS['adjust_interval'] * 3600:
-                    await self.adjust_grid_size()
-                    self.last_grid_adjust_time = time.time()
-                
-                # 检查风控
-                if await self.risk_manager.multi_layer_check():
-                    continue
-                
-                # 检查买卖信号
-                if await self._check_sell_signal():
+
+                # 优先检查买入卖出信号，不执行风控检查
+                # 添加重试机制确保买入卖出检测正常运行
+                sell_signal = await self._check_signal_with_retry(self._check_sell_signal, "卖出检测")
+                if sell_signal:
                     await self.execute_order('sell')
-                elif await self._check_buy_signal():
-                    await self.execute_order('buy')
-                    
+                else:
+                    buy_signal = await self._check_signal_with_retry(self._check_buy_signal, "买入检测")
+                    if buy_signal:
+                        await self.execute_order('buy')
+                    else:
+                        # 只有在没有交易信号时才执行其他操作
+                        
+                        # 执行风控检查
+                        if await self.risk_manager.multi_layer_check():
+                            await asyncio.sleep(5)
+                            continue
+
+                        # 执行S1策略
+                        await self.position_controller_s1.check_and_execute()
+                        
+                        # 调整网格大小
+                        adjust_interval_hours = self.config.GRID_PARAMS.get('adjust_interval', 24) 
+                        adjust_interval_seconds = adjust_interval_hours * 3600
+                        if time.time() - self.last_grid_adjust_time > adjust_interval_seconds:
+                            self.logger.info(f"时间到了，准备调整网格大小 (间隔: {adjust_interval_hours} 小时).")
+                            await self.adjust_grid_size()
+                            self.last_grid_adjust_time = time.time()
+
+                await asyncio.sleep(5)
+
             except Exception as e:
-                self.logger.error(f"交易循环异常: {str(e)}")
+                self.logger.error(f"Main loop error: {e}", exc_info=True)
+                await asyncio.sleep(30)
+                
+    async def _check_signal_with_retry(self, check_func, check_name, max_retries=3, retry_delay=2):
+        """带重试机制的信号检测函数
+        
+        Args:
+            check_func: 要执行的检测函数 (_check_buy_signal 或 _check_sell_signal)
+            check_name: 检测名称，用于日志
+            max_retries: 最大重试次数
+            retry_delay: 重试间隔（秒）
+            
+        Returns:
+            bool: 检测结果
+        """
+        retries = 0
+        while retries <= max_retries:
+            try:
+                return await check_func()
+            except Exception as e:
+                retries += 1
+                if retries <= max_retries:
+                    self.logger.warning(f"{check_name}出错，{retry_delay}秒后进行第{retries}次重试: {str(e)}")
+                    await asyncio.sleep(retry_delay)
+                else:
+                    self.logger.error(f"{check_name}失败，达到最大重试次数({max_retries}次): {str(e)}")
+                    return False
+        return False
 
     async def _ensure_trading_funds(self):
         """确保现货账户有足够的交易资金"""
@@ -467,16 +512,24 @@ class GridTrader:
                     self.logger.info(f"基准价已更新: {self.base_price}")
                     
                     # 发送通知
-                    send_pushplus_message(
-                        f"网格交易成功通知\\n"
-                        f"操作：{{'买入' if side == 'buy' else '卖出'}} {self.config.SYMBOL}\\n"
-                        f"交易对：{self.config.SYMBOL}\\n"
-                        f"价格：{updated_order['price']}\\n"
-                        f"数量：{updated_order['filled']}\\n"
-                        f"金额：{float(updated_order['price']) * float(updated_order['filled']):.2f} USDT\\n"
-                        f"网格范围：{self.grid_size}%\\n"
-                        f"尝试次数：{retry_count + 1}/{max_retries}"
+                    # 使用更清晰的格式发送交易成功消息
+                    trade_side = 'buy' if side == 'buy' else 'sell'
+                    trade_price = float(updated_order['price'])
+                    trade_amount = float(updated_order['filled']) 
+                    trade_total = trade_price * trade_amount
+                    
+                    # 使用format_trade_message函数处理消息格式
+                    message = format_trade_message(
+                        side=trade_side,
+                        symbol=self.config.SYMBOL,
+                        price=trade_price,
+                        amount=trade_amount,
+                        total=trade_total,
+                        grid_size=self.grid_size,
+                        retry_count=(retry_count + 1, max_retries)
                     )
+                    
+                    send_pushplus_message(message, "交易成功通知")
                     
                     # 交易完成后，检查并转移多余资金到理财
                     await self._transfer_excess_funds()
@@ -510,9 +563,25 @@ class GridTrader:
                             self.last_trade_price = float(check_order['price'])
                             await self._update_total_assets()
                             self.logger.info(f"基准价已更新: {self.base_price}")
-                            send_pushplus_message(
-                                f"网格交易成功通知\\n操作：{{'买入' if side == 'buy' else '卖出'}} {self.config.SYMBOL}\\n价格：{check_order['price']}"
+                            
+                            # 使用更清晰的格式发送交易成功消息
+                            trade_side = 'buy' if side == 'buy' else 'sell'
+                            trade_price = float(check_order['price'])
+                            trade_amount = float(check_order['filled']) 
+                            trade_total = trade_price * trade_amount
+                            
+                            # 使用format_trade_message函数处理消息格式
+                            message = format_trade_message(
+                                side=trade_side,
+                                symbol=self.config.SYMBOL,
+                                price=trade_price,
+                                amount=trade_amount,
+                                total=trade_total,
+                                grid_size=self.grid_size,
+                                retry_count=(retry_count + 1, max_retries)
                             )
+                            
+                            send_pushplus_message(message, "交易成功通知")
                             
                             # 交易完成后，检查并转移多余资金到理财
                             await self._transfer_excess_funds()
@@ -552,13 +621,13 @@ class GridTrader:
                 if "资金不足" in str(e) or "Insufficient" in str(e):
                     self.logger.error("资金不足，停止重试")
                     # 发送错误通知
-                    send_pushplus_message(
-                        f"网格交易错误通知\\n"
-                        f"操作：{{'买入' if side == 'buy' else '卖出'}}失败\\n"
-                        f"交易对：{self.config.SYMBOL}\\n"
-                        f"错误信息：{str(e)}",
-                        "错误通知"
-                    )
+                    error_message = f"""❌ 交易失败
+━━━━━━━━━━━━━━━━━━━━
+🔍 类型: {side} 失败
+📊 交易对: {self.config.SYMBOL}
+⚠️ 错误: 资金不足
+"""
+                    send_pushplus_message(error_message, "交易错误通知")
                     return False
                 
                 # 如果还有重试次数，稍等后继续
@@ -569,13 +638,13 @@ class GridTrader:
         # 达到最大重试次数后仍未成功
         if retry_count >= max_retries:
             self.logger.error(f"{side}单执行失败，达到最大重试次数: {max_retries}")
-            send_pushplus_message(
-                f"网格交易错误通知\\n"
-                f"操作：{{'买入' if side == 'buy' else '卖出'}}失败\\n"
-                f"交易对：{self.config.SYMBOL}\\n"
-                f"错误信息：达到最大重试次数 {max_retries} 后订单仍未成交",
-                "错误通知"
-            )
+            error_message = f"""❌ 交易失败
+━━━━━━━━━━━━━━━━━━━━
+🔍 类型: {side} 失败
+📊 交易对: {self.config.SYMBOL}
+⚠️ 错误: 达到最大重试次数 {max_retries} 次
+"""
+            send_pushplus_message(error_message, "交易错误通知")
         
         return False
 
@@ -661,14 +730,15 @@ class GridTrader:
             })
             
             # 发送通知
-            send_pushplus_message(
-                f"网格交易执行通知\\n"
-                f"交易方向：{{'买入' if side == 'buy' else '卖出'}}\\n"
-                f"成交价格：{price}\\n"
-                f"成交数量：{amount}\\n"
-                f"交易金额：{total:.2f} USDT\\n"
-                f"预计利润：{profit:.2f} USDT"
+            message = format_trade_message(
+                side=side,
+                symbol=self.symbol,
+                price=price,
+                amount=amount,
+                total=total,
+                grid_size=self.grid_size
             )
+            send_pushplus_message(message, "交易执行通知")
         except Exception as e:
             self.logger.error(f"记录订单失败: {str(e)}")
 
@@ -1008,9 +1078,8 @@ class GridTrader:
             # 处理BNB：如果现货超出目标，转移多余部分
             if spot_bnb_balance > target_bnb_hold_amount:
                 transfer_amount = spot_bnb_balance - target_bnb_hold_amount
-                # 增加最小划转金额判断
-                # 将阈值提高到等值 1.0 USDT
-                if transfer_amount * current_price > 1.0: 
+                # 检查转移金额是否大于等于 0.01 BNB
+                if transfer_amount >= 0.01:
                     self.logger.info(f"转移多余BNB到理财: {transfer_amount:.4f}")
                     try:
                         await self.exchange.transfer_to_savings('BNB', transfer_amount)
@@ -1018,7 +1087,8 @@ class GridTrader:
                     except Exception as transfer_e:
                         self.logger.error(f"转移BNB到理财失败: {str(transfer_e)}")
                 else:
-                    self.logger.info(f"BNB超出部分 ({transfer_amount:.4f}) 价值过小，不执行划转")
+                    # 修改日志消息以反映新的阈值
+                    self.logger.info(f"BNB超出部分 ({transfer_amount:.4f}) 低于最小申购额 0.01 BNB，不执行划转")
 
             if transfer_executed:
                 self.logger.info("多余资金已尝试转移到理财账户")
@@ -1116,28 +1186,55 @@ class GridTrader:
                 # 多余的申购到理财
                 transfer_amount = usdt_balance - target_usdt
                 self.logger.info(f"发现可划转USDT: {transfer_amount}")
-                await self.exchange.transfer_to_savings('USDT', transfer_amount)
+                # --- 添加最小申购金额检查 (>= 1 USDT) ---
+                if transfer_amount >= 1.0:
+                    try:
+                        await self.exchange.transfer_to_savings('USDT', transfer_amount)
+                        self.logger.info(f"已将 {transfer_amount:.2f} USDT 申购到理财")
+                    except Exception as e_savings_usdt:
+                         self.logger.error(f"申购USDT到理财失败: {str(e_savings_usdt)}")
+                else:
+                     self.logger.info(f"可划转USDT ({transfer_amount:.2f}) 低于最小申购额 1.0 USDT，跳过申购")
             elif usdt_balance < target_usdt:
                 # 不足的从理财赎回
                 transfer_amount = target_usdt - usdt_balance
                 self.logger.info(f"从理财赎回USDT: {transfer_amount}")
-                await self.exchange.transfer_to_spot('USDT', transfer_amount)
+                # 同样，赎回USDT也可能需要最小金额检查，如果遇到错误需添加
+                try:
+                    await self.exchange.transfer_to_spot('USDT', transfer_amount)
+                    self.logger.info(f"已从理财赎回 {transfer_amount:.2f} USDT")
+                except Exception as e_spot_usdt:
+                    self.logger.error(f"从理财赎回USDT失败: {str(e_spot_usdt)}")
             
             # 调整BNB余额
             if bnb_balance > target_bnb:
                 # 多余的申购到理财
                 transfer_amount = bnb_balance - target_bnb
                 self.logger.info(f"发现可划转BNB: {transfer_amount}")
-                await self.exchange.transfer_to_savings('BNB', transfer_amount)
+                # --- 添加最小申购金额检查 ---
+                if transfer_amount >= 0.01:
+                    try:
+                        await self.exchange.transfer_to_savings('BNB', transfer_amount)
+                        self.logger.info(f"已将 {transfer_amount:.4f} BNB 申购到理财")
+                    except Exception as e_savings:
+                        self.logger.error(f"申购BNB到理财失败: {str(e_savings)}")
+                else:
+                    self.logger.info(f"可划转BNB ({transfer_amount:.4f}) 低于最小申购额 0.01 BNB，跳过申购")
             elif bnb_balance < target_bnb:
                 # 不足的从理财赎回
                 transfer_amount = target_bnb - bnb_balance
                 self.logger.info(f"从理财赎回BNB: {transfer_amount}")
-                await self.exchange.transfer_to_spot('BNB', transfer_amount)
+                # 赎回操作通常有不同的最低限额，或者限额较低，这里暂时不加检查
+                # 如果赎回也遇到 -6005，需要在这里也加上对应的赎回最小额检查
+                try:
+                    await self.exchange.transfer_to_spot('BNB', transfer_amount)
+                    self.logger.info(f"已从理财赎回 {transfer_amount:.4f} BNB")
+                except Exception as e_spot:
+                     self.logger.error(f"从理财赎回BNB失败: {str(e_spot)}")
             
             self.logger.info(
-                f"资金分配完成\\n"
-                f"USDT: {total_usdt:.2f}\\n"
+                f"资金分配完成\n"
+                f"USDT: {total_usdt:.2f}\n"
                 f"BNB: {total_bnb:.4f}"
             )
         except Exception as e:
@@ -1495,3 +1592,35 @@ class GridTrader:
             self.logger.error(f"检查卖出余额失败: {str(e)}")
             send_pushplus_message(f"余额检查错误\\n交易类型: 卖出\\n错误信息: {str(e)}", "系统错误")
             return False
+
+    async def _execute_trade(self, side, price, amount, retry_count=None):
+        """执行交易并发送通知"""
+        try:
+            order = await self.exchange.create_order(
+                self.symbol,
+                'market',
+                side,
+                amount,
+                price
+            )
+            
+            # 计算交易总额
+            total = float(amount) * float(price)
+            
+            # 使用新的格式化函数发送通知
+            message = format_trade_message(
+                side=side,
+                symbol=self.symbol,
+                price=float(price),
+                amount=float(amount),
+                total=total,
+                grid_size=self.grid_size,
+                retry_count=retry_count
+            )
+            
+            send_pushplus_message(message, "交易执行通知")
+            
+            return order
+        except Exception as e:
+            self.logger.error(f"执行交易失败: {str(e)}")
+            raise

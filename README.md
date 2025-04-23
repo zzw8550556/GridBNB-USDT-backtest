@@ -85,6 +85,18 @@ python main.py
 
 程序启动后将开始连接交易所、初始化状态并执行交易逻辑。
 
+
+## docker部署
+
+部署前请修改 .env 文件的 环境变量
+
+```bash
+# 拉取代码
+git clone https://github.com/EBOLABOY/GridBNB-USDT
+# 部署镜像
+docker-compose up -d
+```
+
 ## Web 界面
 
 程序启动后，会自动运行一个 Web 服务器。你可以通过浏览器访问以下地址来监控和管理交易机器人：

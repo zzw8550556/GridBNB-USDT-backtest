@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+  gridbnb-bot:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: gridbnb-bot
+    restart: always
+    env_file:
+      - .env # 引用 .env 文件
+    ports:
+      - "8080:58181" # 如果需要开放端口，请根据需要修改
+    volumes:
+      - ./:/app

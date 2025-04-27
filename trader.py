@@ -351,7 +351,7 @@ class GridTrader:
                         # 调整网格大小
                         dynamic_interval_seconds = await self._calculate_dynamic_interval_seconds()
                         if time.time() - self.last_grid_adjust_time > dynamic_interval_seconds:
-                            self.logger.info(f"时间到了，准备调整网格大小 (间隔: {adjust_interval_hours} 小时).")
+                            self.logger.info(f"时间到了，准备调整网格大小 (间隔: {dynamic_interval_seconds/3600} 小时).")
                             await self.adjust_grid_size()
                             self.last_grid_adjust_time = time.time()
 

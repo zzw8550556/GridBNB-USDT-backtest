@@ -461,7 +461,7 @@ async def handle_status(request):
             "profit_rate": profit_rate,
             "s1_daily_high": s1_high,
             "s1_daily_low": s1_low,
-            "position_percentage": position_percentage
+            "position_percentage": position_percentage,
             # ---> 新增：添加上下轨到响应数据 <---
             "grid_upper_band": upper_band,
             "grid_lower_band": lower_band

@@ -262,7 +262,7 @@ async def handle_log(request):
                                     <td class="px-6 py-4">{record["ip"]}</td>
                                     <td class="px-6 py-4">{record["path"]}</td>
                                 </tr>
-                                ''' for record in reversed(request.app['ip_logger'].get_records())[:5]])}
+                                ''' for record in list(reversed(request.app['ip_logger'].get_records()))[:5]])}
                             </tbody>
                         </table>
                     </div>

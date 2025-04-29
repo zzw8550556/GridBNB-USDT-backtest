@@ -58,6 +58,7 @@ class GridTrader:
         }
         self.funding_cache_ttl = 60  # 理财余额缓存60秒
         self.position_controller_s1 = PositionControllerS1(self)
+        self.buying_or_selling = false #在等待买入或卖出
 
     async def initialize(self):
         if self.initialized:
@@ -178,6 +179,7 @@ class GridTrader:
     async def _check_buy_signal(self):
         current_price = self.current_price
         if current_price <= self._get_lower_band():
+            self.buyingorselling = True    # 在买入或卖出
             # 记录最低价
             new_lowest = current_price if self.lowest is None else min(self.lowest, current_price)
             # 只在最低价更新时打印日志
@@ -194,6 +196,7 @@ class GridTrader:
             threshold = FLIP_THRESHOLD(self.grid_size)
             # 从最低价反弹指定比例时触发买入
             if self.lowest and current_price >= self.lowest * (1 + threshold):
+                self.buyingorselling = False # 不在买入或卖出
                 self.logger.info(f"触发买入信号 | 当前价: {current_price:.2f} | 已反弹: {(current_price/self.lowest-1)*100:.2f}%")
                 # 检查买入余额是否充足
                 if not await self.check_buy_balance(current_price):
@@ -206,6 +209,7 @@ class GridTrader:
         initial_upper_band = self._get_upper_band()  # 初始上轨价格
         
         if current_price >= initial_upper_band:
+            self.buyingorselling = True    # 在买入或卖出
             # 记录最高价
             new_highest = current_price if self.highest is None else max(self.highest, current_price)
             threshold = FLIP_THRESHOLD(self.grid_size)
@@ -228,6 +232,7 @@ class GridTrader:
                 
             # 从最高价下跌指定比例时触发卖出
             if self.highest and current_price <= self.highest * (1 - threshold):
+                self.buyingorselling = False # 不在买入或卖出
                 self.logger.info(f"触发卖出信号 | 当前价: {current_price:.2f} | 目标价: {self.highest * (1 - threshold):.5f} | 已下跌: {(1-current_price/self.highest)*100:.2f}%")
                 # 检查卖出余额是否充足
                 if not await self.check_sell_balance():
@@ -348,9 +353,9 @@ class GridTrader:
                         # 执行S1策略
                         await self.position_controller_s1.check_and_execute()
                         
-                        # 调整网格大小
+                        # 如果时间到了并且不在买入或卖出调整网格大小
                         dynamic_interval_seconds = await self._calculate_dynamic_interval_seconds()
-                        if time.time() - self.last_grid_adjust_time > dynamic_interval_seconds:
+                        if time.time() - self.last_grid_adjust_time > dynamic_interval_seconds and not self.buyingorselling:
                             self.logger.info(f"时间到了，准备调整网格大小 (间隔: {dynamic_interval_seconds/3600} 小时).")
                             await self.adjust_grid_size()
                             self.last_grid_adjust_time = time.time()

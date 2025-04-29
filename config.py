@@ -52,7 +52,6 @@ class TradingConfig:
         'initial': INITIAL_GRID,
         'min': 1.0,
         'max': 4.0,
-        'adjust_interval': 1.0,  # 每1小时检查一次
         'volatility_threshold': {
             'ranges': [
                 {'range': [0, 0.20], 'grid': 1.0},     # 波动率 0-20%，网格1.0%

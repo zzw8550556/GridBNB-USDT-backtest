@@ -58,7 +58,7 @@ class GridTrader:
         }
         self.funding_cache_ttl = 60  # 理财余额缓存60秒
         self.position_controller_s1 = PositionControllerS1(self)
-        self.buying_or_selling = false #在等待买入或卖出
+        self.buying_or_selling = False #不在等待买入或卖出
 
     async def initialize(self):
         if self.initialized:

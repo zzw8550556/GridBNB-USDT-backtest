@@ -119,3 +119,5 @@ dmypy.json
 data/
 *.log
 *.log.*
+
+update_git.ps1

@@ -41,14 +41,10 @@ class AdvancedRiskManager:
         if not self.trader.symbol_info:
             self.trader.trade_log.error("交易对信息未初始化")
             return 0
-            
-        # BNB重复计算
-        # base_amount = (
-        #    float(balance.get('total', {}).get(self.trader.symbol_info['base'], 0)) +
-        #    float(funding_balance.get(self.trader.symbol_info['base'], 0))
-        # )
-        
-        base_amount = float(balance.get('total', {}).get(self.trader.symbol_info['base'], 0))
+        base_amount = (
+            float(balance.get('free', {}).get(self.trader.symbol_info['base'], 0)) +
+            float(funding_balance.get(self.trader.symbol_info['base'], 0))
+        )
         current_price = await self.trader._get_latest_price()
         return base_amount * current_price
 
@@ -58,14 +54,12 @@ class AdvancedRiskManager:
             position_value = await self._get_position_value()
             balance = await self.trader.exchange.fetch_balance()
             funding_balance = await self.trader.exchange.fetch_funding_balance()
-
-            # USDT重复计算
-            # usdt_balance = (
-            #    float(balance.get('total', {}).get('USDT', 0)) +
-            #    float(funding_balance.get('USDT', 0))
-            # )
-
-            usdt_balance = float(balance.get('total', {}).get('USDT', 0))
+            
+            usdt_balance = (
+                float(balance.get('free', {}).get('USDT', 0)) +
+                float(funding_balance.get('USDT', 0))
+            )
+            
             total_assets = position_value + usdt_balance
             if total_assets == 0:
                 return 0

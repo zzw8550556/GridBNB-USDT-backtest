@@ -202,7 +202,7 @@ class GridTrader:
                 if not await self.check_buy_balance(current_price):
                     return False
                 return True
-        else
+        else:
             self.buying_or_selling = False    # 退出买入或卖出监测
         return False
     
@@ -240,7 +240,7 @@ class GridTrader:
                 if not await self.check_sell_balance():
                     return False
                 return True
-        else
+        else:
             self.buying_or_selling = False    # 退出买入或卖出监测
         return False
     

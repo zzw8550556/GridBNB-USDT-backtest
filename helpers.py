@@ -51,7 +51,7 @@ def send_pushplus_message(content, title="交易信号通知"):
         logging.error("未配置PUSHPLUS_TOKEN，无法发送通知")
         return
     
-    url = "https://www.pushplus.plus/send"
+    url = os.getenv('PUSHPLUS_URL', 'https://www.pushplus.plus/send')
     data = {
         "token": PUSHPLUS_TOKEN,
         "title": title,

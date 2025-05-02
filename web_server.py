@@ -498,8 +498,10 @@ async def start_web_server(trader):
     
     # 禁用访问日志
     logging.getLogger('aiohttp.access').setLevel(logging.WARNING)
+
+    home_prefix = os.getenv('HOME_PREFIX', '')
     
-    app.router.add_get('/', handle_log)
+    app.router.add_get('/' + home_prefix, handle_log)
     app.router.add_get('/api/logs', handle_log_content)
     app.router.add_get('/api/status', handle_status)
     runner = web.AppRunner(app)
@@ -510,8 +512,8 @@ async def start_web_server(trader):
     # 打印访问地址
     local_ip = "localhost"  # 或者使用实际IP
     logging.info(f"Web服务已启动:")
-    logging.info(f"- 本地访问: http://{local_ip}:58181")
-    logging.info(f"- 局域网访问: http://0.0.0.0:58181")
+    logging.info(f"- 本地访问: http://{local_ip}:58181/{home_prefix}")
+    logging.info(f"- 局域网访问: http://0.0.0.0:58181/{home_prefix}")
 
 async def handle_log_content(request):
     """只返回日志内容的API端点"""

@@ -18,6 +18,7 @@ DAILY_LOSS_LIMIT = -0.05
 MAX_POSITION_RATIO = 0.9  # 最大仓位比例 (90%)，保留10%底仓
 MIN_POSITION_RATIO = 0.1  # 最小仓位比例 (10%)，底仓
 PUSHPLUS_TOKEN = os.getenv('PUSHPLUS_TOKEN')
+PUSHPLUS_TIMEOUT = 5  # PushPlus请求超时时间（秒）
 LOG_LEVEL = logging.INFO  # 设置为INFO减少调试日志
 DEBUG_MODE = False  # 设置为True时显示详细日志
 API_TIMEOUT = 10000  # API超时时间（毫秒）

@@ -1,7 +1,7 @@
 import logging
 import requests
 from tenacity import retry, stop_after_attempt, wait_exponential
-from config import PUSHPLUS_TOKEN
+from config import PUSHPLUS_TOKEN, PUSHPLUS_TIMEOUT
 import time
 import psutil
 import os
@@ -46,7 +46,7 @@ def format_trade_message(side, symbol, price, amount, total, grid_size, retry_co
     
     return message
 
-def send_pushplus_message(content, title="交易信号通知"):
+def send_pushplus_message(content, title="交易信号通知", timeout=PUSHPLUS_TIMEOUT):
     if not PUSHPLUS_TOKEN:
         logging.error("未配置PUSHPLUS_TOKEN，无法发送通知")
         return
@@ -60,7 +60,7 @@ def send_pushplus_message(content, title="交易信号通知"):
     }
     try:
         logging.info(f"正在发送推送通知: {title}")
-        response = requests.post(url, data=data)
+        response = requests.post(url, data=data, timeout=timeout)
         response_json = response.json()
         
         if response.status_code == 200 and response_json.get('code') == 200:

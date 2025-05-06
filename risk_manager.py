@@ -42,7 +42,7 @@ class AdvancedRiskManager:
             self.trader.trade_log.error("交易对信息未初始化")
             return 0
         base_amount = (
-            float(balance.get('total', {}).get(self.trader.symbol_info['base'], 0)) +
+            float(balance.get('free', {}).get(self.trader.symbol_info['base'], 0)) +
             float(funding_balance.get(self.trader.symbol_info['base'], 0))
         )
         current_price = await self.trader._get_latest_price()
@@ -56,7 +56,7 @@ class AdvancedRiskManager:
             funding_balance = await self.trader.exchange.fetch_funding_balance()
             
             usdt_balance = (
-                float(balance.get('total', {}).get('USDT', 0)) +
+                float(balance.get('free', {}).get('USDT', 0)) +
                 float(funding_balance.get('USDT', 0))
             )
             

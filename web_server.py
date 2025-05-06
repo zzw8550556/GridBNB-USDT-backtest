@@ -159,6 +159,14 @@ async def handle_log(request):
                                 <span class="status-value" id="grid-size">--</span>
                             </div>
                             <div class="flex justify-between">
+                                <span>当前上轨 (USDT)</span>
+                                <span class="status-value" id="grid-upper-band">--</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span>当前下轨 (USDT)</span>
+                                <span class="status-value" id="grid-lower-band">--</span>
+                            </div>    
+                            <div class="flex justify-between">
                                 <span>触发阈值</span>
                                 <span class="status-value" id="threshold">--</span>
                             </div>
@@ -254,7 +262,7 @@ async def handle_log(request):
                                     <td class="px-6 py-4">{record["ip"]}</td>
                                     <td class="px-6 py-4">{record["path"]}</td>
                                 </tr>
-                                ''' for record in reversed(request.app['ip_logger'].get_records())])}
+                                ''' for record in list(reversed(request.app['ip_logger'].get_records()))[:5]])}
                             </tbody>
                         </table>
                     </div>
@@ -301,6 +309,12 @@ async def handle_log(request):
                             data.grid_size ? (data.grid_size * 100).toFixed(2) + '%' : '--';
                         document.querySelector('#threshold').textContent = 
                             data.threshold ? (data.threshold * 100).toFixed(2) + '%' : '--';
+
+                        // ---> 新增：更新网格上下轨 <---
+                        document.querySelector('#grid-upper-band').textContent =
+                            data.grid_upper_band != null ? data.grid_upper_band.toFixed(2) : '--';
+                        document.querySelector('#grid-lower-band').textContent =
+                            data.grid_lower_band != null ? data.grid_lower_band.toFixed(2) : '--';
                         
                         // 更新资金状况
                         document.querySelector('#total-assets').textContent = 
@@ -373,6 +387,19 @@ async def handle_status(request):
         grid_size_decimal = grid_size / 100 if grid_size else 0
         threshold = grid_size_decimal / 5
         
+        # ---> 新增：计算网格上下轨 <---
+        # 确保 trader.base_price 和 trader.grid_size 是有效的
+        upper_band = None
+        lower_band = None
+        if trader.base_price is not None and trader.grid_size is not None:
+             try:
+                 # 调用 trader.py 中已有的方法
+                 upper_band = trader._get_upper_band()
+                 lower_band = trader._get_lower_band()
+             except Exception as band_e:
+                 logging.warning(f"计算网格上下轨失败: {band_e}")
+        
+        
         # 计算总资产
         bnb_balance = float(balance['total'].get('BNB', 0))
         usdt_balance = float(balance['total'].get('USDT', 0))
@@ -434,7 +461,10 @@ async def handle_status(request):
             "profit_rate": profit_rate,
             "s1_daily_high": s1_high,
             "s1_daily_low": s1_low,
-            "position_percentage": position_percentage
+            "position_percentage": position_percentage,
+            # ---> 新增：添加上下轨到响应数据 <---
+            "grid_upper_band": upper_band,
+            "grid_lower_band": lower_band
         }
         
         return web.json_response(status)
@@ -468,8 +498,10 @@ async def start_web_server(trader):
     
     # 禁用访问日志
     logging.getLogger('aiohttp.access').setLevel(logging.WARNING)
+
+    home_prefix = os.getenv('HOME_PREFIX', '')
     
-    app.router.add_get('/', handle_log)
+    app.router.add_get('/' + home_prefix, handle_log)
     app.router.add_get('/api/logs', handle_log_content)
     app.router.add_get('/api/status', handle_status)
     runner = web.AppRunner(app)
@@ -480,8 +512,8 @@ async def start_web_server(trader):
     # 打印访问地址
     local_ip = "localhost"  # 或者使用实际IP
     logging.info(f"Web服务已启动:")
-    logging.info(f"- 本地访问: http://{local_ip}:58181")
-    logging.info(f"- 局域网访问: http://0.0.0.0:58181")
+    logging.info(f"- 本地访问: http://{local_ip}:58181/{home_prefix}")
+    logging.info(f"- 局域网访问: http://0.0.0.0:58181/{home_prefix}")
 
 async def handle_log_content(request):
     """只返回日志内容的API端点"""

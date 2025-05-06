@@ -1,4 +1,4 @@
-﻿from config import TradingConfig, FLIP_THRESHOLD, SAFETY_MARGIN, COOLDOWN
+from config import TradingConfig, FLIP_THRESHOLD, SAFETY_MARGIN, COOLDOWN
 from exchange_client import ExchangeClient
 from order_tracker import OrderTracker, OrderThrottler
 from risk_manager import AdvancedRiskManager
@@ -58,6 +58,7 @@ class GridTrader:
         }
         self.funding_cache_ttl = 60  # 理财余额缓存60秒
         self.position_controller_s1 = PositionControllerS1(self)
+        self.buying_or_selling = False #不在等待买入或卖出
 
     async def initialize(self):
         if self.initialized:
@@ -178,6 +179,7 @@ class GridTrader:
     async def _check_buy_signal(self):
         current_price = self.current_price
         if current_price <= self._get_lower_band():
+            self.buying_or_selling = True    # 进入买入或卖出监测
             # 记录最低价
             new_lowest = current_price if self.lowest is None else min(self.lowest, current_price)
             # 只在最低价更新时打印日志
@@ -194,11 +196,14 @@ class GridTrader:
             threshold = FLIP_THRESHOLD(self.grid_size)
             # 从最低价反弹指定比例时触发买入
             if self.lowest and current_price >= self.lowest * (1 + threshold):
+                self.buying_or_selling = False # 不在买入或卖出
                 self.logger.info(f"触发买入信号 | 当前价: {current_price:.2f} | 已反弹: {(current_price/self.lowest-1)*100:.2f}%")
                 # 检查买入余额是否充足
                 if not await self.check_buy_balance(current_price):
                     return False
                 return True
+        else:
+            self.buying_or_selling = False    # 退出买入或卖出监测
         return False
     
     async def _check_sell_signal(self):
@@ -206,6 +211,7 @@ class GridTrader:
         initial_upper_band = self._get_upper_band()  # 初始上轨价格
         
         if current_price >= initial_upper_band:
+            self.buying_or_selling = True    # 进入买入或卖出监测
             # 记录最高价
             new_highest = current_price if self.highest is None else max(self.highest, current_price)
             threshold = FLIP_THRESHOLD(self.grid_size)
@@ -228,11 +234,14 @@ class GridTrader:
                 
             # 从最高价下跌指定比例时触发卖出
             if self.highest and current_price <= self.highest * (1 - threshold):
+                self.buying_or_selling = False # 不在买入或卖出
                 self.logger.info(f"触发卖出信号 | 当前价: {current_price:.2f} | 目标价: {self.highest * (1 - threshold):.5f} | 已下跌: {(1-current_price/self.highest)*100:.2f}%")
                 # 检查卖出余额是否充足
                 if not await self.check_sell_balance():
                     return False
                 return True
+        else:
+            self.buying_or_selling = False    # 退出买入或卖出监测
         return False
     
     async def _calculate_order_amount(self, order_type):
@@ -277,6 +286,40 @@ class GridTrader:
         balance = await self.exchange.fetch_balance({'type': 'spot'})
         return balance.get('free', {}).get(currency, 0) * SAFETY_MARGIN
     
+    async def _calculate_dynamic_interval_seconds(self):
+        """根据波动率动态计算网格调整的时间间隔（秒）"""
+        try:
+            volatility = await self._calculate_volatility()
+            if volatility is None: # Handle case where volatility calculation failed
+                 raise ValueError("波动率计算失败") # Volatility calculation failed
+
+            interval_rules = self.config.DYNAMIC_INTERVAL_PARAMS['volatility_to_interval_hours']
+            default_interval_hours = self.config.DYNAMIC_INTERVAL_PARAMS['default_interval_hours']
+
+            matched_interval_hours = default_interval_hours # Start with default
+
+            for rule in interval_rules:
+                vol_range = rule['range']
+                # Check if volatility falls within the defined range [min, max)
+                if vol_range[0] <= volatility < vol_range[1]:
+                    matched_interval_hours = rule['interval_hours']
+                    self.logger.debug(f"动态间隔匹配: 波动率 {volatility:.4f} 在范围 {vol_range}, 间隔 {matched_interval_hours} 小时") # Dynamic interval match
+                    break # Stop after first match
+
+            interval_seconds = matched_interval_hours * 3600
+            # Add a minimum interval safety check
+            min_interval_seconds = 5 * 60 # Example: minimum 5 minutes
+            final_interval_seconds = max(interval_seconds, min_interval_seconds)
+
+            self.logger.debug(f"计算出的动态调整间隔: {final_interval_seconds:.0f} 秒 ({final_interval_seconds/3600:.2f} 小时)") # Calculated dynamic adjustment interval
+            return final_interval_seconds
+
+        except Exception as e:
+            self.logger.error(f"计算动态调整间隔失败: {e}, 使用默认间隔。") # Failed to calculate dynamic interval, using default.
+            # Fallback to default interval from config
+            default_interval_hours = self.config.DYNAMIC_INTERVAL_PARAMS.get('default_interval_hours', 1.0)
+            return default_interval_hours * 3600
+    
     async def main_loop(self):
         while True:
             try:
@@ -314,11 +357,10 @@ class GridTrader:
                         # 执行S1策略
                         await self.position_controller_s1.check_and_execute()
                         
-                        # 调整网格大小
-                        adjust_interval_hours = self.config.GRID_PARAMS.get('adjust_interval', 24) 
-                        adjust_interval_seconds = adjust_interval_hours * 3600
-                        if time.time() - self.last_grid_adjust_time > adjust_interval_seconds:
-                            self.logger.info(f"时间到了，准备调整网格大小 (间隔: {adjust_interval_hours} 小时).")
+                        # 如果时间到了并且不在买入或卖出调整网格大小
+                        dynamic_interval_seconds = await self._calculate_dynamic_interval_seconds()
+                        if time.time() - self.last_grid_adjust_time > dynamic_interval_seconds and not self.buying_or_selling:
+                            self.logger.info(f"时间到了，准备调整网格大小 (间隔: {dynamic_interval_seconds/3600} 小时).")
                             await self.adjust_grid_size()
                             self.last_grid_adjust_time = time.time()
 

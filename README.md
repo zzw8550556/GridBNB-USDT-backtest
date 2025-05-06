@@ -19,12 +19,19 @@
 
 *   Python 3.8+
 *   依赖库见 `requirements.txt` 文件。
+*   **最低服务器配置建议**：
+    *   CPU：1核及以上（推荐2核）
+    *   内存：512MB 及以上（推荐1GB或2GB）
+    *   硬盘：500MB 可用空间
+    *   操作系统：Windows、Linux 或 macOS
+    *   网络：需能访问币安API和PushPlus（如启用通知）
+    *   网络建议：建议选择日本等对币安延迟低的网络，避免香港和美国地区。
 
 ## 安装步骤
 
 1.  **克隆仓库**:
     ```bash
-    git clone <你的仓库HTTPS或SSH地址>
+    git clone https://github.com/EBOLABOY/GridBNB-USDT
     cd GridBNB-USDT
     ```
 
@@ -61,6 +68,7 @@
     PUSHPLUS_TOKEN=YOUR_PUSHPLUS_TOKEN
 
     # 初始设置 (可选, 影响首次运行和统计)
+    # 如不设置，INITIAL_PRINCIPAL 和 INITIAL_BASE_PRICE 默认为 0
     INITIAL_PRINCIPAL=1000.0  # 你的初始总资产 (USDT)
     INITIAL_BASE_PRICE=600.0   # 你认为合适的初始基准价格 (用于首次启动确定方向)
     ```
@@ -88,20 +96,24 @@ python main.py
 
 ## docker部署
 
-部署前请修改 .env 文件的 环境变量
+部署前请先根据上文说明配置好 .env 文件的环境变量。
 
 ```bash
 # 拉取代码
+#（如已在上方步骤完成可跳过）
 git clone https://github.com/EBOLABOY/GridBNB-USDT
+cd GridBNB-USDT
 # 部署镜像
 docker-compose up -d
 ```
+
+*如需自定义端口，请修改 docker-compose.yml 中的端口映射。*
 
 ## Web 界面
 
 程序启动后，会自动运行一个 Web 服务器。你可以通过浏览器访问以下地址来监控和管理交易机器人：
 
-`http://127.0.0.1:8080`
+`http://127.0.0.1:58080`
 
 *注意: 端口号 (8080) 可能在 `web_server.py` 中定义，如果无法访问请检查该文件。*
 

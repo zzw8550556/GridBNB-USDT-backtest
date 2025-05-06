@@ -18,6 +18,7 @@ DAILY_LOSS_LIMIT = -0.05
 MAX_POSITION_RATIO = 0.9  # 最大仓位比例 (90%)，保留10%底仓
 MIN_POSITION_RATIO = 0.1  # 最小仓位比例 (10%)，底仓
 PUSHPLUS_TOKEN = os.getenv('PUSHPLUS_TOKEN')
+PUSHPLUS_TIMEOUT = 5  # PushPlus请求超时时间（秒）
 LOG_LEVEL = logging.INFO  # 设置为INFO减少调试日志
 DEBUG_MODE = False  # 设置为True时显示详细日志
 API_TIMEOUT = 10000  # API超时时间（毫秒）
@@ -52,7 +53,6 @@ class TradingConfig:
         'initial': INITIAL_GRID,
         'min': 1.0,
         'max': 4.0,
-        'adjust_interval': 1.0,  # 每1小时检查一次
         'volatility_threshold': {
             'ranges': [
                 {'range': [0, 0.20], 'grid': 1.0},     # 波动率 0-20%，网格1.0%
@@ -65,6 +65,20 @@ class TradingConfig:
             ]
         }
     }
+        # --- 新增：动态时间间隔参数 ---
+    DYNAMIC_INTERVAL_PARAMS = {
+        # 定义波动率区间与对应调整间隔（小时）的映射关系
+        'volatility_to_interval_hours': [
+            # 格式: {'range': [最低波动率(含), 最高波动率(不含)], 'interval_hours': 对应的小时间隔}
+            {'range': [0, 0.20], 'interval_hours': 1.0},    # 波动率 < 0.20 时，间隔 1 小时
+            {'range': [0.20, 0.40], 'interval_hours': 0.5},   # 波动率 0.20 到 0.40 时，间隔30分钟
+            {'range': [0.40, 0.80], 'interval_hours': 0.25},   # 波动率 0.40 到 0.80 时，间隔15分钟
+            {'range': [0.80, 999], 'interval_hours': 0.125},   # 波动率 >=0.80 ，间隔7.5分钟
+        ],
+        # 定义一个默认间隔，以防波动率计算失败或未匹配到任何区间
+        'default_interval_hours': 1.0
+    }
+    
     SYMBOL = SYMBOL
     INITIAL_BASE_PRICE = INITIAL_BASE_PRICE
     RISK_CHECK_INTERVAL = RISK_CHECK_INTERVAL
@@ -94,42 +108,9 @@ class TradingConfig:
         if self.GRID_PARAMS['min'] > self.GRID_PARAMS['max']:
             raise ValueError("网格最小值不能大于最大值")
         
-        self.RISK_PARAMS = {
-            'max_drawdown': MAX_DRAWDOWN,
-            'daily_loss_limit': DAILY_LOSS_LIMIT,
-            'position_limit': MAX_POSITION_RATIO
-        }
-        self.GRID_PARAMS = {
-            'initial': INITIAL_GRID,
-            'min': 1.0,
-            'max': 4.0,
-            'adjust_interval': 1.0,  # 每1小时检查一次
-            'volatility_threshold': {
-                'ranges': [
-                    {'range': [0, 0.20], 'grid': 1.0},     # 波动率 0-20%，网格1.0%
-                    {'range': [0.20, 0.40], 'grid': 1.5},  # 波动率 20-40%，网格1.5%
-                    {'range': [0.40, 0.60], 'grid': 2.0},  # 波动率 40-60%，网格2.0%
-                    {'range': [0.60, 0.80], 'grid': 2.5},  # 波动率 60-80%，网格2.5%
-                    {'range': [0.80, 1.00], 'grid': 3.0},  # 波动率 80-100%，网格3.0%
-                    {'range': [1.00, 1.20], 'grid': 3.5},  # 波动率 100-120%，网格3.5%
-                    {'range': [1.20, 999], 'grid': 4.0}    # 波动率 >120%，网格4.0%
-                ]
-            }
-        }
-        self.SYMBOL = SYMBOL
-        self.INITIAL_BASE_PRICE = INITIAL_BASE_PRICE
-        self.RISK_CHECK_INTERVAL = RISK_CHECK_INTERVAL
-        self.MAX_RETRIES = MAX_RETRIES
-        self.RISK_FACTOR = RISK_FACTOR
-        self.BASE_AMOUNT = 50.0  # 恢复原始基础金额（可调整）
-        self.MIN_TRADE_AMOUNT = MIN_TRADE_AMOUNT
-        self.MAX_POSITION_RATIO = MAX_POSITION_RATIO
-        self.MIN_POSITION_RATIO = MIN_POSITION_RATIO
-        self.MIN_POSITION_PERCENT = MIN_POSITION_PERCENT
-        self.MAX_POSITION_PERCENT = MAX_POSITION_PERCENT
-        # 将初始本金赋值给实例属性
-        self.INITIAL_PRINCIPAL = INITIAL_PRINCIPAL
-
+        # 这里不再需要 self.SYMBOL = SYMBOL 等重复赋值语句
+        # 也不再需要 self.RISK_PARAMS = {...} 和 self.GRID_PARAMS = {...} 的重复定义
+        
     # Removed unused update methods (update_risk_params, update_grid_params, 
     # update_symbol, update_initial_base_price, update_risk_check_interval, 
     # update_max_retries, update_risk_factor, update_base_amount, 

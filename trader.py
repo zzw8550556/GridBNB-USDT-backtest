@@ -179,7 +179,7 @@ class GridTrader:
     async def _check_buy_signal(self):
         current_price = self.current_price
         if current_price <= self._get_lower_band():
-            self.buying_or_selling = True    # 在买入或卖出
+            self.buying_or_selling = True    # 进入买入或卖出监测
             # 记录最低价
             new_lowest = current_price if self.lowest is None else min(self.lowest, current_price)
             # 只在最低价更新时打印日志
@@ -202,6 +202,8 @@ class GridTrader:
                 if not await self.check_buy_balance(current_price):
                     return False
                 return True
+        else:
+            self.buying_or_selling = False    # 退出买入或卖出监测
         return False
     
     async def _check_sell_signal(self):
@@ -209,7 +211,7 @@ class GridTrader:
         initial_upper_band = self._get_upper_band()  # 初始上轨价格
         
         if current_price >= initial_upper_band:
-            self.buying_or_selling = True    # 在买入或卖出
+            self.buying_or_selling = True    # 进入买入或卖出监测
             # 记录最高价
             new_highest = current_price if self.highest is None else max(self.highest, current_price)
             threshold = FLIP_THRESHOLD(self.grid_size)
@@ -238,6 +240,8 @@ class GridTrader:
                 if not await self.check_sell_balance():
                     return False
                 return True
+        else:
+            self.buying_or_selling = False    # 退出买入或卖出监测
         return False
     
     async def _calculate_order_amount(self, order_type):

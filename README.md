@@ -30,6 +30,7 @@ pip install -r requirements.txt
 
 项目自带了示例数据文件 `BNBUSDT_BINANCE_2025-01-01_00_00_00_2025-05-19_23_59_59.pkl`，无需额外准备。  
 如需替换为其他数据，请确保数据为 Pandas DataFrame pickle 格式，且包含 `close_price` 列，索引为时间戳。
+
 将 `.env.example` 文件复制为副本，并重命名成`.env`
 
 ## 运行回测

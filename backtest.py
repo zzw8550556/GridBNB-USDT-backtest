@@ -155,6 +155,7 @@ def backtest_(df, initial_balance=INITIAL_PRINCIPAL):
         # 新增：每隔固定时间间隔重置基准价
         if (current_time_dt - last_reset_time_dt).total_seconds() >= reset_interval_seconds:
             current_base_price = price  # 用当前价格重置基准价
+            #current_base_price =INITIAL_BASE_PRICE
             last_reset_time_dt = current_time_dt
             #logging.info(f"定时重置基准价: 在 {current_time} 重置为 {price:.2f}")
         
@@ -344,16 +345,52 @@ def backtest_(df, initial_balance=INITIAL_PRINCIPAL):
     final_balance = portfolio_value
     profit = final_balance - initial_balance
     
+    #stats = {
+    #    'total_trades': total_trades,
+    #    'winning_trades': winning_trades,
+    #    'win_rate': win_rate,
+    #    'final_balance': final_balance,
+    #    'profit': profit
+    #}
+    
+    results_df = pd.DataFrame(results)
+    trades_df = pd.DataFrame(trades)
+
+    # 计算绩效指标
+    # 1. 年化收益率
+    results_df['balance'] = results_df['balance'].astype(float)
+    total_days = (pd.to_datetime(results_df['datetime'].iloc[-1]) - pd.to_datetime(results_df['datetime'].iloc[0])).days
+    total_years = total_days / 365.0 if total_days > 0 else 1
+    annual_return = (results_df['balance'].iloc[-1] / results_df['balance'].iloc[0]) ** (1 / total_years) - 1 if total_years > 0 else 0
+
+    # 2. 最大回撤
+    cummax = results_df['balance'].cummax()
+    drawdown = (results_df['balance'] - cummax) / cummax
+    max_drawdown = drawdown.min()
+
+    # 3. 夏普比率（日收益率，假设无风险利率为0）
+    results_df['returns'] = results_df['balance'].pct_change().fillna(0)
+    sharpe_ratio = results_df['returns'].mean() / results_df['returns'].std() * np.sqrt(365*24*60) if results_df['returns'].std() > 0 else 0  # 假设1分钟K线
+
+    # 4. 盈亏比
+    win_profits = trades_df[trades_df['profit'] > 0]['profit']
+    loss_profits = trades_df[trades_df['profit'] < 0]['profit']
+    avg_win = win_profits.mean() if not win_profits.empty else 0
+    avg_loss = loss_profits.abs().mean() if not loss_profits.empty else 1
+    profit_loss_ratio = avg_win / avg_loss if avg_loss != 0 else 0
+
     stats = {
         'total_trades': total_trades,
         'winning_trades': winning_trades,
         'win_rate': win_rate,
         'final_balance': final_balance,
-        'profit': profit
+        'profit': profit,
+        'annual_return': annual_return,
+        'max_drawdown': max_drawdown,
+        'sharpe_ratio': sharpe_ratio,
+        'profit_loss_ratio': profit_loss_ratio
     }
-    
-    results_df = pd.DataFrame(results)
-    trades_df = pd.DataFrame(trades)
+
     return results_df, trades_df, stats
 
 if __name__ == "__main__":
@@ -366,6 +403,10 @@ if __name__ == "__main__":
     print(f"总交易次数: {stats['total_trades']}")
     print(f"获胜次数: {stats['winning_trades']}")
     print(f"胜率: {stats['win_rate']:.2%}")
+    print(f"年化收益率: {stats['annual_return']:.2%}")
+    print(f"最大回撤: {stats['max_drawdown']:.2%}")
+    print(f"夏普比率: {stats['sharpe_ratio']:.2f}")
+    print(f"盈亏比: {stats['profit_loss_ratio']:.2f}")
     print(f"最终余额: {stats['final_balance']:.2f}")
     print(f"总收益: {stats['profit']:.2f}")
 

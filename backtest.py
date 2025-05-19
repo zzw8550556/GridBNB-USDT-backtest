@@ -117,8 +117,11 @@ def backtest_(df, initial_balance=INITIAL_PRINCIPAL):
     current_grid_value = TradingConfig.GRID_PARAMS['initial']  # 例如 2.0 表示2%
     current_grid_pct = current_grid_value / 100.0
     
-    # 新增：记录上一次网格调整的时间，初始取第一根K线的时间
+    # 记录上一次网格调整的时间，初始取第一根K线的时间
     last_grid_adjust_time = times[0]
+    # 新增：定期重置基准价的逻辑
+    reset_interval_seconds = TradingConfig.RESET_INTERVAL_SECONDS if hasattr(TradingConfig, 'RESET_INTERVAL_SECONDS') else 86400  # 默认一天重置一次
+    last_reset_time_dt = datetime.strptime(times[0], "%Y-%m-%d %H:%M:%S")
 
     # 状态标识：'flat'为空仓，'long'为持仓状态
     state = 'flat'
@@ -148,6 +151,13 @@ def backtest_(df, initial_balance=INITIAL_PRINCIPAL):
         # 更新当天最高和最低价格，用于 S1 策略参考
         # current_time 是字符串，先转为 datetime 对象
         current_time_dt = datetime.strptime(current_time, "%Y-%m-%d %H:%M:%S")
+
+        # 新增：每隔固定时间间隔重置基准价
+        if (current_time_dt - last_reset_time_dt).total_seconds() >= reset_interval_seconds:
+            current_base_price = price  # 用当前价格重置基准价
+            last_reset_time_dt = current_time_dt
+            #logging.info(f"定时重置基准价: 在 {current_time} 重置为 {price:.2f}")
+        
         current_date = current_time_dt.date()
         if last_day is None:
             last_day = current_date
@@ -349,8 +359,9 @@ def backtest_(df, initial_balance=INITIAL_PRINCIPAL):
 if __name__ == "__main__":
     pkl_file = "BNBUSDT_BINANCE_2025-01-01_00_00_00_2025-05-19_23_59_59.pkl"
     df = read_pkl_data(pkl_file)
+
     results_df, trades_df, stats = backtest_(df)
-    
+
     print("\n策略统计:")
     print(f"总交易次数: {stats['total_trades']}")
     print(f"获胜次数: {stats['winning_trades']}")

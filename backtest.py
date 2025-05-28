@@ -431,7 +431,7 @@ def backtest_(df, initial_balance=INITIAL_PRINCIPAL):
     return results_df, trades_df, stats
 
 if __name__ == "__main__":
-    pkl_file = "BNBUSDT_BINANCE_2025-05-15_00_00_00_2025-05-29_00_00_00.pkl"
+    pkl_file = "BNBUSDT_BINANCE_2025-01-01_00_00_00_2025-05-19_23_59_59.pkl"
     df = read_pkl_data(pkl_file)
 
     results_df, trades_df, stats = backtest_(df)

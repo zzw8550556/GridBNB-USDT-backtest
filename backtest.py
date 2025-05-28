@@ -109,7 +109,12 @@ def backtest_(df, initial_balance=INITIAL_PRINCIPAL):
     
     df = df.sort_index()  # 确保按时间顺序
     prices = df['close_price'].values
-    times = df.index
+    #使用history_kline_downloader.py生成的数据时，时间是df['open_time']
+    if df.index[0]==0:
+        times=df['open_time']
+    else:
+        #使用自带的示例数据时df.index就是时间索引
+        times = df.index
 
     # 初始化基准价：若配置中指定 INITIAL_BASE_PRICE（非0），则采用其作为基准价，否则用第一根K线收盘价。
     current_base_price = INITIAL_BASE_PRICE if INITIAL_BASE_PRICE > 0 else df.iloc[0]['close_price']
@@ -120,8 +125,12 @@ def backtest_(df, initial_balance=INITIAL_PRINCIPAL):
     # 记录上一次网格调整的时间，初始取第一根K线的时间
     last_grid_adjust_time = times[0]
     # 新增：定期重置基准价的逻辑
-    reset_interval_seconds = TradingConfig.RESET_INTERVAL_SECONDS if hasattr(TradingConfig, 'RESET_INTERVAL_SECONDS') else 86400  # 默认一天重置一次
-    last_reset_time_dt = datetime.strptime(times[0], "%Y-%m-%d %H:%M:%S")
+    reset_interval_seconds = TradingConfig.RESET_INTERVAL_SECONDS if hasattr(TradingConfig, 'RESET_INTERVAL_SECONDS') else round(1*24*60*60)#86400  # 默认一天重置一次
+    #如果times[0]不是Timestamp类型
+    if isinstance(times[0], pd.Timestamp) == False:
+        last_reset_time_dt = datetime.strptime(times[0], "%Y-%m-%d %H:%M:%S")
+    else:
+        last_reset_time_dt = times[0]
 
     # 状态标识：'flat'为空仓，'long'为持仓状态
     state = 'flat'
@@ -132,6 +141,8 @@ def backtest_(df, initial_balance=INITIAL_PRINCIPAL):
     open_position = None     # 当前持仓信息
     trade_count = 0
     current_balance = initial_balance
+    max_portfolio_value = initial_balance  # 新增：记录账户净值历史最高值
+    last_trade_time = None   # 新增：记录上一笔交易的时间
 
     # 对于波动率计算，将 VOLATILITY_WINDOW (单位小时) 换算为对应的分钟数（假设1分钟一根K线）
     bars_for_vol = int(VOLATILITY_WINDOW * 60)
@@ -150,7 +161,10 @@ def backtest_(df, initial_balance=INITIAL_PRINCIPAL):
         price = prices[i]
         # 更新当天最高和最低价格，用于 S1 策略参考
         # current_time 是字符串，先转为 datetime 对象
-        current_time_dt = datetime.strptime(current_time, "%Y-%m-%d %H:%M:%S")
+        if isinstance(current_time, pd.Timestamp) == False:
+            current_time_dt = datetime.strptime(current_time, "%Y-%m-%d %H:%M:%S")
+        else:
+            current_time_dt = current_time
 
         # 新增：每隔固定时间间隔重置基准价
         if (current_time_dt - last_reset_time_dt).total_seconds() >= reset_interval_seconds:
@@ -182,6 +196,7 @@ def backtest_(df, initial_balance=INITIAL_PRINCIPAL):
             'datetime': current_time,
             'balance': portfolio_value
         })
+        max_portfolio_value = max(max_portfolio_value, portfolio_value)  # 更新账户净值历史最高值
 
         # 空仓状态监控买入信号
         if state == 'flat':
@@ -213,6 +228,7 @@ def backtest_(df, initial_balance=INITIAL_PRINCIPAL):
                         current_balance -= trade_amount  # 扣除买入金额
                         state = 'long'
                         buy_monitoring = False  # 重置买入监控
+                        last_trade_time = current_time   # 更新交易时间
 
         # 持仓状态监控卖出信号
         elif state == 'long' and open_position:
@@ -238,6 +254,10 @@ def backtest_(df, initial_balance=INITIAL_PRINCIPAL):
                     # 卖出后，用成交价更新基准价
                     current_base_price = exit_price
                     trade_count += 1
+                    state = 'flat'
+                    sell_monitoring = False
+                    open_position = None
+                    last_trade_time = current_time   # 更新交易时间
                     
                     # 动态网格调整
                     if i >= bars_for_vol:
@@ -245,8 +265,12 @@ def backtest_(df, initial_balance=INITIAL_PRINCIPAL):
                         returns = np.diff(np.log(window_prices))
                         volatility = np.std(returns) * np.sqrt(1440 * 365)
                         dynamic_interval = calculate_dynamic_interval(volatility)
-                        current_time_dt = datetime.strptime(current_time, "%Y-%m-%d %H:%M:%S")
-                        last_grid_adjust_time_dt = datetime.strptime(last_grid_adjust_time, "%Y-%m-%d %H:%M:%S")
+                        if isinstance(current_time, pd.Timestamp) == False:
+                            current_time_dt = datetime.strptime(current_time, "%Y-%m-%d %H:%M:%S")
+                            last_grid_adjust_time_dt = datetime.strptime(last_grid_adjust_time, "%Y-%m-%d %H:%M:%S")
+                        else:
+                            current_time_dt = current_time
+                            last_grid_adjust_time_dt = last_grid_adjust_time
                         time_since_last_adjust = (current_time_dt - last_grid_adjust_time_dt).total_seconds()
                         if time_since_last_adjust >= dynamic_interval:
                             # 根据波动率区间获取基础网格
@@ -290,30 +314,37 @@ def backtest_(df, initial_balance=INITIAL_PRINCIPAL):
         # S1策略逻辑：使用昨日日线的高低作为参考进行仓位调整
         if s1_daily_high is not None and s1_daily_low is not None:
             # S1卖出调整：若持仓且当前价突破昨日最高且仓位比例超过S1_SELL_TARGET_PCT，则卖出多余部分
-            if state == 'long' and price > s1_daily_high and position_ratio > S1_SELL_TARGET_PCT:
+            # 仅在持仓且当前tick未发生其他交易，
+            # 且持仓的建仓时间早于当前tick时，触发卖出调整
+            if state == 'long' and open_position and (last_trade_time != current_time) \
+                and price > s1_daily_high and position_ratio > S1_SELL_TARGET_PCT:
                 desired_value = portfolio_value * S1_SELL_TARGET_PCT
                 excess_value = position_value - desired_value
                 if excess_value >= MIN_TRADE_AMOUNT:
                     sell_units = excess_value / price
                     profit_trade = sell_units * (price - open_position['buy_price'])
                     current_balance += sell_units * price
+                    original_buy_time = open_position['buy_time']  # 记录原始买入时间用于交易记录
                     open_position['units'] -= sell_units
-                    if open_position['units'] < 1e-8:
-                        open_position = None
-                        state = 'flat'
-                    trade_count += 1
                     trades.append({
-                        'entry_datetime': open_position['buy_time'] if open_position else current_time,
+                        'entry_datetime': original_buy_time,
                         'exit_datetime': current_time,
-                        'entry_price': open_position['buy_price'] if open_position else price,
+                        'entry_price': open_position['buy_price'],
                         'exit_price': price,
                         'profit': profit_trade,
                         's1': True
                     })
+                    # 保持原始buy_time（这样下一次平仓时记录的持仓周期仍然准确）
+                    if open_position['units'] < 1e-8:
+                        open_position = None
+                        state = 'flat'
+                    trade_count += 1
+                    last_trade_time = current_time   # 更新交易时间
                     logging.info(f"S1卖出调整：卖出 {sell_units:.4f} 单位，剩余仓位 {open_position['units'] if open_position else 0:.4f}")
 
+
             # S1买入调整：当价格低于昨日最低且仓位比例低于S1_BUY_TARGET_PCT时，补仓
-            if price < s1_daily_low and position_ratio < S1_BUY_TARGET_PCT:
+            if (last_trade_time != current_time) and price < s1_daily_low and position_ratio < S1_BUY_TARGET_PCT:
                 desired_value = portfolio_value * S1_BUY_TARGET_PCT
                 shortage_value = desired_value - position_value
                 if shortage_value >= MIN_TRADE_AMOUNT and current_balance >= shortage_value:
@@ -326,17 +357,23 @@ def backtest_(df, initial_balance=INITIAL_PRINCIPAL):
                         }
                         state = 'long'
                     else:
-                        open_position['units'] += buy_units
+                        # 如果已有仓位，则只有当持仓的buy_time不等于当前tick时，才进行补仓
+                        if open_position['buy_time'] != current_time:
+                            total_units = open_position['units'] + buy_units
+                            open_position['buy_price'] = (open_position['buy_price'] * open_position['units'] + price * buy_units) / total_units
+                            open_position['units'] = total_units
+                        else:
+                            # 若当前tick刚开仓，则跳过S1买入调整，避免生成记录
+                            buy_units = 0
                     current_balance -= shortage_value
                     trade_count += 1
-                    trades.append({
-                        'entry_datetime': current_time,
-                        'exit_datetime': current_time,
-                        'entry_price': price,
-                        'exit_price': price,
-                        'profit': 0,
-                        's1': True
-                    })
+                    # 不记录S1买入调整的交易记录，避免产生入场与出场时间完全一致的记录
+                    last_trade_time = current_time   # 更新交易时间
+                    if buy_units:
+                        logging.info(f"S1买入调整：买入 {buy_units:.4f} 单位，新仓位 {open_position['units']:.4f}")
+                    else:
+                        logging.info("跳过S1买入调整，因当前tick刚开仓")
+                    last_trade_time = current_time   # 更新交易时间
                     logging.info(f"S1买入调整：买入 {buy_units:.4f} 单位，新仓位 {open_position['units']:.4f}")
 
     total_trades = len(trades)
@@ -394,7 +431,7 @@ def backtest_(df, initial_balance=INITIAL_PRINCIPAL):
     return results_df, trades_df, stats
 
 if __name__ == "__main__":
-    pkl_file = "BNBUSDT_BINANCE_2025-01-01_00_00_00_2025-05-19_23_59_59.pkl"
+    pkl_file = "BNBUSDT_BINANCE_2025-05-15_00_00_00_2025-05-29_00_00_00.pkl"
     df = read_pkl_data(pkl_file)
 
     results_df, trades_df, stats = backtest_(df)
